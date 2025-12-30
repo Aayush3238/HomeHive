@@ -1,0 +1,140 @@
+
+/* -------------------- Global -------------------- */
+
+body {
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* -------------------- Navbar -------------------- */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: #FF385C;        /* Airbnb pink */
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(255, 56, 92, 0.2);
+}
+
+.navbar a {
+    color: #fff;
+    font-size: 1.2rem;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.navbar a:hover {
+    background: #fff;
+    color: #FF385C;
+}
+
+/* -------------------- Header -------------------- */
+
+h1 {
+    text-align: center;
+    margin-top: 30px;
+    color: #FF385C;
+    font-size: 48px;
+    font-weight: bold;
+}
+
+/* -------------------- Homes Grid -------------------- */
+
+.homes-list {
+    list-style: none;
+    padding: 0;
+    margin: 40px auto;
+    width: 90%;
+    max-width: 1200px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 28px;
+}
+
+/* -------------------- Home Card -------------------- */
+
+.homes-list li.home-card {
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.homes-list li.home-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* -------------------- Home Image -------------------- */
+
+.home-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+/* -------------------- Home Info -------------------- */
+
+.home-info {
+    padding: 16px;
+    text-align: left;
+}
+
+.home-address {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #FF385C;
+}
+
+.home-price {
+    font-size: 1rem;
+    color: #222;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+/* -------------------- Book Button -------------------- */
+
+.home-card button {
+    margin: 14px;
+    margin-top: auto;
+    padding: 10px 0;
+    width: 90%;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+
+.edit{
+    background-color:rgb(67, 67, 202);
+
+}
+.edit:hover{
+    background-color:rgb(45, 45, 138);
+}
+.delete{
+    background-color:rgb(209, 38, 47);
+}
+.delete:hover{
+    background-color:#830808;
+}

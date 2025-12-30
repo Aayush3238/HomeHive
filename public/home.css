@@ -1,0 +1,164 @@
+/* -------------------- Global -------------------- */
+
+body {
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* -------------------- Navbar -------------------- */
+
+.navbar {
+    position:sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #FF385C;        /* Airbnb pink */
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(255, 56, 92, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar .nav-inner {
+    display: flex;
+    flex-wrap: wrap;          /*allow wrapping */
+    gap: 12px;
+    justify-content:space-between;
+    align-items:left;
+    min-height: 70px;
+    padding: 10px 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+@media (max-width: 600px) {
+    .navbar .nav-inner {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .navbar a {
+        width: 100%;
+        text-align: center;
+        font-size: 0.95rem;
+    }
+}
+@media (max-width: 900px) {
+    .navbar .nav-inner {
+        flex-wrap:nowrap;
+        gap: 10px;
+    }
+
+    .navbar a {
+        padding: 6px 10px;
+        font-size: 0.95rem;
+    }
+}
+
+
+.navbar a {
+    color: #fff;
+    font-size: 1rem;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap; /* prevent links from wrapping individually */
+}
+
+.navbar a:hover {
+    background: #fff;
+    color: #FF385C;
+}
+
+/* -------------------- Header -------------------- */
+
+h1 {
+    text-align: center;
+    margin-top: 30px;
+    color: #FF385C;
+    font-size: 48px;
+    font-weight: bold;
+}
+
+/* -------------------- Homes Grid -------------------- */
+
+.homes-list {
+    list-style: none;
+    padding: 0;
+    margin: 40px auto;
+    width: 90%;
+    max-width: 1200px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 28px;
+}
+
+/* -------------------- Home Card -------------------- */
+
+.homes-list li.home-card {
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.homes-list li.home-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* -------------------- Home Image -------------------- */
+
+.home-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+/* -------------------- Home Info -------------------- */
+
+.home-info {
+    padding: 16px;
+    text-align: left;
+}
+
+.home-address {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #FF385C;
+}
+
+.home-price {
+    font-size: 1rem;
+    color: #222;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+/* -------------------- Book Button -------------------- */
+
+.home-card button {
+    margin: 14px;
+    margin-top: auto;
+    padding: 10px 0;
+    width: 90%;
+    background-color: #03c04a;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.home-card button:hover {
+    background-color: #02a63f;
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airbnb</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+ <body>
+    <div class = "navbar">
+        <a href="/"> Home </a>
+        <a href = "/host/add-home"> Add home </a>
+        <a href = "/store/bookings">Bookings</a>
+        <a href = "/store/favourite-list"> Favourite List </a>
+        <a href = "/host/homelist">Host-HomeList</a>
+    </div>
+    <header>
+        <h1>Airbnb</h1>
+    
+    </header>
+    <ul class="homes-list">
+       <% SubmittedDetails.forEach(home => { %>
+        <li class="home-card">
+            <% if (home.homeImage) { %>
+                <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
+            <% } %>
+            <div class="home-info">
+                <div class="home-address"><%= home.address %></div>
+                <div class="home-price">₹ <%= home.price %></div>
+            </div>
+            <button>Book </button>
+            <a href = "/home/"></a>
+        </li>
+       <% }) %>
+</ul>
+
+    
+    
+    
+</body>
+</html>
