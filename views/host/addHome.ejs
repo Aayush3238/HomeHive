@@ -8,14 +8,22 @@
 </head>
 
 <body>
-    <h1> Add Your Home </h1>
+    <div class = "navbar">
+        <a href="/"> Home </a>
+        <a href = "/host/add-home"> Add home </a>
+        <a href = "/store/bookings">Bookings</a>
+        <a href = "/store/favourite-list"> Favourite List </a>
+        <a href = "/host/host-homelist">Host-HomeList</a>
+    </div>
+    
+    
+ 
+<h1>Add Your Home 🏡</h1>
     <form action = "/host/add-home" method = "POST" enctype="multipart/form-data">
         <input type = "text" name = "address" placeholder = "Enter your home address"/>
         <input type ="number" name = "price" placeholder = "Enter price per night" />
-        <!-- <input type ="image" name = "HomeImage" placeholder = "Give picture of home"  /> -->
-        <!-- <input type="url" name="homeImage" placeholder="Enter image URL of your home" /> -->
-          <!-- <label for="homeImage">Home Image:</label> -->
-    <input type="file" id="homeImage" name="homeImage" accept="image/*">
+        <input type="file" id="homeImage" name="homeImage" accept="image/*">
+        <input type="text" name="description" placeholder="Enter home description" />
         <button type = "submit"> Add Home </button>
     </form> 
 </body>

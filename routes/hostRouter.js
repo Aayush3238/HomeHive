@@ -2,19 +2,17 @@ const path = require('path');
 const express = require('express');
 const hostRouter = express.Router();
 
-// const rootDir = require('../utils/pathUtils');
-
-// const multer = require('multer');
-// const upload = multer({dest: 'public/uploads/'});
-
 const homeController = require('../controller/hostController');
 
 hostRouter.get('/host/add-home', homeController.getAddHome);
 
-// const SubmittedDetails = [];
-// hostRouter.use(express.urlencoded());
 hostRouter.post('/host/add-home', homeController.postAddHome);
 
-hostRouter.get('/host/homelist', homeController.getHostHomeList);
-// module.exports = hostRouter;
+hostRouter.get('/host/host-homelist', homeController.getHostHomeList);
+
+hostRouter.post('/host/home-delete', homeController.PostDeleteHome);
+
+hostRouter.get('/host/edit/:id', homeController.getUpdateHome);
+hostRouter.post('/host/edit/:id', homeController.PostUpdateHome);
+
 exports.hostRouter = hostRouter;

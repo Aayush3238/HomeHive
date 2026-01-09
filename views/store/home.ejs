@@ -8,14 +8,23 @@
 </head>
  <body>
     <div class = "navbar">
+
         <a href="/"> Home </a>
+        <% if (isLoggedIn) { %>
+            <a href="/logout"> Logout </a>
         <a href = "/host/add-home"> Add home </a>
         <a href = "/store/bookings">Bookings</a>
         <a href = "/store/favourite-list"> Favourite List </a>
-        <a href = "/host/homelist">Host-HomeList</a>
+        <a href = "/host/host-homelist">Host-HomeList</a>
+        <% }  %>
+        <a href = "/login"> Login </a>
     </div>
     <header>
-        <h1>Airbnb</h1>
+ <h1 class = "brand">
+    <a href = "/"> 🛋️ Swift Stay </a>
+
+ </h1>
+
     
     </header>
     <ul class="homes-list">
@@ -27,9 +36,10 @@
             <div class="home-info">
                 <div class="home-address"><%= home.address %></div>
                 <div class="home-price">₹ <%= home.price %></div>
+                <p><%= home.description %></p>
             </div>
             <button>Book </button>
-            <a href = "/home/"></a>
+            <a  class = "Details" href = "/home/<%= home._id %>">Details</a>
         </li>
        <% }) %>
 </ul>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Details</title>
+    <link rel="stylesheet" href="/edit.css">
+</head>
+<body>
+
+    <div>
+    <form action="/host/edit/<%= home._id %>" method = "POST" >
+                <input type="hidden" name = "id" value = "<%= home._id %>">
+                <input type = "text" name = "address" value = "<%= home.address%>" >
+                <input type = "number" name = "price" value = <%= home.price%>  >
+                <button type = "submit"> Edit</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,38 +1,44 @@
-const fs = require('fs');
-const path = require('path');
-
-const rootDir = require('../utils/pathUtils');
-
-const SubmittedDetails = [];
-
+const {getDB }= require('../utils/databaseUtil');
+const { ObjectId } = require('mongodb');
 module.exports = class Home{
-    constructor(address, price, homeImage){
+    constructor(address, price, homeImage,_id){
         this.address = address;
         this.price = price;
         this.homeImage = homeImage;
+        if(_id){
+            this._id = new ObjectId(_id);
+        }
     }
         
     save(){
-        // SubmittedDetails.push(this);
-        this.id = Math.random().toString();
-        Home.fetchAll((SubmittedDetails) => {
-            SubmittedDetails.push(this);
-            fs.writeFileSync(path.join(rootDir, 'data', 'homes.json'), JSON.stringify(SubmittedDetails));
-        }) 
-        
-
+        const db  = getDB();
+        if(this._id){
+            return db.collection('homes').updateOne({_id: this._id}, {$set: this});
+        }else{
+        return db.collection('homes').insertOne(this).then(() => {
+            console.log('Home Added');
+        })
+        }
     }
 
-    static fetchAll(callback){
-        const homeDataPath = path.join(rootDir, 'data', 'homes.json');
-        fs.readFile(homeDataPath, (err, data) => {
-            if(err){
-                return callback([]);
-            }
-            else{
-                return callback(JSON.parse(data));
-            }
-        });
+    static fetchAll(){
+        const db = getDB();
+        return db.collection('homes').find().toArray();
+    }
+
+    static findById(_id){
+        const db = getDB();
+        return db.collection('homes').findOne({_id: new ObjectId(String(_id))});
+    }
+
+    static delete(_id){
+        const db = getDB();
+        return db.collection('homes').deleteOne({_id: new ObjectId(String(_id))});
+    }
+
+    static updateHome(_id, updateData){
+        const db= getDB();
+        return db.collection('homes').updateOne({_id: new ObjectId(String(_id))}, {$set: updateData});
     }
 }
 

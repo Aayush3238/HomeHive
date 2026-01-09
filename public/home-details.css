@@ -1,0 +1,92 @@
+body {
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* -------------------- Navbar -------------------- */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: #FF385C;        /* Airbnb pink */
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(255, 56, 92, 0.2);
+}
+
+.navbar a {
+    color: #fff;
+    font-size: 1.2rem;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.navbar a:hover {
+    background: #fff;
+    color: #FF385C;
+}
+/* Main container */
+.home-details-container {
+    max-width: 800px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Address / Title */
+.home-details-container h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #222222;
+    margin-bottom: 10px;
+}
+
+/* Price */
+.price {
+    font-size: 20px;
+    color: #ff385c; /* Airbnb pink */
+    margin-bottom: 20px;
+}
+
+/* Image */
+.home-img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    object-fit: cover;
+}
+
+/* ID or small info text */
+.home-details-container p {
+    font-size: 14px;
+    color: #717171;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .home-details-container {
+        padding: 20px;
+    }
+
+    .home-details-container h1 {
+        font-size: 22px;
+    }
+
+    .price {
+        font-size: 18px;
+    }
+}
+

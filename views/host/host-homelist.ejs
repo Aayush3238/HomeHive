@@ -7,12 +7,13 @@
     <link rel="stylesheet" href="/host-home-list.css">
 </head>
  <body>
+  
     <div class = "navbar">
         <a href="/"> Home </a>
         <a href = "/host/add-home"> Add home </a>
         <a href = "/store/bookings">Bookings</a>
         <a href = "/store/favourite-list"> Favourite List </a>
-        <a href = "/host/homelist">Host-HomeList</a>
+        <a href = "/host/host-homelist">Host-HomeList</a>
     </div>
     <header>
         <h1>Hey Host! here are your registered homes</h1>
@@ -28,8 +29,17 @@
                 <div class="home-address"><%= home.address %></div>
                 <div class="home-price">₹ <%= home.price %></div>
             </div>
-            <button class = "edit">Edit</button>
-            <button class = "delete">Delete</button>
+            <p><%= home.description %></p>
+
+            
+          <form action="/host/edit/<%= home._id %>" method = "GET">
+            <button type="submit" class = "edit">Edit</button>
+          </form>
+
+            <form action = "/host/home-delete" method = "POST">
+                <input type="hidden" name="_id" value = <%= home._id %>>
+                <button type="submit" class= "delete">Delete</button>
+            </form>
         </li>
        <% }) %>
 </ul>   

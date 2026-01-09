@@ -11,5 +11,5 @@ userRouter.get('/', homeController.homepage );
 userRouter.get('/store/bookings', homeController.getBookings );
 userRouter.get('/store/favourite-list', homeController.getFavouriteList );
 
-userRouter.get('/home/:homeId', homeController.getHomeDetails );
+userRouter.get('/home/:id', homeController.getHomeDetails );
 module.exports = userRouter;
