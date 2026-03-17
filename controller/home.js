@@ -6,9 +6,9 @@ const rootDir = require('../utils/pathUtils');
 const Home  = require('../models/home');
 
 exports.homepage = (req, res) => {
-    Home.fetchAll()
+    Home.find()
     .then(SubmittedDetails => {
-        res.render('store/home', {SubmittedDetails, isLoggedIn : req.isLoggedIn});
+        res.render('store/home', {SubmittedDetails, isLoggedIn : req.session.isLoggedIn});
     })
     .catch(err => {
         console.log("Error fetching homes:", err);
@@ -16,13 +16,11 @@ exports.homepage = (req, res) => {
 }
 
 exports.getBookings = (req, res, next) =>{
-    res.render(path.join(rootDir, 'views', '/store/bookings.ejs'));
-    isLoggedIn = req.isLoggedIn;
+    res.render(path.join(rootDir, 'views', '/store/bookings.ejs'), {isLoggedIn: req.session.isLoggedIn});
 }
 
 exports.getFavouriteList = (req, res, next)=> {
-    res.render(path.join(rootDir, 'views', '/store/favourite-list.ejs'));
-    isLoggedIn = req.isLoggedIn;
+    res.render(path.join(rootDir, 'views', '/store/favourite-list.ejs'), {isLoggedIn: req.session.isLoggedIn});
 }
 
 exports.getHomeDetails = (req, res, next) =>{
@@ -30,10 +28,13 @@ exports.getHomeDetails = (req, res, next) =>{
     console.log("home id ", homeId);
     Home.findById(homeId)
     .then((home) =>{
-        res.render('store/home-details', {home});
+        res.render('store/home-details', {home, isLoggedIn: req.session.isLoggedIn});
     })
     .catch(err =>{
         console.log("home not found");
     });  
+    
+}
+exports.addToFavourite = (req, res, next) => {
     
 }

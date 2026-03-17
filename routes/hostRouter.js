@@ -10,7 +10,7 @@ hostRouter.post('/host/add-home', homeController.postAddHome);
 
 hostRouter.get('/host/host-homelist', homeController.getHostHomeList);
 
-hostRouter.post('/host/home-delete', homeController.PostDeleteHome);
+hostRouter.post('/host/home-delete/:id', homeController.PostDeleteHome);
 
 hostRouter.get('/host/edit/:id', homeController.getUpdateHome);
 hostRouter.post('/host/edit/:id', homeController.PostUpdateHome);

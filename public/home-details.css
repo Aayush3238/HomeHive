@@ -1,92 +1,53 @@
-body {
-    background-color: #f7f7f7;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* -------------------- Navbar -------------------- */
-
-.navbar {
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    background-color: #FF385C;        /* Airbnb pink */
-    display: flex;
-    gap: 32px;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(255, 56, 92, 0.2);
-}
-
-.navbar a {
-    color: #fff;
-    font-size: 1.2rem;
-    text-decoration: none;
-    padding: 8px 18px;
-    border-radius: 8px;
-    transition: background 0.2s, color 0.2s;
-}
-
-.navbar a:hover {
-    background: #fff;
-    color: #FF385C;
-}
-/* Main container */
+/* =====================
+   HOME DETAILS CONTAINER
+===================== */
 .home-details-container {
-    max-width: 800px;
-    margin: auto;
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 14px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  max-width: 900px;
+  width: 100%;
+  margin: 60px auto;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
 }
 
-/* Address / Title */
+/* =====================
+   TITLE
+===================== */
 .home-details-container h1 {
-    font-size: 28px;
-    font-weight: 600;
-    color: #222222;
-    margin-bottom: 10px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
 }
 
-/* Price */
-.price {
-    font-size: 20px;
-    color: #ff385c; /* Airbnb pink */
-    margin-bottom: 20px;
+/* =====================
+   PRICE
+===================== */
+.home-details-container .price {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #0ea5a4;
+  margin-bottom: 20px;
 }
 
-/* Image */
-.home-img {
-    width: 100%;
-    height: auto;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    object-fit: cover;
+/* =====================
+   IMAGE
+===================== */
+.home-details-container .home-img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 24px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* ID or small info text */
+/* =====================
+   DESCRIPTION
+===================== */
 .home-details-container p {
-    font-size: 14px;
-    color: #717171;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #6b7280;
 }
-
-/* Responsive */
-@media (max-width: 600px) {
-    .home-details-container {
-        padding: 20px;
-    }
-
-    .home-details-container h1 {
-        font-size: 22px;
-    }
-
-    .price {
-        font-size: 18px;
-    }
-}
-

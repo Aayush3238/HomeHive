@@ -1,222 +1,165 @@
-/* -------------------- Global -------------------- */
+/* ---------- GLOBAL ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
 
 body {
-    background-color: #f7f7f7;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:radial-gradient(rgba(8, 112, 247, 0.486), rgba(48, 157, 230, 0.534))
+  color: #1f2933;
 }
 
-/* -------------------- Navbar -------------------- */
-
+/* ---------- NAVBAR ---------- */
 .navbar {
-    position:sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #FF385C;        /* Airbnb pink */
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(255, 56, 92, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.navbar .nav-inner {
-    display: flex;
-    flex-wrap: wrap;          /*allow wrapping */
-    gap: 12px;
-    justify-content:space-between;
-    align-items:left;
-    min-height: 70px;
-    padding: 10px 16px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-@media (max-width: 600px) {
-    .navbar .nav-inner {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .navbar a {
-        width: 100%;
-        text-align: center;
-        font-size: 0.95rem;
-    }
-}
-@media (max-width: 900px) {
-    .navbar .nav-inner {
-        flex-wrap:nowrap;
-        gap: 10px;
-    }
-
-    .navbar a {
-        padding: 6px 10px;
-        font-size: 0.95rem;
-    }
-}
-
-
-.navbar {
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    background-color: #FF385C;        /* Airbnb pink */
-    display: flex;
-    gap: 32px;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(255, 56, 92, 0.2);
+  background: #d8d0d0;
+  padding: 14px 32px;
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .navbar a {
-    color: #fff;
-    font-size: 1.2rem;
-    text-decoration: none;
-    padding: 8px 18px;
-    border-radius: 8px;
-    transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+  color: #374151;
+  font-weight: 500;
+  position: relative;
 }
 
 .navbar a:hover {
-    background: #fff;
-    color: #FF385C;
+  color: #4f46e5;
 }
 
-/* -------------------- Header -------------------- */
+.navbar a:active {
+  transform: scale(0.97);
+}
 
-.brand {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-align : center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* ---------- HEADER ---------- */
+header {
+  background: #ffffff;
+  padding: 24px 0;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .brand a {
-    text-decoration: none;
-    color: #FF385C;          /* Airbnb-style accent */
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  text-decoration: none;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #4f46e5;
 }
 
-.brand a:hover {
-    opacity: 0.85;
-}
-
-
-/* -------------------- Homes Grid -------------------- */
-
+/* ---------- HOME LIST ---------- */
 .homes-list {
-    list-style: none;
-    padding: 0;
-    margin: 40px auto;
-    width: 90%;
-    max-width: 1200px;
+  list-style: none;
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 24px;
 
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 26px;
 }
 
-/* -------------------- Home Card -------------------- */
-
-.homes-list li.home-card {
-    background: #ffffff;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-    transition: transform 0.2s, box-shadow 0.2s;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
+/* ---------- HOME CARD ---------- */
+.home-card {
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.homes-list li.home-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+.home-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
 }
 
-/* -------------------- Home Image -------------------- */
+.home-card:active {
+  transform: translateY(-3px);
+}
 
+/* ---------- IMAGE ---------- */
 .home-img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
 }
 
-/* -------------------- Home Info -------------------- */
-
+/* ---------- CARD CONTENT ---------- */
 .home-info {
-    padding: 16px;
-    text-align: left;
-
+  padding: 16px;
+  flex-grow: 1;
 }
 
 .home-address {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #FF385C;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.home-info p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 10px;
 }
 
 .home-price {
-    font-size: 1rem;
-    color: #222;
-    font-weight: 500;
-    margin-top: 4px;
-}
-p{
-    font-size: 0.9rem;
-    color: #555;
-    margin-top: 8px;
-    line-height: 1.4;
-
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #0ea5a4;
 }
 
-/* -------------------- Book Button -------------------- */
+/* ---------- ACTIONS ---------- */
+.home-card button,
+.home-card .Details {
+  margin: 10px 16px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
 
+/* Book Button */
 .home-card button {
-    margin: 14px;
-    margin-top: auto;
-    padding: 10px 0;
-    width: 90%;
-    background-color: #03c04a;
-    color: white;
-    border: none;
-    font-size: 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
+  background: #4f46e5;
+  color: white;
 }
 
 .home-card button:hover {
-    background-color: #02a63f;
+  background: #4338ca;
 }
 
-.Details{
-    margin: 14px;
-    margin-top: auto;
-    padding: 10px 0;
-    width: 90%;
-    background-color: #0073e6;
-    color: white;
-    border: none;
-    font-size: 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    transition: background 0.2s;
+.home-card button:active {
+  transform: scale(0.96);
 }
+
+/* Details Link */
+.Details {
+  text-align: center;
+  text-decoration: none;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-weight: 500;
+}
+
 .Details:hover {
-    background-color: #005bb5;
+  background: #e0e7ff;
+}
+
+.Details:active {
+  transform: scale(0.96);
+}
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 600px) {
+  .homes-list {
+    grid-template-columns: 1fr;
+    padding: 0 12px;
+  }
 }
