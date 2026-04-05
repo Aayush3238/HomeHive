@@ -12,4 +12,8 @@ userRouter.get('/store/bookings', homeController.getBookings );
 userRouter.get('/store/favourite-list', homeController.getFavouriteList );
 
 userRouter.get('/home/:id', homeController.getHomeDetails );
+userRouter.post('/favourites/:id', homeController.addToFavourite );
+userRouter.post('/buy-request', homeController.createBuyRequest );
+userRouter.get('/messages/:requestId', homeController.getMessages);
+userRouter.post('/schedule-meeting', homeController.scheduleMeeting);
 module.exports = userRouter;

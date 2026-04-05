@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Requests - Swift Stay</title>
+    <link rel="stylesheet" href="/app.css">
+    <link rel="stylesheet" href="/AddHome.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/host/add-home">Add Property</a>
+        <a href="/host/host-homelist">My Listings</a>
+        <a href="/host/buy-requests">Buy Requests</a>
+        <a href="/store/bookings">Meetings</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <h1>Buy Requests for Your Properties</h1>
+
+    <% if (buyRequests.length === 0) { %>
+        <p>No buy requests yet.</p>
+    <% } else { %>
+        <div class="requests-list">
+            <% buyRequests.forEach(request => { %>
+                <div class="request-card">
+                    <div class="request-info">
+                        <h3><%= request.home.address.formattedAddress %></h3>
+                        <p><strong>Buyer:</strong> <%= request.buyer.firstname %> <%= request.buyer.lastname %></p>
+                        <p><strong>Email:</strong> <%= request.buyer.email %></p>
+                        <p><strong>Offered Price:</strong> ₹<%= request.offeredPrice %></p>
+                        <p><strong>Message:</strong> <%= request.message %></p>
+                        <p><strong>Status:</strong> 
+                            <span class="status <%= request.status %>"><%= request.status %></span>
+                        </p>
+                        <p><strong>Requested on:</strong> <%= request.createdAt.toDateString() %></p>
+                    </div>
+                    
+                    <% if (request.status === 'pending') { %>
+                        <div class="request-actions">
+                            <form action="/host/buy-request/<%= request._id %>/accept" method="POST" style="display: inline;">
+                                <button type="submit" class="accept-btn">Accept</button>
+                            </form>
+                            <form action="/host/buy-request/<%= request._id %>/reject" method="POST" style="display: inline;">
+                                <button type="submit" class="reject-btn">Reject</button>
+                            </form>
+                            <button onclick="openChat('<%= request._id %>')" class="chat-btn">Chat</button>
+                        </div>
+                    <% } else if (request.status === 'accepted') { %>
+                        <div class="request-actions">
+                            <button onclick="openChat('<%= request._id %>')" class="chat-btn">Chat</button>
+                            <button onclick="scheduleMeeting('<%= request._id %>')" class="meeting-btn">Schedule Meeting</button>
+                        </div>
+                    <% } %>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+
+    <!-- Chat Modal -->
+    <div id="chatModal" class="modal">
+        <div class="modal-content chat-modal">
+            <span class="close" onclick="closeChatModal()">&times;</span>
+            <h2>Chat</h2>
+            <div id="chatMessages" class="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Type your message...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meeting Modal -->
+    <div id="meetingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMeetingModal()">&times;</span>
+            <h2>Schedule Meeting</h2>
+            <form id="meetingForm" action="/schedule-meeting" method="POST">
+                <input type="hidden" id="meetingRequestId" name="requestId">
+                <div>
+                    <label for="meetingDate">Date & Time:</label>
+                    <input type="datetime-local" id="meetingDate" name="scheduledDate" required>
+                </div>
+                <div>
+                    <label for="meetingLocation">Location:</label>
+                    <input type="text" id="meetingLocation" name="location" placeholder="Meeting location" required>
+                </div>
+                <div>
+                    <label for="meetingNotes">Notes:</label>
+                    <textarea id="meetingNotes" name="notes" rows="3" placeholder="Additional notes..."></textarea>
+                </div>
+                <button type="submit">Schedule Meeting</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let currentRequestId = null;
+
+        function openChat(requestId) {
+            currentRequestId = requestId;
+            document.getElementById('chatModal').style.display = 'block';
+            loadMessages(requestId);
+        }
+
+        function closeChatModal() {
+            document.getElementById('chatModal').style.display = 'none';
+            currentRequestId = null;
+        }
+
+        function scheduleMeeting(requestId) {
+            document.getElementById('meetingRequestId').value = requestId;
+            document.getElementById('meetingModal').style.display = 'block';
+        }
+
+        function closeMeetingModal() {
+            document.getElementById('meetingModal').style.display = 'none';
+        }
+
+        function loadMessages(requestId) {
+            fetch(`/messages/${requestId}`)
+            .then(response => response.json())
+            .then(messages => {
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.innerHTML = '';
+                messages.forEach(msg => {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = 'message';
+                    msgDiv.innerHTML = `<strong>${msg.sender.firstname}:</strong> ${msg.message}`;
+                    chatMessages.appendChild(msgDiv);
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            if (message && currentRequestId) {
+                socket.emit('sendMessage', {
+                    requestId: currentRequestId,
+                    message: message
+                });
+                messageInput.value = '';
+            }
+        }
+
+        socket.on('newMessage', (data) => {
+            if (data.requestId === currentRequestId) {
+                loadMessages(currentRequestId);
+            }
+        });
+
+        // Enter key to send message
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+
+    <style>
+        .requests-list {
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .request-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .request-info h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .status.pending { background: #fff3cd; color: #856404; }
+        .status.accepted { background: #d4edda; color: #155724; }
+        .status.rejected { background: #f8d7da; color: #721c24; }
+
+        .request-actions {
+            margin-top: 15px;
+        }
+
+        .accept-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .reject-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .chat-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .meeting-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .chat-modal {
+            width: 90%;
+            max-width: 600px;
+            height: 80%;
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .chat-input button {
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</body>
+</html>

@@ -3,29 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Home Airbnb </title>
+    <title>Swift Stay - Add Home</title>
+    <link rel="stylesheet" href="/app.css">
     <link rel="stylesheet" href="/AddHome.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
 </head>
 
 <body>
-    <div class = "navbar">
-        <a href="/"> Home </a>
-        <a href = "/host/add-home"> Add home </a>
-        <a href = "/store/bookings">Bookings</a>
-        <a href = "/store/favourite-list"> Favourite List </a>
-        <a href = "/host/host-homelist">Host-HomeList</a>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <% if (isLoggedIn) { %>
+            <% if(user && user.role === 'Owner') { %>
+                <a href="/host/add-home">Add Home</a>
+                <a href="/host/host-homelist">My Listings</a>
+                <a href="/host/buy-requests">Buy Requests</a>
+            <% } %>
+            <% if(user && user.role === 'Buyer') { %>
+                <a href="/store/favourite-list">Favourite List</a>
+            <% } %>
+            <a href="/store/bookings">Meetings</a>
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Login</a>
+            <a href="/signup">Sign Up</a>
+        <% } %>
     </div>
     
     
  
 <h1>Add Your Home 🏡</h1>
     <form action = "/host/add-home" method = "POST" enctype="multipart/form-data">
-        <input type = "text" name = "address" placeholder = "Enter your home address" required/>
-        <input type ="number" name = "price" placeholder = "Enter price per night" required/>
+        <input type = "text" name = "houseNo" placeholder = "HOUSE NUMBER" required/>
+        <input type = "text" name = "city" placeholder = "CITY" required/>
+        <input type = "text" name = "district" placeholder = "DISTRICT"/>
+        <input type = "text" name = "state" placeholder = "STATE" required/>
+        <input type = "text" name = "country" placeholder = "COUNTRY" required/>
+        <input type ="text" name = "price" placeholder = "Enter Price" required/>
         <input type="file" id="homeImage" name="homeImage" accept="image/*">
         <input type="text" name="description" placeholder="Enter home description" />
+        <div id="map" style="height:250px; transition: height 0.3s ease"></div>
+        <button type="button" id="toggleMap" class="map-toggle-btn">Expand Map</button>
+        <input type="hidden" name = "lat" id="lat">
+        <input type="hidden" name="lng" id="lng">
+        <input type="text" id="locationSearch" placeholder="Choose location on map">
+
         <button type = "submit"> Add Home </button>
-    </form> 
+        <button type = "button" onClick="getCurrentLocation()"> Use My Current Location</button>
+    </form>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> 
+    <script>
+
+const map = L.map('map').setView([20.5937, 78.9629], 5);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+ attribution: '© OpenStreetMap'
+}).addTo(map);
+
+let marker;
+let mapExpanded = false;
+
+const mapContainer = document.getElementById('map');
+const toggleMapBtn = document.getElementById('toggleMap');
+
+function setMapDimensions(expanded) {
+    mapContainer.style.height = expanded ? '500px' : '250px';
+    map.invalidateSize();
+}
+
+function centerOnCurrentState() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            map.setView([lat, lng], 8);
+        }, (error) => {
+            console.warn('Could not get geo position:', error.message);
+            map.setView([20.5937, 78.9629], 5);
+        });
+    } else {
+        map.setView([20.5937, 78.9629], 5);
+    }
+}
+
+toggleMapBtn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    mapExpanded = !mapExpanded;
+    setMapDimensions(mapExpanded);
+
+    if (mapExpanded) {
+        toggleMapBtn.textContent = 'Collapse Map';
+        centerOnCurrentState();
+    } else {
+        toggleMapBtn.textContent = 'Expand Map';
+        map.setView([20.5937, 78.9629], 5);
+    }
+});
+
+map.on('click', function(e){
+    const lat = e.latlng.lat;
+    const lng = e.latlng.lng;
+
+    if (mapExpanded === false) {
+        mapExpanded = true;
+        setMapDimensions(true);
+        toggleMapBtn.textContent = 'Collapse Map';
+        centerOnCurrentState();
+    }
+
+    if(marker){
+      map.removeLayer(marker);
+    }
+
+    marker = L.marker([lat,lng]).addTo(map);
+
+    document.getElementById("lat").value = lat;
+    document.getElementById("lng").value = lng;
+
+    // Reverse geocode to fill address fields
+    reverseGeocode(lat, lng);
+});
+
+function reverseGeocode(lat, lng) {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.address) {
+            const address = data.address;
+            document.getElementById("locationSearch").value = data.display_name;
+            
+            // Fill form fields
+            if (address.house_number) {
+                document.querySelector('input[name="houseNo"]').value = address.house_number;
+            }
+            if (address.city) {
+                document.querySelector('input[name="city"]').value = address.city;
+            }
+            if (address.state_district) {
+                document.querySelector('input[name="district"]').value = address.state_district;
+            }
+            if (address.state) {
+                document.querySelector('input[name="state"]').value = address.state;
+            }
+            if (address.country) {
+                document.querySelector('input[name="country"]').value = address.country;
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error with reverse geocoding:', error);
+    });
+}
+
+function getCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            
+            if (!mapExpanded) {
+                mapExpanded = true;
+                setMapDimensions(true);
+                toggleMapBtn.textContent = 'Collapse Map';
+            }
+
+            map.setView([lat, lng], 15);
+            
+            if(marker){
+                map.removeLayer(marker);
+            }
+            
+            marker = L.marker([lat, lng]).addTo(map);
+            
+            document.getElementById("lat").value = lat;
+            document.getElementById("lng").value = lng;
+            
+            reverseGeocode(lat, lng);
+        }, function(error) {
+            alert('Error getting location: ' + error.message);
+        });
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+}
+
+</script>
 </body>
 </html>

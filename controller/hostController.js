@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const rootDir = require('../utils/pathUtils');
 const Home = require('../models/home');
+const User = require('../models/User');
+const BuyRequest = require('../models/BuyRequest');
 
 
 exports.getAddHome = (req, res, next) => {
@@ -12,22 +14,84 @@ exports.getAddHome = (req, res, next) => {
 const multer = require('multer');
 const upload = multer({dest: 'public/uploads/'});
 exports.postAddHome = [upload.single('homeImage') ,(req, res)=> {
-    console.log(req.body.address);
-    const home = new Home ({address: req.body.address, price: req.body.price, homeImage: req.file? req.file.filename: null, description: req.body.description });
-    home.save();    
-    res.render(path.join(rootDir, 'views', 'host/submitDetails.ejs'));
+    const formattedAddress = `${req.body.houseNo}, ${req.body.city}, ${req.body.district}, ${req.body.state}, ${req.body.country}`;
+
+    const home = new Home ({address:{
+        houseNo:req.body.houseNo,
+        city:req.body.city,
+        district:req.body.district,
+        state:req.body.state,
+        country:req.body.country,
+        formattedAddress:formattedAddress
+    }, 
+    location:{
+        type: 'Point',
+        coordinates: [parseFloat(req.body.lng), parseFloat(req.body.lat)]
+    },
+    price: req.body.price,
+    homeImage: req.file? req.file.filename: null,
+    description: req.body.description, 
+    owner:req.session.user.id });
+    home.save()
+    .then (() => {
+        res.render(path.join(rootDir, 'views', 'host/submitDetails.ejs'));
+    })
+    .catch(err=> {
+        console.log("error in saving the home", err);
+    });
+    
 }];
 
 exports.getHostHomeList = (req, res, next) =>{
-    Home.find()
+    Home.find({owner:req.session.user.id})
         .then((SubmittedDetails) => {
             res.render('host/host-homelist', {SubmittedDetails, isLoggedIn :req.session.isLoggedIn});
         })
         .catch(err => {
             console.log("Error fetching homes:", err);
-        });
+        });    
+}
+
+exports.getBuyRequests = async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+
+    try {
+        const buyRequests = await BuyRequest.find({ owner: req.session.user.id })
+            .populate('home')
+            .populate('buyer')
+            .sort({ createdAt: -1 });
         
-        
+        res.render('host/buy-requests', { buyRequests, isLoggedIn: req.session.isLoggedIn });
+    } catch (err) {
+        console.log('Error fetching buy requests:', err);
+        res.status(500).send('Error fetching buy requests');
+    }
+}
+
+exports.acceptBuyRequest = async (req, res) => {
+    const requestId = req.params.id;
+    
+    try {
+        await BuyRequest.findByIdAndUpdate(requestId, { status: 'accepted' });
+        res.redirect('/host/buy-requests');
+    } catch (err) {
+        console.log('Error accepting buy request:', err);
+        res.status(500).send('Error accepting buy request');
+    }
+}
+
+exports.rejectBuyRequest = async (req, res) => {
+    const requestId = req.params.id;
+    
+    try {
+        await BuyRequest.findByIdAndUpdate(requestId, { status: 'rejected' });
+        res.redirect('/host/buy-requests');
+    } catch (err) {
+        console.log('Error rejecting buy request:', err);
+        res.status(500).send('Error rejecting buy request');
+    }
 }
 
 exports.PostDeleteHome =(req, res, next) => {
@@ -40,13 +104,6 @@ exports.PostDeleteHome =(req, res, next) => {
         console.log("Error deleting home:", err);
     })
 }    
-    // Home.delete(homeId).then(() => {
-    //     res.redirect('/host/host-homelist');
-    //     isLoggedIn = req.session.isLoggedIn;
-    // }).catch(err => {
-    //     console.log("Error deleting home:", err);
-    //     res.redirect('/host/host-homelist');
-    // });             
 
 exports.getUpdateHome = (req, res, next) =>{
     const homeId = req.params.id;
@@ -76,39 +133,4 @@ exports.PostUpdateHome = (req, res, next) => {
     .catch(err => {
         console.log("Error updating home:", err);
     });
-    }
-    // const {homeId, address, price, description} = req.body;
-    // Home.findById(homeId)
-    // .then((home) => {                                      
-    //     if(!home) {
-    //         return res.status(404).send('Home not found');
-    //     }
-
-    //    home.address = address;
-    //    home.price = price;
-    //    home.description = description;  
-    //    return home.save(); 
-    // })
-    // .then(() => {
-    //     res.redirect('/host/host-homelist');
-    // })
-    // .catch(err => {
-    //     console.log("Error updating home:", err);
-    // })
-
-
-// const homeId = req.body.id;
-    // const updatedData = {
-    //     address: req.body.address,
-    //     price: req.body.price,
-    //     description: req.body.description
-    // };
-    // Home.updateHome(homeId, updatedData)
-    // .then(() => {
-    //     res.redirect("/host/host-homelist");
-    //     isLoggedIn = req.session.isLoggedIn;
-    // })
-    // .catch(err => {
-    //     console.log("Error updating home:", err);
-    //     res.redirect('/host/host-homelist');
-    // }); 
+}

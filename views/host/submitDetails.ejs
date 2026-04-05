@@ -3,12 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>House Registered</title>
+    <title>Home Registered | Swift Stay</title>
+    <link rel="stylesheet" href="/app.css">
     <link rel="stylesheet" href="/submittedDetails.css">
    
 </head>
 <body>
-    <h1> Home Registered Successfully </h1>
-    <a href = "/"> Go to Home </a>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <% if (isLoggedIn) { %>
+            <% if(user && user.role === 'Owner') { %>
+                <a href="/host/add-home">Add Home</a>
+                <a href="/host/host-homelist">My Listings</a>
+                <a href="/host/buy-requests">Buy Requests</a>
+            <% } %>
+            <% if(user && user.role === 'Buyer') { %>
+                <a href="/store/favourite-list">Favourite List</a>
+            <% } %>
+            <a href="/store/bookings">Meetings</a>
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Login</a>
+            <a href="/signup">Sign Up</a>
+        <% } %>
+    </div>
+    <div class="container" style="padding: 40px 0; text-align:center;">
+        <h1>Home Registered Successfully</h1>
+        <a class="btn" href="/">Go to Home</a>
+    </div>
 </body>
 </html>

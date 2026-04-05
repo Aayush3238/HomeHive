@@ -3,9 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Airbnb</title>
+    <link rel="stylesheet" href="/home.css">
+    
 </head>
-<body>
-  favourite list
+ <body>
+    <ul class="homes-list">
+       <% favourites.forEach(home => { %>
+        <li class="home-card">
+            <% if (home.homeImage) { %>
+                <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
+            <% } %>
+            <div class="home-info">
+                <div class="home-address"><%= home.address %></div>
+                <p><%= home.description %></p>
+                <div class="home-price">₹ <%= home.price %></div>
+            </div>
+            <% if(isLoggedIn) { %>
+                <button>Book </button> 
+            <% } %> 
+            <a  class = "Details" href = "/home/<%= home.id %>">Details</a>
+            <a class = "Details" href="/favourite-list">Favourite</a>
+        </li>
+       <% }) %>
+</ul>    
 </body>
 </html>

@@ -24,8 +24,17 @@ exports.postLogin = async (req, res, next ) => {
             return res.render('auth/login');
         }
         req.session.isLoggedIn = true;
-        req.session.user = user;
-        res.redirect('/');
+        req.session.user = {
+            id: user._id.toString(),
+            email: user.email,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            role: user.role
+        };
+        req.session.save(() => {
+            res.redirect('/');
+        })
+       
     }
     catch(err) {
         console.log(err);

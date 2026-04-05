@@ -15,4 +15,8 @@ hostRouter.post('/host/home-delete/:id', homeController.PostDeleteHome);
 hostRouter.get('/host/edit/:id', homeController.getUpdateHome);
 hostRouter.post('/host/edit/:id', homeController.PostUpdateHome);
 
+hostRouter.get('/host/buy-requests', homeController.getBuyRequests);
+hostRouter.post('/host/buy-request/:id/accept', homeController.acceptBuyRequest);
+hostRouter.post('/host/buy-request/:id/reject', homeController.rejectBuyRequest);
+
 exports.hostRouter = hostRouter;

@@ -3,20 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airbnb</title>
-    <link rel="stylesheet" href="home.css">
-    
+    <title>Swift Stay</title>
+    <link rel="stylesheet" href="/app.css">
+    <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
  <body>
     <div class = "navbar">
 
         <a href="/"> Home </a>
         <% if (isLoggedIn) { %>
-        <a href = "/host/add-home"> Add home </a>
-        <a href = "/store/bookings">Bookings</a>
+            
+
         <a href = "/store/favourite-list"> Favourite List </a>
-        <a href = "/host/host-homelist">Host-HomeList</a    >
-        <a href="/logout"> Logout </a>
+            <% if(user.role === 'Owner') {%>
+                <a href = "/host/add-home"> Add Property</a>
+                <a href = "/host/host-homelist">My Listings </a>
+                <a href = "/host/buy-requests">Buy Requests</a>
+                <a href = "/store/bookings">Meetings</a>
+            <% } %>
+
+            <% if(user.role === 'Buyer'){ %>
+                <a href = "/store/bookings">Meetings</a>
+            <% } %>
+
+        
+        <a href="/logout"> Logout </a> 
         <% } else { %>
         <a href = "/login"> Login </a>
         <a href="/signup"> Sign Up</a>
@@ -31,6 +43,15 @@
 
     
     </header>
+
+    <section class="map-section">
+        <h2>Your area map</h2>
+        <div id="homeMapContainer" class="home-map home-map-collapsed">
+            <div id="homeMap" class="home-map-view"></div>
+            <button id="toggleMapBtn" class="map-toggle-btn">Expand Map</button>
+        </div>
+    </section>
+
     <ul class="homes-list">
        <% SubmittedDetails.forEach(home => { %>
         <li class="home-card">
@@ -38,21 +59,204 @@
                 <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
             <% } %>
             <div class="home-info">
-                <div class="home-address"><%= home.address %></div>
+                <div class="home-address"><%= home.address.formattedAddress %></div>
                 <p><%= home.description %></p>
                 <div class="home-price">₹ <%= home.price %></div>
             </div>
-            <% if(isLoggedIn) { %>
-                <button>Book </button> 
+            <% if(isLoggedIn && user.role === 'Buyer') { %>
+                <button onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">Send Buy Request</button> 
             <% } %> 
             <a  class = "Details" href = "/home/<%= home.id %>">Details</a>
-            <a class = "Details" href="/favourite-list">Favourite</a>
+            <% if(isLoggedIn) { %>
+            <form action="/favourites/<%= home.id%>" method = "POST">
+                 <button>Add TO Favourite</button>
+            </form>
+            <% } %>
         </li>
        <% }) %>
 </ul>
 
-    
-    
-    
+<!-- Buy Request Modal -->
+<div id="buyRequestModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeBuyRequestModal()">&times;</span>
+        <h2>Send Buy Request</h2>
+        <form id="buyRequestForm" action="/buy-request" method="POST">
+            <input type="hidden" id="homeId" name="homeId">
+            <div>
+                <label for="offeredPrice">Your Offered Price (₹):</label>
+                <input type="number" id="offeredPrice" name="offeredPrice" required>
+            </div>
+            <div>
+                <label for="message">Message to Owner:</label>
+                <textarea id="message" name="message" rows="4" placeholder="Explain your interest and any conditions..." required></textarea>
+            </div>
+            <button type="submit">Send Request</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function openBuyRequestModal(homeId, price) {
+    document.getElementById('homeId').value = homeId;
+    document.getElementById('offeredPrice').value = price;
+    document.getElementById('buyRequestModal').style.display = 'block';
+}
+
+function closeBuyRequestModal() {
+    document.getElementById('buyRequestModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('buyRequestModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+
+<style>
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+</style>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    const initialCenter = [20.5937, 78.9629];
+    const initialZoom = 4;
+    const homeMap = L.map('homeMap', { zoomControl: false }).setView(initialCenter, initialZoom);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(homeMap);
+
+    const homes = <%- JSON.stringify(SubmittedDetails.map(home => ({
+        _id: home._id,
+        label: home.address && home.address.formattedAddress ? home.address.formattedAddress : (home.address || ''),
+        coords: home.location && home.location.coordinates ? [home.location.coordinates[1], home.location.coordinates[0]] : null
+    }))) %>;
+
+    homes.forEach(home => {
+        if (home.coords) {
+            const marker = L.marker(home.coords).addTo(homeMap);
+            marker.bindPopup(`<strong>${home.label}</strong>`);
+        }
+    });
+
+    const container = document.getElementById('homeMapContainer');
+    const toggleBtn = document.getElementById('toggleMapBtn');
+    let expanded = false;
+
+    const centerOnUser = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const { latitude, longitude } = position.coords;
+                homeMap.setView([latitude, longitude], 8);
+            }, () => {
+                homeMap.setView(initialCenter, initialZoom);
+            });
+        } else {
+            homeMap.setView(initialCenter, initialZoom);
+        }
+    };
+
+    toggleBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        expanded = !expanded;
+        if (expanded) {
+            container.classList.remove('home-map-collapsed');
+            container.classList.add('home-map-expanded');
+            toggleBtn.textContent = 'Collapse Map';
+            homeMap.invalidateSize();
+            centerOnUser();
+        } else {
+            container.classList.remove('home-map-expanded');
+            container.classList.add('home-map-collapsed');
+            toggleBtn.textContent = 'Expand Map';
+            homeMap.setView(initialCenter, initialZoom);
+            homeMap.invalidateSize();
+        }
+    });
+
+    container.addEventListener('click', () => {
+        if (!expanded) {
+            toggleBtn.click();
+        }
+    });
+</script>
+
+<style>
+    .map-section {
+        padding: 20px;
+        max-width: 1100px;
+        margin: 0 auto 24px;
+    }
+
+    .home-map {
+        position: relative;
+        border: 1px solid #d1d5db;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-top: 12px;
+        transition: height 0.3s ease;
+    }
+
+    .home-map-collapsed {
+        height: 180px;
+    }
+
+    .home-map-expanded {
+        height: 440px;
+    }
+
+    .home-map-view {
+        width: 100%;
+        height: 100%;
+    }
+
+    .map-toggle-btn {
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+        z-index: 1000;
+        background: #4f46e5;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+</style>
+
 </body>
 </html>

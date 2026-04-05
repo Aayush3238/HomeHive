@@ -57,13 +57,13 @@ authRouter.post(
         check("role")
         .notEmpty()
         .withMessage("User type is required")
-        .isIn(["host", "guest"])
+        .isIn(["Owner", "Buyer"])
         .withMessage("Invalid user type")
 
     ],
     authController.postSignUp
 )
 
-
+ 
 
 exports.authRouter= authRouter;

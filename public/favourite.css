@@ -3,54 +3,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
 body {
-  background: #f5f7f9;
+  background:radial-gradient(rgba(8, 112, 247, 0.486), rgba(48, 157, 230, 0.534))
   color: #1f2933;
 }
-
-.navbar {
-  background: #2f855a;
-  padding: 14px 32px;
-  display: flex;
-  gap: 18px;
-  align-items: center;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-}
-
-.navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: 600;
-  padding: 8px 12px;
-  border-radius: 8px;
-  transition: background 0.2s ease;
-}
-
-.navbar a:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-.navbar a:active {
-  transform: scale(0.98);
-}
-
-.btn {
-  display: inline-block;
-  background: #4f46e5;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.btn:hover {
-  background: #4338ca;
-}
-
 
 /* ---------- NAVBAR ---------- */
 .navbar {
