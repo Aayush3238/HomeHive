@@ -75,7 +75,7 @@
         <% SubmittedDetails.forEach(home => { %>
             <li class="home-card listing-card" data-search="<%= `${home.address.formattedAddress} ${home.description}`.toLowerCase() %>">
                 <% if (home.homeImage) { %>
-                    <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
+                    <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" onerror="this.style.display='none';" />
                 <% } %>
                 <div class="home-card-body">
                     <h3><%= home.address.formattedAddress %></h3>

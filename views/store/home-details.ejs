@@ -33,7 +33,7 @@
         <div class="detail-layout">
             <div class="detail-media">
                 <% if (home.homeImage) { %>
-                    <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
+                    <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" onerror="this.style.display='none';" />
                 <% } %>
             </div>
             <div class="detail-content">

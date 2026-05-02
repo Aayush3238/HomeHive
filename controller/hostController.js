@@ -79,6 +79,11 @@ exports.postAddHome = [
     try {
       const formattedAddress = `${req.body.houseNo}, ${req.body.city}, ${req.body.district}, ${req.body.state}, ${req.body.country}`;
 
+      const priceValue = Number(req.body.price);
+      if (!Number.isFinite(priceValue) || priceValue <= 0) {
+        return res.status(400).send('Invalid price. Enter a numeric amount greater than zero.');
+      }
+
       const home = new Home({
         address: {
           houseNo: req.body.houseNo,
@@ -92,11 +97,14 @@ exports.postAddHome = [
           type: 'Point',
           coordinates: [Number(req.body.lng) || 0, Number(req.body.lat) || 0],
         },
-        price: req.body.price,
+        price: String(priceValue),
         homeImage: req.file ? req.file.filename : null,
         description: req.body.description,
         owner: req.session.user.id,
       });
+
+      console.log('Uploaded file:', req.file); // Debug log
+      console.log('Home image filename:', home.homeImage); // Debug log
 
       await home.save();
       res.render(path.join(rootDir, 'views', 'host/submitDetails.ejs'));
@@ -200,6 +208,11 @@ exports.PostUpdateHome = async (req, res, next) => {
     return;
   }
 
+  const priceValue = Number(req.body.price);
+  if (!Number.isFinite(priceValue) || priceValue <= 0) {
+    return res.status(400).send('Invalid price. Enter a numeric amount greater than zero.');
+  }
+
   const updateData = {
     address: {
       houseNo: req.body.houseNo,
@@ -209,7 +222,7 @@ exports.PostUpdateHome = async (req, res, next) => {
       country: req.body.country,
       formattedAddress: `${req.body.houseNo}, ${req.body.city}, ${req.body.district}, ${req.body.state}, ${req.body.country}`,
     },
-    price: req.body.price,
+    price: String(priceValue),
     description: req.body.description,
   };
 
