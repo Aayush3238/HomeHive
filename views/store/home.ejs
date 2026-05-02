@@ -1,262 +1,183 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swift Stay</title>
+    <title>HomeHive</title>
     <link rel="stylesheet" href="/app.css">
     <link rel="stylesheet" href="/home.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
- <body>
-    <div class = "navbar">
-
-        <a href="/"> Home </a>
-        <% if (isLoggedIn) { %>
-            
-
-        <a href = "/store/favourite-list"> Favourite List </a>
-            <% if(user.role === 'Owner') {%>
-                <a href = "/host/add-home"> Add Property</a>
-                <a href = "/host/host-homelist">My Listings </a>
-                <a href = "/host/buy-requests">Buy Requests</a>
-                <a href = "/store/bookings">Meetings</a>
-            <% } %>
-
-            <% if(user.role === 'Buyer'){ %>
-                <a href = "/store/bookings">Meetings</a>
-            <% } %>
-
-        
-        <a href="/logout"> Logout </a> 
-        <% } else { %>
-        <a href = "/login"> Login </a>
-        <a href="/signup"> Sign Up</a>
-        <% } %>
-        
+<body>
+    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
+    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
+    <div class="site-nav">
+        <div class="navbar">
+            <a class="nav-brand" href="/">
+                <i class="fa-solid fa-house"></i>
+                <span>HomeHive</span>
+            </a>
+            <div class="nav-links">
+                <a class="is-active" href="/"><i class="fa-solid fa-compass"></i> Explore</a>
+                <% if (isLoggedIn) { %>
+                    <a href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
+                    <% if (user.role === 'Owner') { %>
+                        <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
+                        <a href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
+                        <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
+                    <% } %>
+                    <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
+                    <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+                <% } else { %>
+                    <a href="/login"><i class="fa-solid fa-user"></i> Login</a>
+                    <a href="/signup"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+                <% } %>
+            </div>
+        </div>
     </div>
-    <header>
- <h1 class = "brand">
-    <a href = "/"> 🏡 Swift Stay </a>
 
- </h1>
-
-    
-    </header>
-
-    <section class="map-section">
-        <h2>Your area map</h2>
-        <div id="homeMapContainer" class="home-map home-map-collapsed">
-            <div id="homeMap" class="home-map-view"></div>
-            <button id="toggleMapBtn" class="map-toggle-btn">Expand Map</button>
+    <section class="hero-section">
+        <div class="hero-card">
+            <div class="hero-copy">
+                <h1>HomeHive</h1>
+                <div class="hero-search-shell">
+                    <div class="hero-search">
+                        <input id="propertySearch" type="text" placeholder="Search by city, state, country, or description">
+                        <button type="button" class="btn btn-accent" id="searchActionBtn">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>Search</span>
+                        </button>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <strong><%= SubmittedDetails.length %></strong>
+                            <span>Active listings</span>
+                        </div>
+                        <div class="hero-stat">
+                            <strong><%= SubmittedDetails.filter(home => home.location && home.location.coordinates && home.location.coordinates.length === 2).length %></strong>
+                            <span>Map-ready homes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <ul class="homes-list">
-       <% SubmittedDetails.forEach(home => { %>
-        <li class="home-card">
-            <% if (home.homeImage) { %>
-                <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
-            <% } %>
-            <div class="home-info">
-                <div class="home-address"><%= home.address.formattedAddress %></div>
-                <p><%= home.description %></p>
-                <div class="home-price">₹ <%= home.price %></div>
-            </div>
-            <% if(isLoggedIn && user.role === 'Buyer') { %>
-                <button onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">Send Buy Request</button> 
-            <% } %> 
-            <a  class = "Details" href = "/home/<%= home.id %>">Details</a>
-            <% if(isLoggedIn) { %>
-            <form action="/favourites/<%= home.id%>" method = "POST">
-                 <button>Add TO Favourite</button>
-            </form>
-            <% } %>
-        </li>
-       <% }) %>
-</ul>
-
-<!-- Buy Request Modal -->
-<div id="buyRequestModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close" onclick="closeBuyRequestModal()">&times;</span>
-        <h2>Send Buy Request</h2>
-        <form id="buyRequestForm" action="/buy-request" method="POST">
-            <input type="hidden" id="homeId" name="homeId">
-            <div>
-                <label for="offeredPrice">Your Offered Price (₹):</label>
-                <input type="number" id="offeredPrice" name="offeredPrice" required>
-            </div>
-            <div>
-                <label for="message">Message to Owner:</label>
-                <textarea id="message" name="message" rows="4" placeholder="Explain your interest and any conditions..." required></textarea>
-            </div>
-            <button type="submit">Send Request</button>
-        </form>
+    <div class="listings-toolbar">
+        <div class="section-heading" style="margin:0; width:auto;">
+            <span class="eyebrow"><i class="fa-solid fa-building"></i> Listings</span>
+            <h2>Available homes</h2>
+        </div>
+        <p id="searchSummary">Showing all properties.</p>
     </div>
-</div>
 
-<script>
-function openBuyRequestModal(homeId, price) {
-    document.getElementById('homeId').value = homeId;
-    document.getElementById('offeredPrice').value = price;
-    document.getElementById('buyRequestModal').style.display = 'block';
-}
+    <ul class="homes-list" id="listingGrid">
+        <% SubmittedDetails.forEach(home => { %>
+            <li class="home-card listing-card" data-search="<%= `${home.address.formattedAddress} ${home.description}`.toLowerCase() %>">
+                <% if (home.homeImage) { %>
+                    <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
+                <% } %>
+                <div class="home-card-body">
+                    <h3><%= home.address.formattedAddress %></h3>
+                    <div class="home-meta">
+                        <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address.city || home.address.state %></span>
+                        <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
+                    </div>
+                    <p class="home-description"><%= home.description %></p>
+                </div>
+                <div class="card-actions" style="padding: 0 1.25rem 1.25rem;">
+                    <% if (isLoggedIn && user.role === 'Buyer') { %>
+                        <button type="button" onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Send Buy Request</span>
+                        </button>
+                    <% } %>
+                    <a class="Details" href="/home/<%= home.id %>">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        <span>View Details</span>
+                    </a>
+                    <% if (isLoggedIn) { %>
+                        <form action="/favourites/<%= home.id %>" method="POST" class="inline-form">
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="fa-regular fa-heart"></i>
+                                <span>Save</span>
+                            </button>
+                        </form>
+                    <% } %>
+                </div>
+            </li>
+        <% }) %>
+    </ul>
 
-function closeBuyRequestModal() {
-    document.getElementById('buyRequestModal').style.display = 'none';
-}
+    <div id="buyRequestModal" class="modal">
+        <div class="modal-content">
+            <button type="button" class="close" onclick="closeBuyRequestModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="section-heading" style="width:auto; margin-bottom:1rem;">
+                <span class="eyebrow"><i class="fa-solid fa-paper-plane"></i> Offer</span>
+                <h2>Send Buy Request</h2>
+            </div>
+            <form id="buyRequestForm" class="buy-request-form" action="/buy-request" method="POST">
+                <input type="hidden" id="homeId" name="homeId">
+                <div class="field">
+                    <label for="offeredPrice">Your Offered Price</label>
+                    <input type="number" id="offeredPrice" name="offeredPrice" required>
+                </div>
+                <div class="field">
+                    <label for="message">Message to Owner</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Explain your interest and preferred timeline..." required></textarea>
+                </div>
+                <button type="submit">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Send Request</span>
+                </button>
+            </form>
+        </div>
+    </div>
 
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const modal = document.getElementById('buyRequestModal');
-    if (event.target == modal) {
-        modal.style.display = 'none';
-    }
-}
-</script>
+    <script>
+        const searchInput = document.getElementById('propertySearch');
+        const searchActionBtn = document.getElementById('searchActionBtn');
+        const listingCards = Array.from(document.querySelectorAll('.listing-card'));
+        const searchSummary = document.getElementById('searchSummary');
+        const buyRequestModal = document.getElementById('buyRequestModal');
 
-<style>
-.modal {
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
-}
+        function filterListings() {
+            const query = searchInput.value.trim().toLowerCase();
+            let visibleCount = 0;
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover {
-    color: black;
-}
-</style>
-
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script>
-    const initialCenter = [20.5937, 78.9629];
-    const initialZoom = 4;
-    const homeMap = L.map('homeMap', { zoomControl: false }).setView(initialCenter, initialZoom);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(homeMap);
-
-    const homes = <%- JSON.stringify(SubmittedDetails.map(home => ({
-        _id: home._id,
-        label: home.address && home.address.formattedAddress ? home.address.formattedAddress : (home.address || ''),
-        coords: home.location && home.location.coordinates ? [home.location.coordinates[1], home.location.coordinates[0]] : null
-    }))) %>;
-
-    homes.forEach(home => {
-        if (home.coords) {
-            const marker = L.marker(home.coords).addTo(homeMap);
-            marker.bindPopup(`<strong>${home.label}</strong>`);
-        }
-    });
-
-    const container = document.getElementById('homeMapContainer');
-    const toggleBtn = document.getElementById('toggleMapBtn');
-    let expanded = false;
-
-    const centerOnUser = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                const { latitude, longitude } = position.coords;
-                homeMap.setView([latitude, longitude], 8);
-            }, () => {
-                homeMap.setView(initialCenter, initialZoom);
+            listingCards.forEach((card) => {
+                const matches = !query || card.dataset.search.includes(query);
+                card.style.display = matches ? '' : 'none';
+                if (matches) {
+                    visibleCount += 1;
+                }
             });
-        } else {
-            homeMap.setView(initialCenter, initialZoom);
+
+            searchSummary.textContent = query
+                ? `Showing ${visibleCount} matching properties for "${searchInput.value.trim()}".`
+                : 'Showing all properties.';
         }
-    };
 
-    toggleBtn.addEventListener('click', (event) => {
-        event.stopPropagation();
-        expanded = !expanded;
-        if (expanded) {
-            container.classList.remove('home-map-collapsed');
-            container.classList.add('home-map-expanded');
-            toggleBtn.textContent = 'Collapse Map';
-            homeMap.invalidateSize();
-            centerOnUser();
-        } else {
-            container.classList.remove('home-map-expanded');
-            container.classList.add('home-map-collapsed');
-            toggleBtn.textContent = 'Expand Map';
-            homeMap.setView(initialCenter, initialZoom);
-            homeMap.invalidateSize();
+        function openBuyRequestModal(homeId, price) {
+            document.getElementById('homeId').value = homeId;
+            document.getElementById('offeredPrice').value = price;
+            buyRequestModal.classList.add('show');
         }
-    });
 
-    container.addEventListener('click', () => {
-        if (!expanded) {
-            toggleBtn.click();
+        function closeBuyRequestModal() {
+            buyRequestModal.classList.remove('show');
         }
-    });
-</script>
 
-<style>
-    .map-section {
-        padding: 20px;
-        max-width: 1100px;
-        margin: 0 auto 24px;
-    }
+        searchInput.addEventListener('input', filterListings);
+        searchActionBtn.addEventListener('click', filterListings);
 
-    .home-map {
-        position: relative;
-        border: 1px solid #d1d5db;
-        border-radius: 12px;
-        overflow: hidden;
-        margin-top: 12px;
-        transition: height 0.3s ease;
-    }
-
-    .home-map-collapsed {
-        height: 180px;
-    }
-
-    .home-map-expanded {
-        height: 440px;
-    }
-
-    .home-map-view {
-        width: 100%;
-        height: 100%;
-    }
-
-    .map-toggle-btn {
-        position: absolute;
-        right: 12px;
-        bottom: 12px;
-        z-index: 1000;
-        background: #4f46e5;
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-weight: 600;
-    }
-</style>
-
+        buyRequestModal.addEventListener('click', (event) => {
+            if (event.target === buyRequestModal) {
+                closeBuyRequestModal();
+            }
+        });
+    </script>
 </body>
 </html>

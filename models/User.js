@@ -1,18 +1,118 @@
-const express = require('express');
-const mongoose = require('mongoose');
+const { prisma } = require('../db');
 
-const UserSchema = new mongoose.Schema({
-    firstname: {type: String, required: true},
-    lastname: {type: String, required: true},
-    email: {type: String, required: true, unique: true},
-    password: {type: String, required: true},
-    role: {type: String, enum: ['Owner', 'Buyer'], required: true},
-    favourites: [
-        {
-            type : mongoose.Schema.Types.ObjectId,
-            ref: 'Home'
-        }
-    ]
+const mapUserRow = (row) => {
+  if (!row) {
+    return null;
+  }
+
+  return {
+    _id: row.id,
+    id: row.id,
+    firstname: row.firstname,
+    lastname: row.lastname,
+    email: row.email,
+    password: row.password,
+    role: row.role,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+};
+
+const mapHomeRow = (row) => ({
+  _id: row.id,
+  id: row.id,
+  address: {
+    houseNo: row.house_no,
+    city: row.city,
+    district: row.district,
+    state: row.state,
+    country: row.country,
+    formattedAddress: row.formatted_address,
+  },
+  location: {
+    type: 'Point',
+    coordinates: [row.longitude, row.latitude],
+  },
+  price: row.price,
+  homeImage: row.home_image,
+  description: row.description,
+  owner: row.owner_id,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
 });
 
-module.exports = mongoose.model('User', UserSchema);
+class User {
+  constructor(data) {
+    this.firstname = data.firstname;
+    this.lastname = data.lastname;
+    this.email = data.email;
+    this.password = data.password;
+    this.role = data.role;
+  }
+
+  async save() {
+    const user = await prisma.user.create({
+      data: {
+        firstname: this.firstname,
+        lastname: this.lastname,
+        email: this.email,
+        password: this.password,
+        role: this.role,
+      },
+    });
+
+    return mapUserRow(user);
+  }
+
+  static async findOne(filter) {
+    if (filter.email) {
+      const user = await prisma.user.findUnique({
+        where: {
+          email: filter.email,
+        },
+      });
+      return mapUserRow(user);
+    }
+
+    return null;
+  }
+
+  static async findById(id) {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+    return mapUserRow(user);
+  }
+
+  static async addFavourite(userId, homeId) {
+    await prisma.userFavourite.upsert({
+      where: {
+        userId_homeId: {
+          userId,
+          homeId,
+        },
+      },
+      create: {
+        userId,
+        homeId,
+      },
+      update: {},
+    });
+  }
+
+  static async findFavouritesByUserId(userId) {
+    const favourites = await prisma.userFavourite.findMany({
+      where: { userId },
+      include: {
+        home: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return favourites.map((item) => mapHomeRow(item.home));
+  }
+}
+
+module.exports = User;

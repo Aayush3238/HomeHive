@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  Owner
+  Buyer
+}
+
+enum BuyRequestStatus {
+  pending
+  accepted
+  rejected
+}
+
+enum MeetingStatus {
+  scheduled
+  completed
+  cancelled
+}
+
+model User {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firstname          String
+  lastname           String
+  email              String               @unique
+  password           String
+  role               Role
+  createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamptz(6)
+  favourites         UserFavourite[]
+  ownedHomes         Home[]               @relation("HomeOwner")
+  buyRequestsAsBuyer BuyRequest[]         @relation("BuyRequestBuyer")
+  buyRequestsAsOwner BuyRequest[]         @relation("BuyRequestOwner")
+  sentMessages       Message[]            @relation("MessageSender")
+  receivedMessages   Message[]            @relation("MessageReceiver")
+  meetingLinks       MeetingParticipant[]
+
+  @@map("users")
+}
+
+model Home {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  houseNo       String          @map("house_no")
+  city          String
+  district      String?
+  state         String
+  country       String
+  formattedAddress String      @map("formatted_address")
+  latitude      Float          @default(0)
+  longitude     Float          @default(0)
+  price         String
+  homeImage     String?        @map("home_image")
+  description   String
+  ownerId       String?        @map("owner_id") @db.Uuid
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime       @default(now()) @map("updated_at") @db.Timestamptz(6)
+  owner         User?          @relation("HomeOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  favourites    UserFavourite[]
+  buyRequests   BuyRequest[]
+
+  @@map("homes")
+}
+
+model UserFavourite {
+  userId    String   @map("user_id") @db.Uuid
+  homeId    String   @map("home_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  home      Home     @relation(fields: [homeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, homeId])
+  @@map("user_favourites")
+}
+
+model BuyRequest {
+  id           String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  homeId       String           @map("home_id") @db.Uuid
+  buyerId      String           @map("buyer_id") @db.Uuid
+  ownerId      String           @map("owner_id") @db.Uuid
+  offeredPrice Decimal          @map("offered_price") @db.Decimal(12, 2)
+  message      String
+  status       BuyRequestStatus @default(pending)
+  createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime         @default(now()) @map("updated_at") @db.Timestamptz(6)
+  home         Home             @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  buyer        User             @relation("BuyRequestBuyer", fields: [buyerId], references: [id], onDelete: Cascade)
+  owner        User             @relation("BuyRequestOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  messages     Message[]
+  meetings     Meeting[]
+
+  @@map("buy_requests")
+}
+
+model Message {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  conversationId String    @map("conversation_id") @db.Uuid
+  senderId       String    @map("sender_id") @db.Uuid
+  receiverId     String    @map("receiver_id") @db.Uuid
+  message        String
+  read           Boolean   @default(false)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  conversation   BuyRequest @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         User      @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver       User      @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model Meeting {
+  id            String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  buyRequestId  String               @map("buy_request_id") @db.Uuid
+  scheduledDate DateTime             @map("scheduled_date") @db.Timestamptz(6)
+  location      String
+  notes         String?
+  status        MeetingStatus        @default(scheduled)
+  createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime             @default(now()) @map("updated_at") @db.Timestamptz(6)
+  buyRequest    BuyRequest           @relation(fields: [buyRequestId], references: [id], onDelete: Cascade)
+  participants  MeetingParticipant[]
+
+  @@map("meetings")
+}
+
+model MeetingParticipant {
+  meetingId  String   @map("meeting_id") @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  meeting    Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([meetingId, userId])
+  @@map("meeting_participants")
+}
+
+model Session {
+  sid    String   @id
+  sess   Json
+  expire DateTime @db.Timestamptz(6)
+
+  @@map("sessions")
+}

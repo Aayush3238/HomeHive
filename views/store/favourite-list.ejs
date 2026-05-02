@@ -1,31 +1,59 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airbnb</title>
+    <title>HomeHive - Saved Homes</title>
+    <link rel="stylesheet" href="/app.css">
     <link rel="stylesheet" href="/home.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
- <body>
-    <ul class="homes-list">
-       <% favourites.forEach(home => { %>
-        <li class="home-card">
-            <% if (home.homeImage) { %>
-                <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
-            <% } %>
-            <div class="home-info">
-                <div class="home-address"><%= home.address %></div>
-                <p><%= home.description %></p>
-                <div class="home-price">₹ <%= home.price %></div>
+<body>
+    <div class="site-nav">
+        <div class="navbar">
+            <a class="nav-brand" href="/">
+                <i class="fa-solid fa-house"></i>
+                <span>HomeHive</span>
+            </a>
+            <div class="nav-links">
+                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
+                <a class="is-active" href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
+                <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
+                <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
             </div>
-            <% if(isLoggedIn) { %>
-                <button>Book </button> 
-            <% } %> 
-            <a  class = "Details" href = "/home/<%= home.id %>">Details</a>
-            <a class = "Details" href="/favourite-list">Favourite</a>
-        </li>
-       <% }) %>
-</ul>    
+        </div>
+    </div>
+
+    <div class="listings-toolbar" style="margin-top:2rem;">
+        <div class="section-heading" style="margin:0; width:auto;">
+            <span class="eyebrow"><i class="fa-solid fa-heart-circle-check"></i> Saved homes</span>
+            <h2>Your shortlist</h2>
+        </div>
+        <p>Keep a tight comparison list before starting a conversation.</p>
+    </div>
+
+    <ul class="homes-list">
+        <% favourites.forEach(home => { %>
+            <li class="home-card">
+                <% if (home.homeImage) { %>
+                    <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
+                <% } %>
+                <div class="home-card-body">
+                    <h3><%= home.address?.formattedAddress || '' %></h3>
+                    <div class="home-meta">
+                        <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address?.city || home.address?.state || 'Location pending' %></span>
+                        <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
+                    </div>
+                    <p class="home-description"><%= home.description %></p>
+                </div>
+                <div class="card-actions" style="padding: 0 1.25rem 1.25rem;">
+                    <a class="Details" href="/home/<%= home.id %>">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        <span>View Details</span>
+                    </a>
+                </div>
+            </li>
+        <% }) %>
+    </ul>
 </body>
 </html>

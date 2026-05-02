@@ -1,102 +1,12 @@
-/* =========================
-   LOGIN PAGE WRAPPER
-========================= */
-div {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  background: linear-gradient(180deg, #f9fafb, #eef2f7);
+.auth-card h1 {
+  margin-bottom: 0.6rem;
 }
 
-/* =========================
-   TITLE
-========================= */
-div h1 {
-  margin-bottom: 18px;
-  font-size: 2rem;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-/* =========================
-   LOGIN FORM
-========================= */
-form {
-  width: 340px;
-  padding: 26px 28px;
-  background: #ffffff;
-  border-radius: 16px;
-
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.15);
-
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* =========================
-   INPUT FIELDS
-========================= */
-form input {
-  padding: 11px 14px;
-  font-size: 0.95rem;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-
-  background-color: #fafafa;
-  color: #111827;
-
-  transition: border-color 0.25s, box-shadow 0.25s;
-}
-
-form input:focus {
-  outline: none;
-  border-color: #ff385c;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 2px rgba(255, 56, 92, 0.15);
-}
-
-/* =========================
-   LOGIN BUTTON
-========================= */
-form button {
-  margin-top: 10px;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-
-  background: linear-gradient(90deg, #ff385c, #ff6f61);
-  color: #ffffff;
-
-  font-size: 1rem;
-  font-weight: 600;
-
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-form button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(255, 56, 92, 0.35);
-}
-
-form button:active {
-  transform: scale(0.97);
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-@media (max-width: 480px) {
-  form {
-    width: 92%;
-    padding: 22px;
-  }
-
-  div h1 {
-    font-size: 1.6rem;
-  }
+.auth-card form {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }

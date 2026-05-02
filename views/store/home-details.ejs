@@ -1,19 +1,52 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Details</title>
+    <title>HomeHive - Home Details</title>
+    <link rel="stylesheet" href="/app.css">
     <link rel="stylesheet" href="/home-details.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
-    <div class="home-details-container">
-        <h1><%= home.address %></h1>
-        <h2 class="price">Price: ₹ <%= home.price %></h2>
-        <% if (home.homeImage) { %>
-            <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
-        <% } %>
-        <p><%= home.description %></p>
+    <div class="site-nav">
+        <div class="navbar">
+            <a class="nav-brand" href="/">
+                <i class="fa-solid fa-house"></i>
+                <span>HomeHive</span>
+            </a>
+            <div class="nav-links">
+                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
+                <% if (isLoggedIn) { %>
+                    <a href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
+                    <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
+                    <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+                <% } else { %>
+                    <a href="/login"><i class="fa-solid fa-user"></i> Login</a>
+                    <a href="/signup"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="home-details-container hero-card">
+        <div class="detail-layout">
+            <div class="detail-media">
+                <% if (home.homeImage) { %>
+                    <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
+                <% } %>
+            </div>
+            <div class="detail-content">
+                <h1><%= home.address?.formattedAddress || '' %></h1>
+                <div class="detail-meta">
+                    <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
+                    <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address?.city || home.address?.state || 'Location pending' %></span>
+                </div>
+                <div class="detail-description">
+                    <p><%= home.description %></p>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

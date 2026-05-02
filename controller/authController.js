@@ -1,96 +1,119 @@
-const express = require('express');
 const { validationResult } = require('express-validator');
-
-const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 
-exports.getLogin = (req,res,next) => {
-    if (req.session && req.session.isLoggedIn) {
-        return res.redirect('/');
-    }
-    res.render('auth/login');
+const User = require('../models/User');
 
-}
-exports.postLogin = async (req, res, next ) => {
-    const {email , password} = req.body;
-    try{
-        const user = await User.findOne({email : email});
-        if(!user){
-            return res.render('auth/signup');
-        }
-        const Match = await bcrypt.compare(password, user.password);
-        if(!Match){
-            console.log("Incorrect Password");
-            return res.render('auth/login');
-        }
-        req.session.isLoggedIn = true;
-        req.session.user = {
-            id: user._id.toString(),
-            email: user.email,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            role: user.role
-        };
-        req.session.save(() => {
-            res.redirect('/');
-        })
-       
-    }
-    catch(err) {
-        console.log(err);
-    }
-    
-}
-    
+exports.getLogin = (req, res) => {
+  if (req.session && req.session.isLoggedIn) {
+    return res.redirect('/');
+  }
 
-exports.postLogout = (req,res,next) =>{
-    req.session.destroy((err) => {
-        if(err) {
-            console.log(err);
-            return next(err);
-        }
-        res.redirect('/');
-    });   
-}
-exports.getSignUp = (req, res, next ) => {
-    res.render('auth/SignUp');
-}
-exports.postSignUp = (req,res,next) =>{
-    const errors = validationResult(req);
-    console.log(errors);
-    console.log(req.body);
-    if(!errors.isEmpty()){
-        return res.status(422).render('auth/SignUp', {
-            errorMessages: errors.array(),
-            
-            oldInput: {
-                firstname: req.body.firstname,
-                lastname: req.body.lastname,
-                email: req.body.email,
-                role: req.body.role
-            }
-        });
-    }else{
-      bcrypt.hash(req.body.password, 12).then(hashedPassword => {
-      const user = new User({
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        password: hashedPassword,
-        role: req.body.role
-      })
-       return user.save()
-      .then(() => {
-        console.log("User registered successfully");
-        res.redirect('/login');
-      })
-      .catch(err => {
-        console.log("error in registering user", err);
+  return res.render('auth/login', {
+    errorMessage: null,
+    oldInput: { email: '' },
+  });
+};
+
+exports.postLogin = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email: email.trim().toLowerCase() });
+
+    if (!user) {
+      return res.status(401).render('auth/login', {
+        errorMessage: 'Invalid email or password.',
+        oldInput: { email },
       });
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).render('auth/login', {
+        errorMessage: 'Invalid email or password.',
+        oldInput: { email },
+      });
+    }
+
+    req.session.isLoggedIn = true;
+    req.session.user = {
+      id: user._id.toString(),
+      email: user.email,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      role: user.role,
+    };
+
+    return req.session.save(() => {
+      res.redirect('/');
     });
-}
-   
-}
+  } catch (err) {
+    return next(err);
+  }
+};
 
+exports.postLogout = (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return next(err);
+    }
+    return res.redirect('/');
+  });
+};
 
+exports.getSignUp = (req, res) => {
+  res.render('auth/SignUp', {
+    errorMessages: [],
+    oldInput: {
+      firstname: '',
+      lastname: '',
+      email: '',
+      role: '',
+    },
+  });
+};
 
+exports.postSignUp = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/SignUp', {
+      errorMessages: errors.array(),
+      oldInput: {
+        firstname: req.body.firstname || '',
+        lastname: req.body.lastname || '',
+        email: req.body.email || '',
+        role: req.body.role || '',
+      },
+    });
+  }
+
+  try {
+    const existing = await User.findOne({ email: req.body.email.trim().toLowerCase() });
+    if (existing) {
+      return res.status(422).render('auth/SignUp', {
+        errorMessages: [{ msg: 'Email is already registered.' }],
+        oldInput: {
+          firstname: req.body.firstname || '',
+          lastname: req.body.lastname || '',
+          email: req.body.email || '',
+          role: req.body.role || '',
+        },
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    const user = new User({
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      email: req.body.email.trim().toLowerCase(),
+      password: hashedPassword,
+      role: req.body.role,
+    });
+
+    await user.save();
+    return res.redirect('/login');
+  } catch (err) {
+    return next(err);
+  }
+};

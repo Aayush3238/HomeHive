@@ -1,22 +1,78 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Details</title>
+    <title>HomeHive - Edit Home</title>
+    <link rel="stylesheet" href="/app.css">
     <link rel="stylesheet" href="/edit.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
+    <div class="site-nav">
+        <div class="navbar">
+            <a class="nav-brand" href="/">
+                <i class="fa-solid fa-house"></i>
+                <span>HomeHive</span>
+            </a>
+            <div class="nav-links">
+                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
+                <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
+                <a class="is-active" href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
+                <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
+                <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
+                <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            </div>
+        </div>
+    </div>
 
-    <div>
-    <form action="/host/edit/<%= home._id %>" method = "POST" >
-                <input type="hidden" name = "id" value = "<%= home._id %>">
-                <input type = "text" name = "address" value = "<%= home.address%>" >
-                <input type = "number" name = "price" value = <%= home.price%>  >
-                <input type = "text" name = "description" value = "<%= home.description %>" >
-                <button type = "submit"> Edit</button>
-    </form>
-</div>
+    <div class="simple-shell edit-shell">
+        <div class="page-card edit-card">
+            <span class="eyebrow"><i class="fa-solid fa-pen"></i> Edit listing</span>
+            <h1>Update property details</h1>
+            <form action="/host/edit/<%= home._id %>" method="POST" class="stack">
+                <div class="field-grid">
+                    <div class="field">
+                        <label for="houseNo">House Number</label>
+                        <input id="houseNo" type="text" name="houseNo" value="<%= home.address?.houseNo || '' %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="city">City</label>
+                        <input id="city" type="text" name="city" value="<%= home.address?.city || '' %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="district">District</label>
+                        <input id="district" type="text" name="district" value="<%= home.address?.district || '' %>">
+                    </div>
+                    <div class="field">
+                        <label for="state">State</label>
+                        <input id="state" type="text" name="state" value="<%= home.address?.state || '' %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="country">Country</label>
+                        <input id="country" type="text" name="country" value="<%= home.address?.country || '' %>" required>
+                    </div>
+                    <div class="field">
+                        <label for="price">Price</label>
+                        <input id="price" type="number" name="price" value="<%= home.price %>" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" required><%= home.description %></textarea>
+                </div>
+                <div class="action-row">
+                    <button type="submit">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Save Changes</span>
+                    </button>
+                    <a href="/host/host-homelist" class="btn btn-secondary">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Back</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

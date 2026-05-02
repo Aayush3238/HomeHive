@@ -1,57 +1,96 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meetings - Swift Stay</title>
+    <title>HomeHive - Meetings</title>
     <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
-    <div class="navbar">
-        <a href="/">Home</a>
-        <% if (user && user.role === 'Owner') { %>
-            <a href="/host/add-home">Add Property</a>
-            <a href="/host/host-homelist">My Listings</a>
-            <a href="/host/buy-requests">Buy Requests</a>
-        <% } %>
-        <% if (user && user.role === 'Buyer') { %>
-            <a href="/store/favourite-list">Favourite List</a>
-        <% } %>
-        <a href="/store/bookings">Meetings</a>
-        <a href="/logout">Logout</a>
+    <div class="site-nav">
+        <div class="navbar">
+            <a class="nav-brand" href="/">
+                <i class="fa-solid fa-house"></i>
+                <span>HomeHive</span>
+            </a>
+            <div class="nav-links">
+                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
+                <% if (user && user.role === 'Owner') { %>
+                    <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
+                    <a href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
+                    <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
+                <% } %>
+                <% if (user && user.role === 'Buyer') { %>
+                    <a href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
+                <% } %>
+                <a class="is-active" href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
+                <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            </div>
+        </div>
     </div>
 
-    <h1>Your Meetings</h1>
-
-    <% if (meetings && meetings.length > 0) { %>
-        <div class="meetings-list">
-            <% meetings.forEach(meeting => { %>
-                <div class="meeting-card">
-                    <h3>Meeting with <%= meeting.participants.find(p => p._id.toString() !== user.id).firstname %> <%= meeting.participants.find(p => p._id.toString() !== user.id).lastname %></h3>
-                    <p><strong>Date & Time:</strong> <%= new Date(meeting.scheduledDate).toLocaleString() %></p>
-                    <p><strong>Location:</strong> <%= meeting.location %></p>
-                    <p><strong>Status:</strong> <%= meeting.status %></p>
-                    <% if (meeting.notes) { %>
-                        <p><strong>Notes:</strong> <%= meeting.notes %></p>
-                    <% } %>
-                    <button onclick="openChat('<%= meeting.buyRequest._id %>')">Chat</button>
-                </div>
-            <% }) %>
+    <section class="page-section" style="padding-top:2rem;">
+        <div class="section-heading">
+            <span class="eyebrow"><i class="fa-regular fa-calendar-check"></i> Meetings</span>
+            <h1>Your scheduled meetings</h1>
+            <p>Track every property conversation, meeting location, and next step from one place.</p>
         </div>
-    <% } else { %>
-        <p>No meetings scheduled yet.</p>
-    <% } %>
 
-    <!-- Chat Modal -->
+        <% if (meetings && meetings.length > 0) { %>
+            <div class="card-list">
+                <% meetings.forEach(meeting => { %>
+                    <% const otherParticipant = meeting.participants.find(p => p._id.toString() !== user.id); %>
+                    <article class="meeting-card card-item" style="padding:1.35rem; display:grid; gap:1rem;">
+                        <div class="stack" style="gap:0.75rem;">
+                            <h3>Meeting with <%= otherParticipant.firstname %> <%= otherParticipant.lastname %></h3>
+                            <div class="home-meta">
+                                <span class="meta-pill"><i class="fa-regular fa-calendar"></i><%= new Date(meeting.scheduledDate).toLocaleString() %></span>
+                                <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= meeting.location %></span>
+                                <span class="status <%= meeting.status %>"><%= meeting.status %></span>
+                            </div>
+                            <% if (meeting.notes) { %>
+                                <p><strong style="color: var(--text);">Notes:</strong> <%= meeting.notes %></p>
+                            <% } %>
+                        </div>
+                        <div class="card-actions">
+                            <button type="button" class="btn btn-accent" onclick="openChat('<%= meeting.buyRequest._id %>', <%- JSON.stringify(`${otherParticipant.firstname} ${otherParticipant.lastname}`) %>)">
+                                <i class="fa-solid fa-comments"></i>
+                                <span>Open Chat</span>
+                            </button>
+                        </div>
+                    </article>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="page-card" style="text-align:center;">
+                <h2>No meetings scheduled yet</h2>
+                <p>Accepted requests that turn into meetings will appear here.</p>
+            </div>
+        <% } %>
+    </section>
+
     <div id="chatModal" class="modal">
         <div class="modal-content chat-modal">
-            <span class="close" onclick="closeChatModal()">&times;</span>
-            <h2>Chat</h2>
-            <div id="chatMessages" class="chat-messages"></div>
-            <div class="chat-input">
-                <input type="text" id="messageInput" placeholder="Type your message...">
-                <button onclick="sendMessage()">Send</button>
+            <button type="button" class="close" onclick="closeChatModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="chat-shell">
+                <div class="chat-header">
+                    <span class="chat-avatar"><i class="fa-solid fa-user"></i></span>
+                    <div>
+                        <h2 id="chatTitle">Conversation</h2>
+                        <p>Keep the meeting thread active with fast follow-ups.</p>
+                    </div>
+                </div>
+                <div id="chatMessages" class="chat-messages"></div>
+                <div class="chat-composer">
+                    <input type="text" id="messageInput" placeholder="Type your message...">
+                    <button type="button" onclick="sendMessage()" class="btn btn-accent">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -59,34 +98,61 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
+        const currentUserId = <%- JSON.stringify(user.id) %>;
+        const currentUserName = <%- JSON.stringify(`${user.firstname} ${user.lastname}`) %>;
+        const chatModal = document.getElementById('chatModal');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatTitle = document.getElementById('chatTitle');
         let currentRequestId = null;
 
-        function openChat(requestId) {
+        function renderMessages(messages) {
+            chatMessages.innerHTML = '';
+
+            if (!messages.length) {
+                chatMessages.innerHTML = '<div class="chat-empty"><p>No messages yet. Start the conversation.</p></div>';
+                return;
+            }
+
+            messages.forEach((msg) => {
+                const isMine = msg.sender && msg.sender._id === currentUserId;
+                const row = document.createElement('div');
+                row.className = `message-row ${isMine ? 'mine' : 'theirs'}`;
+                row.innerHTML = `
+                    ${isMine ? '' : '<span class="chat-avatar"><i class="fa-solid fa-user"></i></span>'}
+                    <div class="message-card">
+                        <div class="message-meta">
+                            <span>${isMine ? currentUserName : `${msg.sender.firstname} ${msg.sender.lastname}`}</span>
+                            <span>•</span>
+                            <span>${new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                        <div class="message-text">${msg.message}</div>
+                    </div>
+                    ${isMine ? '<span class="chat-avatar"><i class="fa-solid fa-user"></i></span>' : ''}
+                `;
+                chatMessages.appendChild(row);
+            });
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function openChat(requestId, otherName) {
             currentRequestId = requestId;
-            document.getElementById('chatModal').style.display = 'block';
+            chatTitle.textContent = `Chat with ${otherName}`;
+            chatModal.classList.add('show');
             loadMessages(requestId);
             socket.emit('joinRoom', requestId);
         }
 
         function closeChatModal() {
-            document.getElementById('chatModal').style.display = 'none';
+            chatModal.classList.remove('show');
             currentRequestId = null;
+            chatMessages.innerHTML = '';
         }
 
         function loadMessages(requestId) {
             fetch(`/messages/${requestId}`)
-            .then(response => response.json())
-            .then(messages => {
-                const chatMessages = document.getElementById('chatMessages');
-                chatMessages.innerHTML = '';
-                messages.forEach(msg => {
-                    const msgDiv = document.createElement('div');
-                    msgDiv.className = 'message';
-                    msgDiv.innerHTML = `<strong>${msg.sender.firstname}:</strong> ${msg.message}`;
-                    chatMessages.appendChild(msgDiv);
-                });
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            });
+                .then(response => response.json())
+                .then(messages => renderMessages(messages));
         }
 
         function sendMessage() {
@@ -95,9 +161,11 @@
             if (message && currentRequestId) {
                 socket.emit('sendMessage', {
                     requestId: currentRequestId,
-                    message: message
+                    message,
+                    senderId: currentUserId
                 });
                 messageInput.value = '';
+                messageInput.focus();
             }
         }
 
@@ -107,76 +175,17 @@
             }
         });
 
-        // Enter key to send message
-        document.getElementById('messageInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
+        document.getElementById('messageInput').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
                 sendMessage();
             }
         });
+
+        chatModal.addEventListener('click', (event) => {
+            if (event.target === chatModal) {
+                closeChatModal();
+            }
+        });
     </script>
-
-    <style>
-        .meetings-list {
-            max-width: 800px;
-            margin: 20px auto;
-        }
-
-        .meeting-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .meeting-card h3 {
-            margin-top: 0;
-            color: #333;
-        }
-
-        .chat-modal {
-            width: 90%;
-            max-width: 600px;
-            height: 80%;
-        }
-
-        .chat-messages {
-            height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: #f9f9f9;
-        }
-
-        .message {
-            margin-bottom: 10px;
-            padding: 8px;
-            background: white;
-            border-radius: 4px;
-        }
-
-        .chat-input {
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .chat-input button {
-            padding: 8px 16px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
 </body>
 </html>
