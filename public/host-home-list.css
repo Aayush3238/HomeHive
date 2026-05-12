@@ -1,12 +1,12 @@
 .listing-header {
   width: min(var(--max-width), calc(100vw - 2rem));
   margin: 2rem auto 1.5rem;
-  padding: 1.8rem;
+  padding: 2rem;
 }
 
 .listing-header p {
   margin-top: 0.7rem;
-  max-width: 40rem;
+  max-width: 42rem;
 }
 
 .home-card .card-actions {

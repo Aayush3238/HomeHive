@@ -33,7 +33,9 @@
         <div class="form-layout">
             <form action="/host/add-home" method="POST" enctype="multipart/form-data" class="listing-form">
                 <div class="form-header">
+                    <span class="eyebrow"><i class="fa-solid fa-building"></i> New property</span>
                     <h1>Add a new listing</h1>
+                    <p>Capture the address, map position, pricing, and listing photo in one clean flow.</p>
                 </div>
                 <div class="field">
                     <label for="locationSearch">Search address</label>
@@ -101,6 +103,7 @@
                     <div class="field">
                         <label for="homeImage">Home Image</label>
                         <input type="file" id="homeImage" name="homeImage" accept="image/*">
+                        <small>Uploaded securely to Cloudinary. Use a bright front-facing image for best results.</small>
                     </div>
                     <div class="field">
                         <label for="description">Description</label>
@@ -149,5 +152,6 @@
         lngInput.addEventListener('input', syncPreview);
         syncPreview();
     </script>
+    <script src="/js/animations.js"></script>
 </body>
 </html>

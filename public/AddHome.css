@@ -2,8 +2,8 @@
   position: fixed;
   z-index: -1;
   pointer-events: none;
-  border: 1px solid rgba(148, 163, 184, 0.14);
-  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(28, 24, 22, 0.06);
+  background: rgba(253, 248, 242, 0.2);
   backdrop-filter: blur(12px);
 }
 
@@ -52,10 +52,10 @@
 .listing-form {
   position: relative;
   display: grid;
-  gap: 1.1rem;
+  gap: 1.2rem;
   width: min(100%, 920px);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(244, 247, 250, 0.96));
+    linear-gradient(180deg, rgba(255, 252, 249, 0.97), rgba(253, 248, 242, 0.96));
 }
 
 .form-header {
@@ -69,13 +69,17 @@
   color: var(--text);
 }
 
+.form-header p {
+  max-width: 42rem;
+}
+
 .map-card {
   position: relative;
-  padding: 1rem;
+  padding: 1.1rem;
   border-radius: 1.5rem;
   background:
-    linear-gradient(180deg, rgba(246, 248, 250, 0.98), rgba(240, 244, 247, 0.94));
-  border: 1px solid rgba(148, 163, 184, 0.14);
+    linear-gradient(180deg, rgba(253, 248, 242, 0.98), rgba(247, 242, 235, 0.94));
+  border: 1px solid rgba(28, 24, 22, 0.06);
 }
 
 .map-toolbar {

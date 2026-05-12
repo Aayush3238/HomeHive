@@ -35,7 +35,7 @@
        <% SubmittedDetails.forEach(home => { %>
         <li class="home-card">
             <% if (home.homeImage) { %>
-                <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
+                <img src="<%= getHomeImageUrl(home.homeImage, { width: 720, height: 420 }) %>" alt="Home Image" class="home-img" />
             <% } %>
             <div class="home-info">
                 <div class="home-address"><%= home.address %></div>

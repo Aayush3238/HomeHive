@@ -148,6 +148,9 @@ class Home {
         formattedAddress: updateData.address.formattedAddress,
         price: updateData.price,
         description: updateData.description,
+        ...(Object.prototype.hasOwnProperty.call(updateData, 'homeImage')
+          ? { homeImage: updateData.homeImage }
+          : {}),
         updatedAt: new Date(),
       },
     });

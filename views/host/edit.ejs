@@ -30,7 +30,7 @@
         <div class="page-card edit-card">
             <span class="eyebrow"><i class="fa-solid fa-pen"></i> Edit listing</span>
             <h1>Update property details</h1>
-            <form action="/host/edit/<%= home._id %>" method="POST" class="stack">
+            <form action="/host/edit/<%= home._id %>" method="POST" enctype="multipart/form-data" class="stack">
                 <div class="field-grid">
                     <div class="field">
                         <label for="houseNo">House Number</label>
@@ -58,6 +58,11 @@
                     </div>
                 </div>
                 <div class="field">
+                    <label for="homeImage">Replace Listing Image</label>
+                    <input id="homeImage" type="file" name="homeImage" accept="image/*">
+                    <small>Leave empty to keep the current image.</small>
+                </div>
+                <div class="field">
                     <label for="description">Description</label>
                     <textarea id="description" name="description" required><%= home.description %></textarea>
                 </div>
@@ -74,5 +79,6 @@
             </form>
         </div>
     </div>
+    <script src="/js/animations.js"></script>
 </body>
 </html>

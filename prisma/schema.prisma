@@ -131,7 +131,7 @@ model Meeting {
 model MeetingParticipant {
   meetingId  String   @map("meeting_id") @db.Uuid
   userId     String   @map("user_id") @db.Uuid
-  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   meeting    Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -139,10 +139,12 @@ model MeetingParticipant {
   @@map("meeting_participants")
 }
 
+
 model Session {
   sid    String   @id
   sess   Json
   expire DateTime @db.Timestamptz(6)
+
 
   @@map("sessions")
 }

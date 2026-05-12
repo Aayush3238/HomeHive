@@ -1,51 +1,25 @@
-const path = require('path');
 const multer = require('multer');
-const fs = require('fs');
+const path = require('path');
 
 const rootDir = require('../utils/pathUtils');
 const Home = require('../models/home');
 const BuyRequest = require('../models/BuyRequest');
+const { uploadPropertyImage } = require('../utils/cloudinary');
 
-const uploadsDir = path.join(rootDir, 'public', 'uploads');
-fs.mkdirSync(uploadsDir, { recursive: true });
-const storage = multer.diskStorage({
-  destination: uploadsDir,
-  filename: (req, file, cb) => {
-    const originalExt = path.extname(file.originalname).toLowerCase();
-    const baseName = path
-      .basename(file.originalname, originalExt)
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/(^-|-$)/g, '') || 'home-image';
-    cb(null, `${Date.now()}-${baseName}${originalExt}`);
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 8 * 1024 * 1024,
   },
-});
-
-const upload = multer({ storage });
-
-exports.serveUploadedHomeImage = (req, res, next) => {
-  const filePath = path.join(uploadsDir, path.basename(req.params.filename));
-
-  fs.stat(filePath, (err, stats) => {
-    if (err || !stats.isFile()) {
-      return next();
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype || !file.mimetype.startsWith('image/')) {
+      cb(new Error('Only image uploads are allowed.'));
+      return;
     }
 
-    const ext = path.extname(filePath).toLowerCase();
-    const contentTypeMap = {
-      '.jpg': 'image/jpeg',
-      '.jpeg': 'image/jpeg',
-      '.png': 'image/png',
-      '.gif': 'image/gif',
-      '.webp': 'image/webp',
-      '.svg': 'image/svg+xml',
-    };
-
-    res.type(contentTypeMap[ext] || 'application/octet-stream');
-    fs.createReadStream(filePath).pipe(res);
-  });
-};
+    cb(null, true);
+  },
+});
 
 const ensureOwnerSession = (req, res) => {
   if (!req.session.user) {
@@ -78,6 +52,7 @@ exports.postAddHome = [
 
     try {
       const formattedAddress = `${req.body.houseNo}, ${req.body.city}, ${req.body.district}, ${req.body.state}, ${req.body.country}`;
+      const uploadedImage = await uploadPropertyImage(req.file);
 
       const priceValue = Number(req.body.price);
       if (!Number.isFinite(priceValue) || priceValue <= 0) {
@@ -98,13 +73,10 @@ exports.postAddHome = [
           coordinates: [Number(req.body.lng) || 0, Number(req.body.lat) || 0],
         },
         price: String(priceValue),
-        homeImage: req.file ? req.file.filename : null,
+        homeImage: uploadedImage ? uploadedImage.secure_url : null,
         description: req.body.description,
         owner: req.session.user.id,
       });
-
-      console.log('Uploaded file:', req.file); // Debug log
-      console.log('Home image filename:', home.homeImage); // Debug log
 
       await home.save();
       res.render(path.join(rootDir, 'views', 'host/submitDetails.ejs'));
@@ -203,38 +175,43 @@ exports.getUpdateHome = async (req, res, next) => {
   }
 };
 
-exports.PostUpdateHome = async (req, res, next) => {
-  if (!ensureOwnerSession(req, res)) {
-    return;
-  }
+exports.PostUpdateHome = [
+  upload.single('homeImage'),
+  async (req, res, next) => {
+    if (!ensureOwnerSession(req, res)) {
+      return;
+    }
 
-  const priceValue = Number(req.body.price);
-  if (!Number.isFinite(priceValue) || priceValue <= 0) {
-    return res.status(400).send('Invalid price. Enter a numeric amount greater than zero.');
-  }
+    const priceValue = Number(req.body.price);
+    if (!Number.isFinite(priceValue) || priceValue <= 0) {
+      return res.status(400).send('Invalid price. Enter a numeric amount greater than zero.');
+    }
 
-  const updateData = {
-    address: {
-      houseNo: req.body.houseNo,
-      city: req.body.city,
-      district: req.body.district,
-      state: req.body.state,
-      country: req.body.country,
-      formattedAddress: `${req.body.houseNo}, ${req.body.city}, ${req.body.district}, ${req.body.state}, ${req.body.country}`,
-    },
-    price: String(priceValue),
-    description: req.body.description,
-  };
+    try {
+      const uploadedImage = await uploadPropertyImage(req.file);
+      const updateData = {
+        address: {
+          houseNo: req.body.houseNo,
+          city: req.body.city,
+          district: req.body.district,
+          state: req.body.state,
+          country: req.body.country,
+          formattedAddress: `${req.body.houseNo}, ${req.body.city}, ${req.body.district}, ${req.body.state}, ${req.body.country}`,
+        },
+        price: String(priceValue),
+        description: req.body.description,
+        ...(uploadedImage ? { homeImage: uploadedImage.secure_url } : {}),
+      };
 
-  try {
-    await Home.findOneAndUpdate(
-      { _id: req.params.id, owner: req.session.user.id },
-      updateData,
-      { runValidators: true },
-    );
+      await Home.findOneAndUpdate(
+        { _id: req.params.id, owner: req.session.user.id },
+        updateData,
+        { runValidators: true },
+      );
 
-    res.redirect('/host/host-homelist');
-  } catch (err) {
-    next(err);
-  }
-};
+      res.redirect('/host/host-homelist');
+    } catch (err) {
+      next(err);
+    }
+  },
+];

@@ -20,40 +20,8 @@
                 <a class="is-active" href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
                 <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
                 <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
-            </div>
         </div>
-    </div>
-
-    <div class="listings-toolbar" style="margin-top:2rem;">
-        <div class="section-heading" style="margin:0; width:auto;">
-            <span class="eyebrow"><i class="fa-solid fa-heart-circle-check"></i> Saved homes</span>
-            <h2>Your shortlist</h2>
-        </div>
-        <p>Keep a tight comparison list before starting a conversation.</p>
-    </div>
-
-    <ul class="homes-list">
-        <% favourites.forEach(home => { %>
-            <li class="home-card">
-                <% if (home.homeImage) { %>
-                    <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
-                <% } %>
-                <div class="home-card-body">
-                    <h3><%= home.address?.formattedAddress || '' %></h3>
-                    <div class="home-meta">
-                        <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address?.city || home.address?.state || 'Location pending' %></span>
-                        <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
-                    </div>
-                    <p class="home-description"><%= home.description %></p>
-                </div>
-                <div class="card-actions" style="padding: 0 1.25rem 1.25rem;">
-                    <a class="Details" href="/home/<%= home.id %>">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                        <span>View Details</span>
-                    </a>
-                </div>
-            </li>
-        <% }) %>
     </ul>
+    <script src="/js/animations.js"></script>
 </body>
 </html>

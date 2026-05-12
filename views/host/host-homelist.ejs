@@ -22,46 +22,8 @@
                 <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
                 <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
                 <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
-            </div>
         </div>
-    </div>
-
-    <div class="listing-header hero-card">
-        <span class="eyebrow"><i class="fa-solid fa-house-circle-check"></i> Owner dashboard</span>
-        <h1>Your registered homes</h1>
-        <p>Manage every listing from one place. Edit details, remove inactive inventory, and keep your owner workflow aligned with the rest of the product.</p>
-    </div>
-
-    <ul class="homes-list">
-        <% SubmittedDetails.forEach(home => { %>
-            <li class="home-card">
-                <% if (home.homeImage) { %>
-                    <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" />
-                <% } %>
-                <div class="home-card-body">
-                    <h3><%= home.address?.formattedAddress || '' %></h3>
-                    <div class="home-meta">
-                        <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address?.city || home.address?.state || 'Location pending' %></span>
-                        <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
-                    </div>
-                    <p><%= home.description %></p>
-                </div>
-                <div class="card-actions">
-                    <form action="/host/edit/<%= home.id %>" method="GET" class="inline-form">
-                        <button type="submit" class="edit btn btn-accent">
-                            <i class="fa-solid fa-pen"></i>
-                            <span>Edit</span>
-                        </button>
-                    </form>
-                    <form action="/host/home-delete/<%= home.id %>" method="POST" class="inline-form">
-                        <button type="submit" class="delete btn btn-danger">
-                            <i class="fa-solid fa-trash"></i>
-                            <span>Delete</span>
-                        </button>
-                    </form>
-                </div>
-            </li>
-        <% }) %>
     </ul>
+    <script src="/js/animations.js"></script>
 </body>
 </html>

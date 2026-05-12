@@ -37,9 +37,19 @@
     </div>
 
     <section class="hero-section">
+        <div class="hero-mote" aria-hidden="true"></div>
+        <div class="hero-mote" aria-hidden="true"></div>
+        <div class="hero-mote" aria-hidden="true"></div>
+        <div class="hero-mote" aria-hidden="true"></div>
+        <div class="hero-mote" aria-hidden="true"></div>
+        <div class="hero-mote" aria-hidden="true"></div>
+        <div class="hero-mote" aria-hidden="true"></div>
+        <div class="hero-mote" aria-hidden="true"></div>
         <div class="hero-card">
             <div class="hero-copy">
-                <h1>HomeHive</h1>
+                <span class="eyebrow"><i class="fa-solid fa-house-chimney-window"></i> Real estate marketplace</span>
+                <h1>Find polished homes without the noisy search experience.</h1>
+                <p class="hero-lead">Browse owner-listed properties with cleaner discovery, shortlist tracking, and faster decision-making from one professional workflow.</p>
                 <div class="hero-search-shell">
                     <div class="hero-search">
                         <input id="propertySearch" type="text" placeholder="Search by city, state, country, or description">
@@ -58,6 +68,29 @@
                             <span>Map-ready homes</span>
                         </div>
                     </div>
+                    <div class="hero-filters" aria-label="Listing preferences">
+                        <label class="filter-chip">
+                            <span>Budget</span>
+                            <select id="budgetPreference">
+                                <option value="any">Any budget</option>
+                                <option value="2500000">Up to Rs 25L</option>
+                                <option value="5000000">Up to Rs 50L</option>
+                                <option value="10000000">Up to Rs 1Cr</option>
+                                <option value="20000000">Up to Rs 2Cr</option>
+                            </select>
+                        </label>
+                        <label class="filter-chip">
+                            <span>Property type</span>
+                            <select id="typePreference">
+                                <option value="any">Any type</option>
+                                <option value="apartment">Apartment</option>
+                                <option value="villa">Villa</option>
+                                <option value="house">House</option>
+                                <option value="studio">Studio</option>
+                                <option value="plot">Plot</option>
+                            </select>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,15 +101,33 @@
             <span class="eyebrow"><i class="fa-solid fa-building"></i> Listings</span>
             <h2>Available homes</h2>
         </div>
-        <p id="searchSummary">Showing all properties.</p>
     </div>
 
     <ul class="homes-list" id="listingGrid">
         <% SubmittedDetails.forEach(home => { %>
-            <li class="home-card listing-card" data-search="<%= `${home.address.formattedAddress} ${home.description}`.toLowerCase() %>">
-                <% if (home.homeImage) { %>
-                    <img src="/uploads/<%= home.homeImage %>" alt="Home Image" class="home-img" onerror="this.style.display='none';" />
-                <% } %>
+            <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 420 }); %>
+            <% const imageSrcSet = getHomeImageSrcSet(home.homeImage, [320, 480, 720, 960], { height: 420 }); %>
+            <li
+                class="home-card listing-card"
+                data-search="<%= `${home.address.formattedAddress} ${home.description}`.toLowerCase() %>"
+                data-price="<%= Number(home.price) || 0 %>"
+                data-city="<%= (home.address.city || '').toLowerCase() %>"
+            >
+                <div class="home-media">
+                    <img
+                        src="<%= imageUrl %>"
+                        <% if (imageSrcSet) { %>srcset="<%= imageSrcSet %>"<% } %>
+                        sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                        alt="Photo of <%= home.address.formattedAddress %>"
+                        class="home-img"
+                        loading="lazy"
+                        decoding="async"
+                        onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
+                    />
+                    <div class="card-badges">
+                        <span class="match-badge" data-match-score>60% match</span>
+                    </div>
+                </div>
                 <div class="home-card-body">
                     <h3><%= home.address.formattedAddress %></h3>
                     <div class="home-meta">
@@ -139,25 +190,116 @@
     <script>
         const searchInput = document.getElementById('propertySearch');
         const searchActionBtn = document.getElementById('searchActionBtn');
+        const budgetPreference = document.getElementById('budgetPreference');
+        const typePreference = document.getElementById('typePreference');
         const listingCards = Array.from(document.querySelectorAll('.listing-card'));
         const searchSummary = document.getElementById('searchSummary');
         const buyRequestModal = document.getElementById('buyRequestModal');
+        const smartMatchStorageKey = 'homehive.smartMatchPreferences';
+
+        const inferPropertyType = (text) => {
+            const value = text.toLowerCase();
+            if (value.includes('villa')) return 'villa';
+            if (value.includes('apartment') || value.includes('flat')) return 'apartment';
+            if (value.includes('studio')) return 'studio';
+            if (value.includes('plot') || value.includes('land')) return 'plot';
+            return 'house';
+        };
+
+        function savePreferences() {
+            localStorage.setItem(smartMatchStorageKey, JSON.stringify({
+                search: searchInput.value,
+                budget: budgetPreference.value,
+                type: typePreference.value,
+            }));
+        }
+
+        function loadPreferences() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(smartMatchStorageKey) || '{}');
+                if (typeof saved.search === 'string') searchInput.value = saved.search;
+                if (typeof saved.budget === 'string') budgetPreference.value = saved.budget;
+                if (typeof saved.type === 'string') typePreference.value = saved.type;
+            } catch (error) {
+                localStorage.removeItem(smartMatchStorageKey);
+            }
+        }
+
+        function getSmartMatchScore(card) {
+            const query = searchInput.value.trim().toLowerCase();
+            const budget = Number(budgetPreference.value || 0);
+            const preferredType = typePreference.value;
+            const cardText = card.dataset.search;
+            const cardPrice = Number(card.dataset.price || 0);
+            const cardType = inferPropertyType(cardText);
+            let score = 55;
+
+            if (query) {
+                score += cardText.includes(query) ? 20 : 4;
+            } else {
+                score += 8;
+            }
+
+            if (budget > 0) {
+                if (cardPrice <= budget) {
+                    score += 17;
+                } else if (cardPrice <= budget * 1.12) {
+                    score += 10;
+                } else {
+                    score += 2;
+                }
+            } else {
+                score += 10;
+            }
+
+            if (preferredType !== 'any') {
+                score += cardType === preferredType ? 15 : 3;
+            } else {
+                score += 7;
+            }
+
+            return Math.max(52, Math.min(98, score));
+        }
+
+        function refreshSmartMatchScores() {
+            listingCards.forEach((card) => {
+                const score = getSmartMatchScore(card);
+                const scoreNode = card.querySelector('[data-match-score]');
+                if (scoreNode) {
+                    scoreNode.textContent = `${score}% match`;
+                }
+            });
+        }
 
         function filterListings() {
             const query = searchInput.value.trim().toLowerCase();
+            const priceCap = Number(budgetPreference.value || 0);
+            const preferredType = typePreference.value;
             let visibleCount = 0;
 
             listingCards.forEach((card) => {
-                const matches = !query || card.dataset.search.includes(query);
+                const matchesQuery = !query || card.dataset.search.includes(query);
+                const matchesBudget = !priceCap || Number(card.dataset.price || 0) <= priceCap * 1.12;
+                const matchesType = preferredType === 'any' || inferPropertyType(card.dataset.search) === preferredType;
+                const matches = matchesQuery && matchesBudget && matchesType;
                 card.style.display = matches ? '' : 'none';
                 if (matches) {
                     visibleCount += 1;
                 }
             });
 
-            searchSummary.textContent = query
-                ? `Showing ${visibleCount} matching properties for "${searchInput.value.trim()}".`
-                : 'Showing all properties.';
+            if (searchSummary) {
+                if (query) {
+                    searchSummary.textContent = `Showing ${visibleCount} matching properties for "${searchInput.value.trim()}".`;
+                } else if (priceCap || preferredType !== 'any') {
+                    searchSummary.textContent = `Showing ${visibleCount} properties that match your current filters.`;
+                } else {
+                    searchSummary.textContent = 'Showing all properties.';
+                }
+            }
+
+            refreshSmartMatchScores();
+            savePreferences();
         }
 
         function openBuyRequestModal(homeId, price) {
@@ -170,7 +312,10 @@
             buyRequestModal.classList.remove('show');
         }
 
+        loadPreferences();
         searchInput.addEventListener('input', filterListings);
+        budgetPreference.addEventListener('change', filterListings);
+        typePreference.addEventListener('change', filterListings);
         searchActionBtn.addEventListener('click', filterListings);
 
         buyRequestModal.addEventListener('click', (event) => {
@@ -178,6 +323,9 @@
                 closeBuyRequestModal();
             }
         });
+
+        filterListings();
     </script>
+    <script src="/js/animations.js"></script>
 </body>
 </html>

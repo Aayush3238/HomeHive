@@ -19,10 +19,12 @@ app.set('views', path.join(__dirname, 'views'));
 const userRouter = require('./routes/userRouter');
 const { hostRouter } = require('./routes/hostRouter');
 const { authRouter } = require('./routes/authRouter');
-const hostController = require('./controller/hostController');
 const rootDir = require('./utils/pathUtils');
-
-app.get('/uploads/:filename', hostController.serveUploadedHomeImage);
+const {
+  FALLBACK_IMAGE_URL,
+  getHomeImageUrl,
+  getHomeImageSrcSet,
+} = require('./utils/homeImage');
 
 app.use(express.static(path.join(rootDir, 'public')));
 app.use(express.static('public'));
@@ -51,6 +53,9 @@ app.use(session({
 app.use((req, res, next) => {
   res.locals.isLoggedIn = Boolean(req.session.isLoggedIn);
   res.locals.user = req.session.user || null;
+  res.locals.imageFallbackUrl = FALLBACK_IMAGE_URL;
+  res.locals.getHomeImageUrl = getHomeImageUrl;
+  res.locals.getHomeImageSrcSet = getHomeImageSrcSet;
   next();
 });
 
