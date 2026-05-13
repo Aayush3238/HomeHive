@@ -13,6 +13,11 @@
 <body>
     <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
     <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
+    <div class="bg-blob-mid" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-2" aria-hidden="true"></div>
+    <div class="particle particle-diamond particle-5" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-8" aria-hidden="true"></div>
+
     <div class="site-nav">
         <div class="navbar">
             <a class="nav-brand" href="/">
@@ -32,7 +37,6 @@
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-regular fa-heart"></i> Saved homes</span>
             <h1>Your favourites</h1>
-            <p>Properties you've saved for quick access.</p>
         </div>
 
         <% if (favourites && favourites.length > 0) { %>
@@ -70,7 +74,6 @@
         <% } else { %>
             <div class="page-card" style="text-align:center;">
                 <h2>No saved homes yet</h2>
-                <p>Browse listings and save the ones you like.</p>
                 <a href="/" class="btn btn-accent" style="display:inline-flex;margin-top:1rem;">
                     <i class="fa-solid fa-compass"></i>
                     <span>Explore Listings</span>

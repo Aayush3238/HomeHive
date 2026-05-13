@@ -13,6 +13,11 @@
 <body>
     <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
     <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
+    <div class="bg-blob-mid" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-1" aria-hidden="true"></div>
+    <div class="particle particle-diamond particle-4" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-7" aria-hidden="true"></div>
+
     <div class="site-nav">
         <div class="navbar">
             <a class="nav-brand" href="/">
@@ -34,28 +39,26 @@
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-solid fa-comments-dollar"></i> Buy requests</span>
             <h1>Requests for your properties</h1>
-            <p>Review offers, respond quickly, and move accepted buyers into a chat and meeting workflow.</p>
         </div>
 
         <% if (buyRequests.length === 0) { %>
             <div class="page-card" style="text-align:center;">
                 <h2>No buy requests yet</h2>
-                <p>When buyers submit offers, they will appear here.</p>
             </div>
         <% } else { %>
             <div class="card-list">
                 <% buyRequests.forEach(request => { %>
-                    <article class="request-card card-item" style="padding:1.35rem; display:grid; gap:1rem;">
-                        <div class="stack" style="gap:0.7rem;">
+                    <article class="request-card card-item" style="padding:1.25rem; display:grid; gap:1rem;">
+                        <div class="stack" style="gap:0.6rem;">
                             <h3><%= request.home.address.formattedAddress %></h3>
                             <div class="home-meta">
                                 <span class="meta-pill"><i class="fa-solid fa-user"></i><%= request.buyer.firstname %> <%= request.buyer.lastname %></span>
                                 <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= request.offeredPrice %></span>
                                 <span class="status <%= request.status %>"><%= request.status %></span>
                             </div>
-                            <p><strong style="color: var(--color-charcoal-700);">Email:</strong> <%= request.buyer.email %></p>
-                            <p><strong style="color: var(--color-charcoal-700);">Message:</strong> <%= request.message %></p>
-                            <p><strong style="color: var(--color-charcoal-700);">Requested on:</strong> <%= request.createdAt.toDateString() %></p>
+                            <p><strong style="color: var(--color-stone-700);">Email:</strong> <%= request.buyer.email %></p>
+                            <p><strong style="color: var(--color-stone-700);">Message:</strong> <%= request.message %></p>
+                            <p><strong style="color: var(--color-stone-700);">Requested on:</strong> <%= request.createdAt.toDateString() %></p>
                         </div>
 
                         <div class="card-actions">
@@ -67,7 +70,7 @@
                                     </button>
                                 </form>
                                 <form action="/host/buy-request/<%= request._id %>/reject" method="POST" class="inline-form">
-                                    <button type="submit" class="btn-danger" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1rem;border:none;border-radius:0.85rem;font-weight:700;font-size:0.88rem;cursor:pointer;color:#fff;width:100%;background:linear-gradient(135deg,#b45353 0%,#d36d6d 100%);transition:all 0.25s ease;">
+                                    <button type="submit" class="btn-danger" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1rem;border:none;border-radius:0.85rem;font-weight:700;font-size:0.88rem;cursor:pointer;color:#fff;width:100%;background:#b45353;transition:all 0.25s ease;">
                                         <i class="fa-solid fa-xmark"></i>
                                         <span>Reject</span>
                                     </button>
@@ -81,7 +84,7 @@
                                     <i class="fa-solid fa-comments"></i>
                                     <span>Open Chat</span>
                                 </button>
-                                <button type="button" class="btn btn-secondary" onclick="scheduleMeeting('<%= request._id %>')" style="border:1px solid rgba(28,24,22,0.10);background:rgba(255,252,249,0.95);color:#1c1816;border-radius:0.85rem;padding:0.75rem 1rem;font-weight:700;font-size:0.88rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.25s ease;width:100%;">
+                                <button type="button" class="btn-secondary" onclick="scheduleMeeting('<%= request._id %>')" style="border:1px solid rgba(28,24,22,0.10);background:rgba(255,252,249,0.95);color:#1c1816;border-radius:0.85rem;padding:0.75rem 1rem;font-weight:700;font-size:0.88rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.25s ease;width:100%;">
                                     <i class="fa-regular fa-calendar-check"></i>
                                     <span>Schedule Meeting</span>
                                 </button>
@@ -103,7 +106,6 @@
                     <span class="chat-avatar"><i class="fa-solid fa-user"></i></span>
                     <div>
                         <h2 id="chatTitle">Conversation</h2>
-                        <p>Stay aligned with the buyer without leaving the dashboard.</p>
                     </div>
                 </div>
                 <div id="chatMessages" class="chat-messages"></div>
@@ -163,7 +165,7 @@
             chatMessages.innerHTML = '';
 
             if (!messages.length) {
-                chatMessages.innerHTML = '<div class="chat-empty"><p>No messages yet. Start the conversation.</p></div>';
+                chatMessages.innerHTML = '<div class="chat-empty">No messages yet. Start the conversation.</div>';
                 return;
             }
 

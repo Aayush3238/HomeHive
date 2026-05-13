@@ -11,12 +11,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
+    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
+    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
+    <div class="bg-blob-mid" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-3" aria-hidden="true"></div>
+    <div class="particle particle-diamond particle-6" aria-hidden="true"></div>
+
     <div class="auth-shell">
-        <div class="page-card auth-card" style="display:grid;gap:1.25rem;">
+        <div class="page-card auth-card auth-editorial" style="display:grid;gap:1.25rem;">
             <div>
                 <span class="eyebrow"><i class="fa-solid fa-user-plus"></i> Create account</span>
                 <h1 style="margin-top:0.25rem;">Join HomeHive</h1>
-                <p class="helper-text" style="margin-top:0.35rem;">Create an owner or buyer account to manage listings, meetings, and conversations.</p>
             </div>
             <% if (errorMessages && errorMessages.length > 0) { %>
                 <div class="alert alert-error">
@@ -69,7 +74,7 @@
                 </button>
             </form>
             <p class="helper-text" style="text-align:center;margin-top:0.5rem;">
-                Already have an account? <a href="/login" style="color:var(--color-green-400);font-weight:700;text-decoration:none;">Login</a>
+                Already have an account? <a href="/login" style="color:var(--color-sage-500);font-weight:700;text-decoration:none;">Login</a>
             </p>
         </div>
     </div>

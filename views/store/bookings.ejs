@@ -13,6 +13,11 @@
 <body>
     <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
     <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
+    <div class="bg-blob-mid" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-1" aria-hidden="true"></div>
+    <div class="particle particle-diamond particle-3" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-6" aria-hidden="true"></div>
+
     <div class="site-nav">
         <div class="navbar">
             <a class="nav-brand" href="/">
@@ -39,15 +44,14 @@
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-regular fa-calendar-check"></i> Meetings</span>
             <h1>Your scheduled meetings</h1>
-            <p>Track every property conversation, meeting location, and next step from one place.</p>
         </div>
 
         <% if (meetings && meetings.length > 0) { %>
             <div class="card-list">
                 <% meetings.forEach(meeting => { %>
                     <% const otherParticipant = meeting.participants.find(p => p._id.toString() !== user.id); %>
-                    <article class="meeting-card card-item" style="padding:1.35rem; display:grid; gap:1rem;">
-                        <div class="stack" style="gap:0.75rem;">
+                    <article class="meeting-card card-item" style="padding:1.25rem; display:grid; gap:1rem;">
+                        <div class="stack" style="gap:0.65rem;">
                             <h3>Meeting with <%= otherParticipant.firstname %> <%= otherParticipant.lastname %></h3>
                             <div class="home-meta">
                                 <span class="meta-pill"><i class="fa-regular fa-calendar"></i><%= new Date(meeting.scheduledDate).toLocaleString() %></span>
@@ -55,7 +59,7 @@
                                 <span class="status <%= meeting.status %>"><%= meeting.status %></span>
                             </div>
                             <% if (meeting.notes) { %>
-                                <p><strong style="color: var(--color-charcoal-700);">Notes:</strong> <%= meeting.notes %></p>
+                                <p><strong style="color: var(--color-stone-700);">Notes:</strong> <%= meeting.notes %></p>
                             <% } %>
                         </div>
                         <div class="card-actions">
@@ -70,7 +74,6 @@
         <% } else { %>
             <div class="page-card" style="text-align:center;">
                 <h2>No meetings scheduled yet</h2>
-                <p>Accepted requests that turn into meetings will appear here.</p>
             </div>
         <% } %>
     </section>
@@ -85,7 +88,6 @@
                     <span class="chat-avatar"><i class="fa-solid fa-user"></i></span>
                     <div>
                         <h2 id="chatTitle">Conversation</h2>
-                        <p>Keep the meeting thread active with fast follow-ups.</p>
                     </div>
                 </div>
                 <div id="chatMessages" class="chat-messages"></div>
@@ -113,7 +115,7 @@
             chatMessages.innerHTML = '';
 
             if (!messages.length) {
-                chatMessages.innerHTML = '<div class="chat-empty"><p>No messages yet. Start the conversation.</p></div>';
+                chatMessages.innerHTML = '<div class="chat-empty">No messages yet. Start the conversation.</div>';
                 return;
             }
 

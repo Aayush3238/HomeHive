@@ -13,6 +13,11 @@
 <body>
     <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
     <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
+    <div class="bg-blob-mid" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-1" aria-hidden="true"></div>
+    <div class="particle particle-diamond particle-4" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-7" aria-hidden="true"></div>
+
     <div class="site-nav">
         <div class="navbar">
             <a class="nav-brand" href="/">
@@ -33,7 +38,7 @@
         </div>
     </div>
 
-    <div class="home-details-container hero-card" style="background:var(--color-surface);border-color:rgba(28,24,22,0.06);">
+    <div class="home-details-container hero-card detail-shell">
         <div class="detail-layout">
             <div class="detail-media">
                 <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 1280, height: 760 }); %>
@@ -55,10 +60,27 @@
                 <div class="detail-meta">
                     <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
                     <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address?.city || home.address?.state || 'Location pending' %></span>
+                    <% if (home.propertyType) { %>
+                        <span class="meta-pill"><i class="fa-solid fa-building"></i><%= home.propertyType.charAt(0).toUpperCase() + home.propertyType.slice(1) %></span>
+                    <% } %>
                 </div>
                 <div class="detail-description">
                     <h2>Overview</h2>
                     <p><%= home.description %></p>
+                </div>
+                <div class="detail-highlights">
+                    <div class="detail-highlight">
+                        <span>Listing type</span>
+                        <strong><%= home.propertyType ? `${home.propertyType.charAt(0).toUpperCase()}${home.propertyType.slice(1)}` : 'Residential' %></strong>
+                    </div>
+                    <div class="detail-highlight">
+                        <span>Best for</span>
+                        <strong><%= home.address?.city || 'Flexible location' %></strong>
+                    </div>
+                    <div class="detail-highlight">
+                        <span>Budget band</span>
+                        <strong>Rs <%= home.price %></strong>
+                    </div>
                 </div>
                 <a href="/" class="btn btn-accent" style="justify-self:start;">
                     <i class="fa-solid fa-arrow-left"></i>

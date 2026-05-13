@@ -13,6 +13,16 @@
 <body>
     <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
     <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
+    <div class="bg-blob-mid" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-1" aria-hidden="true"></div>
+    <div class="particle particle-diamond particle-2" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-3" aria-hidden="true"></div>
+    <div class="particle particle-diamond particle-4" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-5" aria-hidden="true"></div>
+    <div class="particle particle-diamond particle-6" aria-hidden="true"></div>
+    <div class="particle particle-circle particle-7" aria-hidden="true"></div>
+    <div class="particle particle-diamond particle-8" aria-hidden="true"></div>
+
     <div class="site-nav">
         <div class="navbar">
             <a class="nav-brand" href="/">
@@ -42,6 +52,7 @@
         <div class="hero-blob hero-blob--1" aria-hidden="true"></div>
         <div class="hero-blob hero-blob--2" aria-hidden="true"></div>
         <div class="hero-blob hero-blob--3" aria-hidden="true"></div>
+        <div class="hero-blob hero-blob--4" aria-hidden="true"></div>
         <div class="hero-mote" aria-hidden="true"></div>
         <div class="hero-mote" aria-hidden="true"></div>
         <div class="hero-mote" aria-hidden="true"></div>
@@ -51,53 +62,54 @@
         <div class="hero-mote" aria-hidden="true"></div>
         <div class="hero-mote" aria-hidden="true"></div>
         <div class="hero-card">
-            <div class="hero-copy">
-                <span class="eyebrow"><i class="fa-solid fa-house-chimney-window"></i> Real estate marketplace</span>
-                <h1>Find polished homes without the noisy search experience.</h1>
-                <p class="hero-lead">Browse owner-listed properties with cleaner discovery, shortlist tracking, and faster decision-making from one professional workflow.</p>
-                <div class="hero-search-shell">
-                    <div class="hero-search">
-                        <input id="propertySearch" type="text" placeholder="Search by city, state, country, or description">
-                        <button type="button" class="btn btn-accent" id="searchActionBtn">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <span>Search</span>
-                        </button>
-                    </div>
-                    <div class="hero-stats">
-                        <div class="hero-stat">
-                            <strong><%= SubmittedDetails.length %></strong>
-                            <span>Active listings</span>
+            <div class="hero-layout">
+                <div class="hero-copy">
+                    <span class="eyebrow"><i class="fa-solid fa-house-chimney-window"></i> Real estate marketplace</span>
+                    <h1>Homes that feel considered, not dumped into a feed.</h1>
+                    <div class="hero-search-shell">
+                        <div class="hero-search">
+                            <input id="propertySearch" type="text" placeholder="Search by city, state, country, or description">
+                            <button type="button" class="btn btn-accent" id="searchActionBtn">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <span class="text-white" >Search</span>
+                            </button>
                         </div>
-                        <div class="hero-stat">
-                            <strong><%= SubmittedDetails.filter(home => home.location && home.location.coordinates && home.location.coordinates.length === 2).length %></strong>
-                            <span>Map-ready homes</span>
+                        <div class="hero-stats">
+                            <div class="hero-stat">
+                                <strong><%= SubmittedDetails.length %></strong>
+                                <span>Active listings</span>
+                            </div>
+                            <div class="hero-stat">
+                                <strong><%= SubmittedDetails.filter(home => home.location && home.location.coordinates && home.location.coordinates.length === 2).length %></strong>
+                                <span>Map-ready homes</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="hero-filters" aria-label="Listing preferences">
-                        <label class="filter-chip">
-                            <span>Budget</span>
-                            <select id="budgetPreference">
-                                <option value="any">Any budget</option>
-                                <option value="2500000">Up to Rs 25L</option>
-                                <option value="5000000">Up to Rs 50L</option>
-                                <option value="10000000">Up to Rs 1Cr</option>
-                                <option value="20000000">Up to Rs 2Cr</option>
-                            </select>
-                        </label>
-                        <label class="filter-chip">
-                            <span>Property type</span>
-                            <select id="typePreference">
-                                <option value="any">Any type</option>
-                                <option value="apartment">Apartment</option>
-                                <option value="villa">Villa</option>
-                                <option value="house">House</option>
-                                <option value="studio">Studio</option>
-                                <option value="plot">Plot</option>
-                            </select>
-                        </label>
+                        <div class="hero-filters" aria-label="Listing preferences">
+                            <label class="filter-chip">
+                                <span>Budget</span>
+                                <select id="budgetPreference">
+                                    <option value="any">Any budget</option>
+                                    <option value="2500000">Up to Rs 25L</option>
+                                    <option value="5000000">Up to Rs 50L</option>
+                                    <option value="10000000">Up to Rs 1Cr</option>
+                                    <option value="20000000">Up to Rs 2Cr</option>
+                                </select>
+                            </label>
+                            <label class="filter-chip">
+                                <span>Property type</span>
+                                <select id="typePreference">
+                                    <option value="any">Any type</option>
+                                    <option value="apartment">Apartment</option>
+                                    <option value="villa">Villa</option>
+                                    <option value="house">House</option>
+                                    <option value="studio">Studio</option>
+                                    <option value="plot">Plot</option>
+                                </select>
+                            </label>
+                        </div>
                     </div>
                 </div>
-      0      </div>
+            </div>
         </div>
     </section>
 
@@ -169,6 +181,11 @@
             </li>
         <% }) %>
     </ul>
+
+    <div class="empty-state page-card" id="listingEmptyState" hidden>
+        <span class="eyebrow"><i class="fa-solid fa-compass"></i> No match</span>
+        <h2>No homes match the current search.</h2>
+    </div>
 
     <div id="buyRequestModal" class="modal">
         <div class="modal-content">
@@ -299,6 +316,16 @@
                 }
             });
 
+            if (searchSummary) {
+                searchSummary.textContent = visibleCount === listingCards.length
+                    ? `Showing all ${visibleCount} homes`
+                    : `Showing ${visibleCount} of ${listingCards.length} homes`;
+            }
+
+            const emptyState = document.getElementById('listingEmptyState');
+            if (emptyState) {
+                emptyState.hidden = visibleCount !== 0;
+            }
 
             refreshSmartMatchScores();
             savePreferences();
