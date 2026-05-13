@@ -59,6 +59,8 @@ exports.postAddHome = [
         return res.status(400).send('Invalid price. Enter a numeric amount greater than zero.');
       }
 
+      const propertyType = req.body.propertyType || 'house';
+
       const home = new Home({
         address: {
           houseNo: req.body.houseNo,
@@ -75,6 +77,7 @@ exports.postAddHome = [
         price: String(priceValue),
         homeImage: uploadedImage ? uploadedImage.secure_url : null,
         description: req.body.description,
+        propertyType,
         owner: req.session.user.id,
       });
 
@@ -200,6 +203,7 @@ exports.PostUpdateHome = [
         },
         price: String(priceValue),
         description: req.body.description,
+        propertyType: req.body.propertyType || 'house',
         ...(uploadedImage ? { homeImage: uploadedImage.secure_url } : {}),
       };
 

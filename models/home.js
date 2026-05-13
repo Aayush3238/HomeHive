@@ -23,6 +23,7 @@ const mapHomeRow = (row) => {
     price: row.price,
     homeImage: row.home_image,
     description: row.description,
+    propertyType: row.propertyType,
     owner: row.owner_id,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -36,6 +37,7 @@ class Home {
     this.price = data.price;
     this.homeImage = data.homeImage;
     this.description = data.description;
+    this.propertyType = data.propertyType;
     this.owner = data.owner;
   }
 
@@ -53,6 +55,7 @@ class Home {
         price: this.price,
         homeImage: this.homeImage,
         description: this.description,
+        propertyType: this.propertyType,
         ownerId: this.owner,
       },
     });
@@ -148,6 +151,7 @@ class Home {
         formattedAddress: updateData.address.formattedAddress,
         price: updateData.price,
         description: updateData.description,
+        propertyType: updateData.propertyType,
         ...(Object.prototype.hasOwnProperty.call(updateData, 'homeImage')
           ? { homeImage: updateData.homeImage }
           : {}),

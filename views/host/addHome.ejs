@@ -99,13 +99,23 @@
                         <label for="price">Price</label>
                         <input id="price" type="number" name="price" placeholder="Enter price" min="1" step="0.01" inputmode="decimal" required>
                     </div>
+                    <div class="field">
+                        <label for="propertyType">Property Type</label>
+                        <select id="propertyType" name="propertyType" required>
+                            <option value="">Select property type</option>
+                            <option value="house">House</option>
+                            <option value="apartment">Apartment</option>
+                            <option value="villa">Villa</option>
+                            <option value="studio">Studio</option>
+                            <option value="plot">Plot</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="field-grid">
                     <div class="field">
                         <label for="homeImage">Home Image</label>
                         <input type="file" id="homeImage" name="homeImage" accept="image/*">
-                        <small>Uploaded securely to Cloudinary. Use a bright front-facing image for best results.</small>
                     </div>
                     <div class="field">
                         <label for="description">Description</label>

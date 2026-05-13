@@ -57,6 +57,7 @@ model Home {
   price         String
   homeImage     String?        @map("home_image")
   description   String
+  propertyType  String?        @map("property_type")
   ownerId       String?        @map("owner_id") @db.Uuid
   createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt     DateTime       @default(now()) @map("updated_at") @db.Timestamptz(6)

@@ -117,6 +117,7 @@
                 class="home-card listing-card"
                 data-search="<%= `${home.address.formattedAddress} ${home.description}`.toLowerCase() %>"
                 data-price="<%= Number(home.price) || 0 %>"
+                data-type="<%= (home.propertyType || '').toLowerCase() %>"
                 data-city="<%= (home.address.city || '').toLowerCase() %>"
             >
                 <div class="home-media">
@@ -138,6 +139,9 @@
                     <h3><%= home.address.formattedAddress %></h3>
                     <div class="home-meta">
                         <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address.city || home.address.state %></span>
+                        <% if (home.propertyType) { %>
+                            <span class="meta-pill"><i class="fa-solid fa-house"></i><%= home.propertyType.charAt(0).toUpperCase() + home.propertyType.slice(1) %></span>
+                        <% } %>
                         <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
                     </div>
                     <p class="home-description"><%= home.description %></p>
@@ -237,7 +241,7 @@
             const preferredType = typePreference.value;
             const cardText = card.dataset.search;
             const cardPrice = Number(card.dataset.price || 0);
-            const cardType = inferPropertyType(cardText);
+            const cardType = card.dataset.type || inferPropertyType(cardText);
             let score = 55;
 
             if (query) {
@@ -286,7 +290,8 @@
             listingCards.forEach((card) => {
                 const matchesQuery = !query || card.dataset.search.includes(query);
                 const matchesBudget = !priceCap || Number(card.dataset.price || 0) <= priceCap * 1.12;
-                const matchesType = preferredType === 'any' || inferPropertyType(card.dataset.search) === preferredType;
+                const cardType = card.dataset.type || inferPropertyType(card.dataset.search);
+                const matchesType = preferredType === 'any' || cardType === preferredType;
                 const matches = matchesQuery && matchesBudget && matchesType;
                 card.style.display = matches ? '' : 'none';
                 if (matches) {
