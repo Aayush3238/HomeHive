@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeHive - My Listings</title>
-    <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/host-home-list.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
+    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
+    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
     <div class="site-nav">
         <div class="navbar">
             <a class="nav-brand" href="/">
@@ -22,8 +26,65 @@
                 <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
                 <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
                 <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            </div>
         </div>
-    </ul>
+    </div>
+
+    <section class="page-section">
+        <div class="section-heading">
+            <span class="eyebrow"><i class="fa-solid fa-table-cells-large"></i> Dashboard</span>
+            <h1>My listings</h1>
+            <p>Manage your properties, edit details, and track performance.</p>
+        </div>
+
+        <% if (SubmittedDetails && SubmittedDetails.length > 0) { %>
+            <div class="homes-list">
+                <% SubmittedDetails.forEach(home => { %>
+                    <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 420 }); %>
+                    <div class="home-card" style="cursor:default;">
+                        <div class="home-media">
+                            <img
+                                src="<%= imageUrl %>"
+                                alt="Photo of <%= home.address.formattedAddress %>"
+                                class="home-img"
+                                loading="lazy"
+                                decoding="async"
+                                onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
+                            />
+                        </div>
+                        <div class="home-card-body">
+                            <h3><%= home.address.formattedAddress %></h3>
+                            <div class="home-meta">
+                                <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address.city || home.address.state %></span>
+                                <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="/host/edit/<%= home.id %>" class="Details">
+                                <i class="fa-solid fa-pen"></i>
+                                <span>Edit</span>
+                            </a>
+                            <form action="/host/home-delete/<%= home.id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this listing permanently?');">
+                                <button type="submit" class="btn-danger" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1rem;border:none;border-radius:0.85rem;font-weight:700;font-size:0.88rem;cursor:pointer;color:#fff;width:100%;background:linear-gradient(135deg,#b45353 0%,#d36d6d 100%);transition:all 0.25s ease;">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    <span>Delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="page-card" style="text-align:center;">
+                <h2>No listings yet</h2>
+                <p>Add your first property listing to get started.</p>
+                <a href="/host/add-home" class="btn btn-accent" style="display:inline-flex;margin-top:1rem;">
+                    <i class="fa-solid fa-square-plus"></i>
+                    <span>Add Listing</span>
+                </a>
+            </div>
+        <% } %>
+    </section>
     <script src="/js/animations.js"></script>
 </body>
 </html>

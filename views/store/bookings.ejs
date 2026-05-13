@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeHive - Meetings</title>
-    <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/chat.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
+    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
+    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
     <div class="site-nav">
         <div class="navbar">
             <a class="nav-brand" href="/">
@@ -31,7 +35,7 @@
         </div>
     </div>
 
-    <section class="page-section" style="padding-top:2rem;">
+    <section class="page-section">
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-regular fa-calendar-check"></i> Meetings</span>
             <h1>Your scheduled meetings</h1>
@@ -51,7 +55,7 @@
                                 <span class="status <%= meeting.status %>"><%= meeting.status %></span>
                             </div>
                             <% if (meeting.notes) { %>
-                                <p><strong style="color: var(--text);">Notes:</strong> <%= meeting.notes %></p>
+                                <p><strong style="color: var(--color-charcoal-700);">Notes:</strong> <%= meeting.notes %></p>
                             <% } %>
                         </div>
                         <div class="card-actions">

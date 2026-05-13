@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeHive - Add Home</title>
-    <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/AddHome.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
@@ -48,7 +50,7 @@
                 <div class="map-card">
                     <div class="map-toolbar">
                         <span class="map-helper"><i class="fa-solid fa-circle-info"></i> Click the map or drag the marker to refine the address.</span>
-                        <button type="button" id="useCurrentLocation" class="btn btn-secondary">
+                        <button type="button" id="useCurrentLocation" class="btn-secondary" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.1rem;border-radius:0.85rem;font-weight:700;font-size:0.88rem;cursor:pointer;border:1px solid rgba(28,24,22,0.10);background:rgba(255,252,249,0.95);color:#1c1816;transition:all 0.25s ease;">
                             <i class="fa-solid fa-location-crosshairs"></i>
                             <span>Use My Current Location</span>
                         </button>
@@ -116,7 +118,7 @@
                         <i class="fa-solid fa-square-plus"></i>
                         <span>Add Home</span>
                     </button>
-                    <a href="/host/host-homelist" class="btn btn-secondary">
+                    <a href="/host/host-homelist" class="btn-secondary" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.85rem 1.2rem;border-radius:999px;font-weight:700;font-size:0.92rem;cursor:pointer;border:1px solid rgba(28,24,22,0.10);background:rgba(255,252,249,0.95);color:#1c1816;text-decoration:none;transition:all 0.25s ease;">
                         <i class="fa-solid fa-arrow-left"></i>
                         <span>Back to Listings</span>
                     </a>

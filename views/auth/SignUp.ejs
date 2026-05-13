@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeHive - Sign Up</title>
-    <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/signup.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
     <div class="auth-shell">
-        <div class="page-card auth-card">
-            <span class="eyebrow"><i class="fa-solid fa-user-plus"></i> Create account</span>
-            <h1>Join HomeHive</h1>
-            <p class="helper-text">Create an owner or buyer account to manage listings, meetings, and conversations.</p>
+        <div class="page-card auth-card" style="display:grid;gap:1.25rem;">
+            <div>
+                <span class="eyebrow"><i class="fa-solid fa-user-plus"></i> Create account</span>
+                <h1 style="margin-top:0.25rem;">Join HomeHive</h1>
+                <p class="helper-text" style="margin-top:0.35rem;">Create an owner or buyer account to manage listings, meetings, and conversations.</p>
+            </div>
             <% if (errorMessages && errorMessages.length > 0) { %>
                 <div class="alert alert-error">
                     <% errorMessages.forEach(error => { %>
@@ -47,7 +51,7 @@
                     </div>
                 </div>
                 <div class="role-group">
-                    <p class="helper-text">Choose your account type</p>
+                    <p class="helper-text" style="margin-bottom:0.6rem;">Choose your account type</p>
                     <div class="role-options">
                         <label class="role-option">
                             <input type="radio" name="role" value="Owner" <%= oldInput?.role === 'Owner' ? 'checked' : '' %> required>
@@ -64,6 +68,9 @@
                     <span>Create Account</span>
                 </button>
             </form>
+            <p class="helper-text" style="text-align:center;margin-top:0.5rem;">
+                Already have an account? <a href="/login" style="color:var(--color-green-400);font-weight:700;text-decoration:none;">Login</a>
+            </p>
         </div>
     </div>
     <script src="/js/animations.js"></script>

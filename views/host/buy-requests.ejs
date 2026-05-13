@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeHive - Buy Requests</title>
-    <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/chat.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
+    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
+    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
     <div class="site-nav">
         <div class="navbar">
             <a class="nav-brand" href="/">
@@ -26,7 +30,7 @@
         </div>
     </div>
 
-    <section class="page-section" style="padding-top:2rem;">
+    <section class="page-section">
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-solid fa-comments-dollar"></i> Buy requests</span>
             <h1>Requests for your properties</h1>
@@ -49,9 +53,9 @@
                                 <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= request.offeredPrice %></span>
                                 <span class="status <%= request.status %>"><%= request.status %></span>
                             </div>
-                            <p><strong style="color: var(--text);">Email:</strong> <%= request.buyer.email %></p>
-                            <p><strong style="color: var(--text);">Message:</strong> <%= request.message %></p>
-                            <p><strong style="color: var(--text);">Requested on:</strong> <%= request.createdAt.toDateString() %></p>
+                            <p><strong style="color: var(--color-charcoal-700);">Email:</strong> <%= request.buyer.email %></p>
+                            <p><strong style="color: var(--color-charcoal-700);">Message:</strong> <%= request.message %></p>
+                            <p><strong style="color: var(--color-charcoal-700);">Requested on:</strong> <%= request.createdAt.toDateString() %></p>
                         </div>
 
                         <div class="card-actions">
@@ -63,7 +67,7 @@
                                     </button>
                                 </form>
                                 <form action="/host/buy-request/<%= request._id %>/reject" method="POST" class="inline-form">
-                                    <button type="submit" class="btn btn-danger">
+                                    <button type="submit" class="btn-danger" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1rem;border:none;border-radius:0.85rem;font-weight:700;font-size:0.88rem;cursor:pointer;color:#fff;width:100%;background:linear-gradient(135deg,#b45353 0%,#d36d6d 100%);transition:all 0.25s ease;">
                                         <i class="fa-solid fa-xmark"></i>
                                         <span>Reject</span>
                                     </button>
@@ -77,7 +81,7 @@
                                     <i class="fa-solid fa-comments"></i>
                                     <span>Open Chat</span>
                                 </button>
-                                <button type="button" class="btn btn-secondary" onclick="scheduleMeeting('<%= request._id %>')">
+                                <button type="button" class="btn btn-secondary" onclick="scheduleMeeting('<%= request._id %>')" style="border:1px solid rgba(28,24,22,0.10);background:rgba(255,252,249,0.95);color:#1c1816;border-radius:0.85rem;padding:0.75rem 1rem;font-weight:700;font-size:0.88rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.25s ease;width:100%;">
                                     <i class="fa-regular fa-calendar-check"></i>
                                     <span>Schedule Meeting</span>
                                 </button>

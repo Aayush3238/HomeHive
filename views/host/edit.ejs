@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeHive - Edit Home</title>
-    <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/edit.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
+    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
+    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
     <div class="site-nav">
         <div class="navbar">
             <a class="nav-brand" href="/">
@@ -30,7 +34,7 @@
         <div class="page-card edit-card">
             <span class="eyebrow"><i class="fa-solid fa-pen"></i> Edit listing</span>
             <h1>Update property details</h1>
-            <form action="/host/edit/<%= home._id %>" method="POST" enctype="multipart/form-data" class="stack">
+            <form action="/host/edit/<%= home._id %>" method="POST" enctype="multipart/form-data" class="stack" style="margin-top:1rem;">
                 <div class="field-grid">
                     <div class="field">
                         <label for="houseNo">House Number</label>
@@ -71,7 +75,7 @@
                         <i class="fa-solid fa-floppy-disk"></i>
                         <span>Save Changes</span>
                     </button>
-                    <a href="/host/host-homelist" class="btn btn-secondary">
+                    <a href="/host/host-homelist" class="btn-secondary" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.85rem 1.2rem;border-radius:999px;font-weight:700;font-size:0.92rem;cursor:pointer;border:1px solid rgba(28,24,22,0.10);background:rgba(255,252,249,0.95);color:#1c1816;text-decoration:none;transition:all 0.25s ease;">
                         <i class="fa-solid fa-arrow-left"></i>
                         <span>Back</span>
                     </a>

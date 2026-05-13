@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeHive - Home Details</title>
-    <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/home-details.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
+    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
+    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
     <div class="site-nav">
         <div class="navbar">
             <a class="nav-brand" href="/">
@@ -29,7 +33,7 @@
         </div>
     </div>
 
-    <div class="home-details-container hero-card">
+    <div class="home-details-container hero-card" style="background:var(--color-surface);border-color:rgba(28,24,22,0.06);">
         <div class="detail-layout">
             <div class="detail-media">
                 <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 1280, height: 760 }); %>
@@ -56,6 +60,10 @@
                     <h2>Overview</h2>
                     <p><%= home.description %></p>
                 </div>
+                <a href="/" class="btn btn-accent" style="justify-self:start;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Back to listings</span>
+                </a>
             </div>
         </div>
     </div>

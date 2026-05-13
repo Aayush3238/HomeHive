@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeHive - Login</title>
-    <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
     <div class="auth-shell">
-        <div class="page-card auth-card">
-            <span class="eyebrow"><i class="fa-solid fa-user-shield"></i> Welcome back</span>
-            <h1>Login</h1>
-            <p class="helper-text">Access your saved homes, messages, and meetings.</p>
+        <div class="page-card auth-card" style="display:grid;gap:1.25rem;">
+            <div>
+                <span class="eyebrow"><i class="fa-solid fa-user-shield"></i> Welcome back</span>
+                <h1 style="margin-top:0.25rem;">Login</h1>
+                <p class="helper-text" style="margin-top:0.35rem;">Access your saved homes, messages, and meetings.</p>
+            </div>
             <% if (errorMessage) { %>
                 <div class="alert alert-error"><%= errorMessage %></div>
             <% } %>
@@ -31,6 +35,9 @@
                     <span>Login</span>
                 </button>
             </form>
+            <p class="helper-text" style="text-align:center;margin-top:0.5rem;">
+                Don't have an account? <a href="/signup" style="color:var(--color-green-400);font-weight:700;text-decoration:none;">Sign up</a>
+            </p>
         </div>
     </div>
     <script src="/js/animations.js"></script>

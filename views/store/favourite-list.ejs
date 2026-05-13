@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeHive - Saved Homes</title>
-    <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
+    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
+    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
     <div class="site-nav">
         <div class="navbar">
             <a class="nav-brand" href="/">
@@ -20,8 +24,60 @@
                 <a class="is-active" href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
                 <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
                 <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            </div>
         </div>
-    </ul>
+    </div>
+
+    <section class="page-section">
+        <div class="section-heading">
+            <span class="eyebrow"><i class="fa-regular fa-heart"></i> Saved homes</span>
+            <h1>Your favourites</h1>
+            <p>Properties you've saved for quick access.</p>
+        </div>
+
+        <% if (favourites && favourites.length > 0) { %>
+            <div class="homes-list">
+                <% favourites.forEach(home => { %>
+                    <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 420 }); %>
+                    <div class="home-card">
+                        <div class="home-media">
+                            <img
+                                src="<%= imageUrl %>"
+                                alt="Photo of <%= home.address.formattedAddress %>"
+                                class="home-img"
+                                loading="lazy"
+                                decoding="async"
+                                onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
+                            />
+                        </div>
+                        <div class="home-card-body">
+                            <h3><%= home.address.formattedAddress %></h3>
+                            <div class="home-meta">
+                                <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address.city || home.address.state %></span>
+                                <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
+                            </div>
+                            <p class="home-description"><%= home.description %></p>
+                        </div>
+                        <div class="card-actions">
+                            <a class="Details" href="/home/<%= home.id %>">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                <span>View Details</span>
+                            </a>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="page-card" style="text-align:center;">
+                <h2>No saved homes yet</h2>
+                <p>Browse listings and save the ones you like.</p>
+                <a href="/" class="btn btn-accent" style="display:inline-flex;margin-top:1rem;">
+                    <i class="fa-solid fa-compass"></i>
+                    <span>Explore Listings</span>
+                </a>
+            </div>
+        <% } %>
+    </section>
     <script src="/js/animations.js"></script>
 </body>
 </html>

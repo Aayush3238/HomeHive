@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeHive</title>
-    <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
@@ -37,6 +39,9 @@
     </div>
 
     <section class="hero-section">
+        <div class="hero-blob hero-blob--1" aria-hidden="true"></div>
+        <div class="hero-blob hero-blob--2" aria-hidden="true"></div>
+        <div class="hero-blob hero-blob--3" aria-hidden="true"></div>
         <div class="hero-mote" aria-hidden="true"></div>
         <div class="hero-mote" aria-hidden="true"></div>
         <div class="hero-mote" aria-hidden="true"></div>
@@ -92,7 +97,7 @@
                         </label>
                     </div>
                 </div>
-            </div>
+      0      </div>
         </div>
     </section>
 
@@ -101,6 +106,7 @@
             <span class="eyebrow"><i class="fa-solid fa-building"></i> Listings</span>
             <h2>Available homes</h2>
         </div>
+        <p id="searchSummary"></p>
     </div>
 
     <ul class="homes-list" id="listingGrid">
@@ -136,7 +142,7 @@
                     </div>
                     <p class="home-description"><%= home.description %></p>
                 </div>
-                <div class="card-actions" style="padding: 0 1.25rem 1.25rem;">
+                <div class="card-actions">
                     <% if (isLoggedIn && user.role === 'Buyer') { %>
                         <button type="button" onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">
                             <i class="fa-solid fa-paper-plane"></i>
@@ -149,7 +155,7 @@
                     </a>
                     <% if (isLoggedIn) { %>
                         <form action="/favourites/<%= home.id %>" method="POST" class="inline-form">
-                            <button type="submit" class="btn btn-secondary">
+                            <button type="submit" class="btn-secondary" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1rem;border-radius:0.85rem;font-weight:700;font-size:0.88rem;cursor:pointer;border:1px solid rgba(28,24,22,0.10);background:rgba(255,252,249,0.95);color:#1c1816;transition:all 0.25s ease;">
                                 <i class="fa-regular fa-heart"></i>
                                 <span>Save</span>
                             </button>
@@ -288,15 +294,6 @@
                 }
             });
 
-            if (searchSummary) {
-                if (query) {
-                    searchSummary.textContent = `Showing ${visibleCount} matching properties for "${searchInput.value.trim()}".`;
-                } else if (priceCap || preferredType !== 'any') {
-                    searchSummary.textContent = `Showing ${visibleCount} properties that match your current filters.`;
-                } else {
-                    searchSummary.textContent = 'Showing all properties.';
-                }
-            }
 
             refreshSmartMatchScores();
             savePreferences();
