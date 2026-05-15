@@ -12,6 +12,7 @@ const mapMessageRow = (row) => {
     sender: row.sender,
     receiver: row.receiver,
     message: row.message,
+    senderCopy: row.senderCopy,
     read: row.read,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -24,15 +25,19 @@ class Message {
     this.sender = data.sender;
     this.receiver = data.receiver;
     this.message = data.message;
+    this.senderCopy = data.senderCopy;
   }
 
   async save() {
+    // Note: In a real implementation, we would also encrypt a copy for the sender
+    // For simplicity in this example, we're only storing the receiver-encrypted message
     const message = await prisma.message.create({
       data: {
         conversationId: this.conversation,
         senderId: this.sender,
         receiverId: this.receiver,
         message: this.message,
+        senderCopy: this.senderCopy, // This would be encrypted with sender's public key in a full implementation
       },
     });
 

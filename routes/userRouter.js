@@ -15,5 +15,6 @@ userRouter.get('/home/:id', homeController.getHomeDetails );
 userRouter.post('/favourites/:id', homeController.addToFavourite );
 userRouter.post('/buy-request', homeController.createBuyRequest );
 userRouter.get('/messages/:requestId', homeController.getMessages);
+userRouter.get('/buy-request/:requestId', homeController.getBuyRequest);
 userRouter.post('/schedule-meeting', homeController.scheduleMeeting);
 module.exports = userRouter;

@@ -13,6 +13,7 @@ const mapUserRow = (row) => {
     email: row.email,
     password: row.password,
     role: row.role,
+    publicKey: row.public_key,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -48,6 +49,7 @@ class User {
     this.email = data.email;
     this.password = data.password;
     this.role = data.role;
+    this.publicKey = data.publicKey;
   }
 
   async save() {
@@ -58,6 +60,7 @@ class User {
         email: this.email,
         password: this.password,
         role: this.role,
+        publicKey: this.publicKey,
       },
     });
 
@@ -112,6 +115,15 @@ class User {
     });
 
     return favourites.map((item) => mapHomeRow(item.home));
+  }
+
+  static async updatePublicKey(userId, publicKey) {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { publicKey },
+    });
+
+    return mapUserRow(user);
   }
 }
 

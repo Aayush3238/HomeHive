@@ -118,32 +118,67 @@ exports.createBuyRequest = async (req, res, next) => {
   }
 };
 
+exports.getBuyRequest = async (req, res, next) => {
+   if (!req.session.user) {
+     return res.status(401).json({ error: 'Unauthorized' });
+   }
+
+   try {
+     const buyRequest = await BuyRequest.findById(req.params.requestId);
+     if (!buyRequest) {
+       return res.status(404).json({ error: 'Buy request not found' });
+     }
+
+     // Check if user is participant in this conversation
+     const isParticipant =
+       buyRequest.buyer.toString() === req.session.user.id
+       || buyRequest.owner.toString() === req.session.user.id;
+
+     if (!isParticipant) {
+       return res.status(403).json({ error: 'Forbidden' });
+     }
+
+     // Determine the other participant's ID
+     const otherParticipantId = 
+       buyRequest.buyer.toString() === req.session.user.id
+         ? buyRequest.owner.toString()
+         : buyRequest.buyer.toString();
+
+     res.json({
+       buyRequest,
+       otherParticipantId
+     });
+   } catch (err) {
+     return next(err);
+   }
+ };
+
 exports.getMessages = async (req, res, next) => {
-  if (!req.session.user) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+   if (!req.session.user) {
+     return res.status(401).json({ error: 'Unauthorized' });
+   }
 
-  try {
-    const buyRequest = await BuyRequest.findById(req.params.requestId);
-    if (!buyRequest) {
-      return res.status(404).json({ error: 'Conversation not found' });
-    }
+   try {
+     const buyRequest = await BuyRequest.findById(req.params.requestId);
+     if (!buyRequest) {
+       return res.status(404).json({ error: 'Conversation not found' });
+     }
 
-    const isParticipant =
-      buyRequest.buyer.toString() === req.session.user.id
-      || buyRequest.owner.toString() === req.session.user.id;
+     const isParticipant =
+       buyRequest.buyer.toString() === req.session.user.id
+       || buyRequest.owner.toString() === req.session.user.id;
 
-    if (!isParticipant) {
-      return res.status(403).json({ error: 'Forbidden' });
-    }
+     if (!isParticipant) {
+       return res.status(403).json({ error: 'Forbidden' });
+     }
 
-    const messages = await Message.findByConversationWithSender(req.params.requestId);
+     const messages = await Message.findByConversationWithSender(req.params.requestId);
 
-    return res.json(messages);
-  } catch (err) {
-    return next(err);
-  }
-};
+     return res.json(messages);
+   } catch (err) {
+     return next(err);
+   }
+ };
 
 exports.scheduleMeeting = async (req, res, next) => {
   if (!req.session.user) {

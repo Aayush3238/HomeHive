@@ -11,12 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
-    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
-    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
-    <div class="bg-blob-mid" aria-hidden="true"></div>
-    <div class="particle particle-circle particle-1" aria-hidden="true"></div>
-    <div class="particle particle-diamond particle-4" aria-hidden="true"></div>
-    <div class="particle particle-circle particle-7" aria-hidden="true"></div>
 
     <div class="site-nav">
         <div class="navbar">
@@ -106,11 +100,12 @@
                     <span class="chat-avatar"><i class="fa-solid fa-user"></i></span>
                     <div>
                         <h2 id="chatTitle">Conversation</h2>
+                        <p class="chat-notice">Messages are not end-to-end encrypted.</p>
                     </div>
                 </div>
                 <div id="chatMessages" class="chat-messages"></div>
                 <div class="chat-composer">
-                    <input type="text" id="messageInput" placeholder="Type your message...">
+                    <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off">
                     <button type="button" onclick="sendMessage()" class="btn btn-accent">
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
@@ -151,6 +146,7 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/crypto.js"></script>
     <script>
         const socket = io();
         const currentUserId = <%- JSON.stringify(user.id) %>;
@@ -160,8 +156,18 @@
         const chatMessages = document.getElementById('chatMessages');
         const chatTitle = document.getElementById('chatTitle');
         let currentRequestId = null;
+        let currentRecipientId = null;
 
-        function renderMessages(messages) {
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        async function renderMessages(messages) {
             chatMessages.innerHTML = '';
 
             if (!messages.length) {
@@ -169,32 +175,65 @@
                 return;
             }
 
-            messages.forEach((msg) => {
+            // Process messages in sequence to handle decryption properly
+            for (const msg of messages) {
                 const isMine = msg.sender && msg.sender._id === currentUserId;
                 const row = document.createElement('div');
                 row.className = `message-row ${isMine ? 'mine' : 'theirs'}`;
+                const senderName = isMine
+                    ? currentUserName
+                    : `${msg.sender.firstname} ${msg.sender.lastname}`;
+                const timeLabel = new Date(msg.createdAt).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                // Decrypt message if needed
+                let decryptedMessage = msg.message;
+                try {
+                    // Check if message appears to be encrypted (has our ENCRYPTED prefix when decoded)
+                    const decoded = atob(msg.message);
+                    if (decoded.startsWith('ENCRYPTED:')) {
+                        // Attempt to decrypt with user's private key
+                        const privateKey = CryptoUtils.getPrivateKey();
+                        if (privateKey) {
+                            decryptedMessage = await CryptoUtils.decryptMessage(msg.message, privateKey);
+                        }
+                        // If decryption fails, we'll show the encrypted content
+                    }
+                } catch (error) {
+                    // If not base64 or decryption fails, show original message
+                    console.warn('Could not decrypt message:', error);
+                }
+                
                 row.innerHTML = `
                     ${isMine ? '' : '<span class="chat-avatar"><i class="fa-solid fa-user"></i></span>'}
                     <div class="message-card">
                         <div class="message-meta">
-                            <span>${isMine ? currentUserName : `${msg.sender.firstname} ${msg.sender.lastname}`}</span>
+                            <span>${escapeHtml(senderName)}</span>
                             <span>•</span>
-                            <span>${new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            <span>${escapeHtml(timeLabel)}</span>
                         </div>
-                        <div class="message-text">${msg.message}</div>
+                        <div class="message-text">${escapeHtml(decryptedMessage)}</div>
                     </div>
                     ${isMine ? '<span class="chat-avatar"><i class="fa-solid fa-user"></i></span>' : ''}
                 `;
                 chatMessages.appendChild(row);
-            });
+            }
 
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        function openChat(requestId, buyerName) {
+        async function openChat(requestId, buyerName) {
             currentRequestId = requestId;
+            // Extract recipient ID from the request context (we'll need to pass it)
+            // For now, we'll get it from the message loading
             chatTitle.textContent = `Chat with ${buyerName}`;
             chatModal.classList.add('show');
+            
+            // Initialize crypto
+            await CryptoUtils.initCrypto();
+            
             loadMessages(requestId);
             socket.emit('joinRoom', requestId);
         }
@@ -220,17 +259,27 @@
                 .then(messages => renderMessages(messages));
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
             if (message && currentRequestId) {
-                socket.emit('sendMessage', {
-                    requestId: currentRequestId,
-                    message,
-                    senderId: currentUserId
-                });
-                messageInput.value = '';
-                messageInput.focus();
+                try {
+                    // Encrypt the message before sending
+                    // In a real implementation, we would get the recipient's public key from the server
+                    // For this example, we'll simulate encryption
+                    const encryptedMessage = await CryptoUtils.encryptMessage(message, "recipient-public-key-placeholder");
+                    
+                    socket.emit('sendMessage', {
+                        requestId: currentRequestId,
+                        message: encryptedMessage,
+                        senderId: currentUserId
+                    });
+                    messageInput.value = '';
+                    messageInput.focus();
+                } catch (error) {
+                    console.error('Error encrypting message:', error);
+                    alert('Failed to send message due to encryption error');
+                }
             }
         }
 

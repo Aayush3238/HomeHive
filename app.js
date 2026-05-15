@@ -7,8 +7,10 @@ const socketIo = require('socket.io');
 const loadEnv = require('./config/loadEnv');
 const PostgresSessionStore = require('./db/sessionStore');
 const { initDb } = require('./db');
+const cryptoRouter = require('./routes/cryptoRouter');
 
 loadEnv();
+const isProduction = process.env.NODE_ENV === 'production';
 
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -45,7 +47,7 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
-    secure: false,
+    secure: isProduction,
     sameSite: 'lax',
   },
 }));
@@ -63,6 +65,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(userRouter);
 app.use(hostRouter);
 app.use(authRouter);
+app.use('/api/crypto', cryptoRouter);
 
 const errorController = require('./controller/errors');
 app.use(errorController.error);
@@ -89,20 +92,36 @@ io.on('connection', (socket) => {
         ? buyRequest.owner
         : buyRequest.buyer;
 
+      // Fetch receiver's public key for encryption
+      const receiverUser = await User.findById(receiver);
+      if (!receiverUser || !receiverUser.publicKey) {
+        socket.emit('messageError', { error: 'Receiver has not set up encryption' });
+        return;
+      }
+
+      // Encrypt the message
+      const cryptoUtils = require('./utils/crypto');
+      const encryptedMessage = await cryptoUtils.encryptMessage(message, receiverUser.publicKey);
+
       const newMessage = new Message({
         conversation: requestId,
         sender,
         receiver,
-        message,
+        message: encryptedMessage, // Store encrypted message
       });
 
       await newMessage.save();
 
       io.to(requestId).emit('newMessage', {
         requestId,
-        message: newMessage,
+        message: {
+          ...newMessage,
+          // Include a flag to indicate this is encrypted
+          encrypted: true
+        },
       });
     } catch (err) {
+      console.error('Error sending message:', err);
       socket.emit('messageError', { error: 'Unable to send message.' });
     }
   });

@@ -100,6 +100,41 @@
     });
   }
 
+  function initAmbientSwimmers() {
+    if (document.querySelector('.ambient-swimmers')) return;
+
+    var layer = document.createElement('div');
+    layer.className = 'ambient-swimmers';
+    layer.setAttribute('aria-hidden', 'true');
+
+    var configs = [
+      { kind: 'orb', top: '10%', left: '6%', size: '120px', duration: '19s', delay: '0s', opacity: '0.42' },
+      { kind: 'orb', top: '72%', left: '14%', size: '88px', duration: '15s', delay: '1.2s', opacity: '0.34' },
+      { kind: 'orb', top: '20%', right: '8%', size: '104px', duration: '21s', delay: '2.8s', opacity: '0.38' },
+      { kind: 'orb', top: '82%', right: '12%', size: '138px', duration: '24s', delay: '0.9s', opacity: '0.3' },
+      { kind: 'line', top: '34%', left: '18%', size: '180px', duration: '18s', delay: '1.8s', opacity: '0.44', rotate: '-16deg' },
+      { kind: 'line', top: '58%', right: '16%', size: '140px', duration: '20s', delay: '3.2s', opacity: '0.36', rotate: '22deg' }
+    ];
+
+    configs.forEach(function (config) {
+      var item = document.createElement('span');
+      item.className = 'ambient-swimmer ambient-swimmer--' + config.kind;
+      item.style.top = config.top;
+      if (config.left) item.style.left = config.left;
+      if (config.right) item.style.right = config.right;
+      item.style.setProperty('--size', config.size);
+      item.style.setProperty('--duration', config.duration);
+      item.style.animationDelay = config.delay;
+      item.style.opacity = config.opacity;
+      if (config.rotate) {
+        item.style.setProperty('--base-rotate', config.rotate);
+      }
+      layer.appendChild(item);
+    });
+
+    document.body.appendChild(layer);
+  }
+
   window.showToast = function (message, type) {
     type = type || 'success';
     var container = document.getElementById('toast-container');
@@ -136,6 +171,7 @@
   };
 
   function init() {
+    initAmbientSwimmers();
     initScrollReveal();
     initStagger();
     initImageLoading();

@@ -11,12 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
-    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
-    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
-    <div class="bg-blob-mid" aria-hidden="true"></div>
-    <div class="particle particle-circle particle-2" aria-hidden="true"></div>
-    <div class="particle particle-diamond particle-5" aria-hidden="true"></div>
-    <div class="particle particle-circle particle-8" aria-hidden="true"></div>
 
     <div class="site-nav">
         <div class="navbar">
@@ -26,9 +20,21 @@
             </a>
             <div class="nav-links">
                 <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
-                <a class="is-active" href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
-                <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
-                <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+                <% if (isLoggedIn) { %>
+                    <% if (user && user.role === 'Buyer') { %>
+                        <a class="is-active" href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
+                    <% } %>
+                    <% if (user && user.role === 'Owner') { %>
+                        <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
+                        <a href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
+                        <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
+                    <% } %>
+                    <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
+                    <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+                <% } else { %>
+                    <a href="/login"><i class="fa-solid fa-user"></i> Login</a>
+                    <a href="/signup"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+                <% } %>
             </div>
         </div>
     </div>

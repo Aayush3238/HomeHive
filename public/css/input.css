@@ -1286,7 +1286,7 @@ input[type='submit'],
 .toast i { font-size: 1rem; }
 .toast-success i { color: #16a34a; }
 .toast-error i { color: #dc2626; }
-.toast-info i { color: #2563eb; }
+.toast-info i { color: var(--accent-ocean); }
 .toast-warning i { color: #d97706; }
 
 /* ── Image blur-up loading ── */
@@ -1560,6 +1560,12 @@ input[type='submit'],
 
 .chat-header h2 { font-size: 1rem; }
 
+.chat-notice {
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
 .chat-avatar {
   display: inline-flex;
   align-items: center;
@@ -1604,6 +1610,7 @@ input[type='submit'],
   border-radius: 0.85rem;
   padding: 0.65rem 0.9rem;
   border: 1px solid rgba(26, 24, 22, 0.04);
+  max-width: 100%;
 }
 
 .message-row.mine .message-card {
@@ -1624,6 +1631,8 @@ input[type='submit'],
   font-size: 0.88rem;
   color: var(--color-stone-700);
   line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .chat-composer {
@@ -1631,11 +1640,13 @@ input[type='submit'],
   gap: 0.55rem;
   padding: 0.85rem 1.25rem;
   border-top: 1px solid rgba(26, 24, 22, 0.06);
+  align-items: center;
 }
 
 .chat-composer input {
   flex: 1;
   margin: 0;
+  min-width: 0;
 }
 
 .chat-composer button {
@@ -1775,4 +1786,23 @@ input[type='submit'],
   .listing-form { padding: 1.1rem; }
   .coordinates-row { grid-template-columns: 1fr; }
   .home-card img, .home-img { height: 180px; }
+  .chat-modal {
+    width: min(100%, 100vw - 1rem);
+    max-height: min(92vh, 100%);
+  }
+  .chat-header,
+  .chat-messages,
+  .chat-composer {
+    padding-left: 0.9rem;
+    padding-right: 0.9rem;
+  }
+  .message-row { max-width: 100%; }
+  .chat-composer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .chat-composer button {
+    width: 100%;
+    justify-content: center;
+  }
 }

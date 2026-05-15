@@ -31,6 +31,7 @@ model User {
   email              String               @unique
   password           String
   role               Role
+  publicKey          String?              @map("public_key")
   createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamptz(6)
   favourites         UserFavourite[]
@@ -101,9 +102,10 @@ model BuyRequest {
 model Message {
   id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   conversationId String    @map("conversation_id") @db.Uuid
-  senderId       String    @map("sender_id") @db.Uuid
-  receiverId     String    @map("receiver_id") @db.Uuid
-  message        String
+  senderId       String    @map("sender_id") @db.Uid
+  receiverId     String    @map("receiver_id") @db.Uid
+  message        String    // Encrypted with receiver's public key
+  senderCopy     String?   // Encrypted with sender's public key, for sender to decrypt
   read           Boolean   @default(false)
   createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt      DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)

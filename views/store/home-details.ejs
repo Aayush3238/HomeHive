@@ -10,13 +10,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
-<body>
-    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
-    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
-    <div class="bg-blob-mid" aria-hidden="true"></div>
-    <div class="particle particle-circle particle-1" aria-hidden="true"></div>
-    <div class="particle particle-diamond particle-4" aria-hidden="true"></div>
-    <div class="particle particle-circle particle-7" aria-hidden="true"></div>
+<body class="theme-ocean">
 
     <div class="site-nav">
         <div class="navbar">
@@ -27,7 +21,14 @@
             <div class="nav-links">
                 <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
                 <% if (isLoggedIn) { %>
-                    <a href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
+                    <% if (user && user.role === 'Buyer') { %>
+                        <a href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
+                    <% } %>
+                    <% if (user && user.role === 'Owner') { %>
+                        <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
+                        <a href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
+                        <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
+                    <% } %>
                     <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
                     <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
                 <% } else { %>
@@ -57,13 +58,6 @@
             <div class="detail-content">
                 <span class="eyebrow"><i class="fa-solid fa-house-chimney"></i> Property details</span>
                 <h1><%= home.address?.formattedAddress || '' %></h1>
-                <div class="detail-meta">
-                    <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
-                    <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address?.city || home.address?.state || 'Location pending' %></span>
-                    <% if (home.propertyType) { %>
-                        <span class="meta-pill"><i class="fa-solid fa-building"></i><%= home.propertyType.charAt(0).toUpperCase() + home.propertyType.slice(1) %></span>
-                    <% } %>
-                </div>
                 <div class="detail-description">
                     <h2>Overview</h2>
                     <p><%= home.description %></p>

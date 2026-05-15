@@ -1,25 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 :root {
-  --bg: #f7f3ee;
-  --bg-accent: #ede6de;
-  --surface: rgba(255, 252, 249, 0.92);
-  --surface-strong: rgba(255, 252, 249, 0.97);
-  --surface-border: rgba(30, 25, 22, 0.08);
-  --text: #1c1816;
-  --muted: #6b625a;
-  --brand: #1c1816;
-  --brand-strong: #0f0d0b;
-  --brand-soft: rgba(28, 24, 22, 0.07);
-  --accent: #c8924b;
-  --accent-soft: rgba(200, 146, 75, 0.14);
+  --bg: #F6F4EF;
+  --bg-accent: #F0EDE6;
+  --surface: #FFFFFF;
+  --surface-strong: #FFFFFF;
+  --surface-border: #E7E3DA;
+  --text: #071025;
+  --muted: #4b5563;
+  --brand: #1F1F1F;
+  --brand-strong: #1F1F1F;
+  --brand-soft: rgba(31, 31, 31, 0.07);
+  --accent: #5C7C5A;
+  --accent-soft: rgba(92, 124, 90, 0.14);
   --danger: #b54c4c;
   --danger-soft: rgba(181, 76, 76, 0.12);
-  --shadow: 0 28px 60px rgba(20, 15, 12, 0.08);
-  --shadow-soft: 0 14px 34px rgba(20, 15, 12, 0.05);
-  --radius-lg: 28px;
-  --radius-md: 20px;
-  --radius-sm: 14px;
+  --shadow: 0 2px 10px rgba(0,0,0,0.04);
+  --shadow-soft: 0 1px 5px rgba(0,0,0,0.02);
+  --radius-lg: 20px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
   --max-width: 1200px;
   --space-1: 4px;
   --space-2: 8px;
@@ -49,54 +49,29 @@ body {
   color: var(--text);
   font-family: 'Manrope', 'Segoe UI', sans-serif;
   line-height: 1.6;
+  background-color: var(--bg);
+  /* Subtle architectural grid pattern */
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.01) 1px, transparent 1px),
+    /* Low-opacity grain/noise texture */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-size: 200px 200px, 200px 200px;
+  background-repeat: repeat, repeat;
+  background-blend-mode: normal, overlay;
+  background-position: center, center;
+  /* Large blurred muted green/beige blobs */
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(92, 124, 90, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(180, 160, 140, 0.02) 0%, transparent 50%);
+  background-size: 1200px 1200px, 1000px 1000px;
+  background-repeat: no-repeat, no-repeat;
+  background-blend-mode: normal, normal, normal;
 }
 
-/* ── Warm atmospheric background + dot grid ── */
-body {
-  background-image:
-    radial-gradient(circle, rgba(28, 24, 22, 0.04) 1px, transparent 1px),
-    radial-gradient(circle at 20% 10%, rgba(200, 146, 75, 0.07), transparent 40%),
-    radial-gradient(circle at 85% 15%, rgba(200, 146, 75, 0.05), transparent 35%),
-    radial-gradient(circle at 50% 85%, rgba(180, 140, 100, 0.06), transparent 40%),
-    radial-gradient(circle at 15% 70%, rgba(140, 120, 100, 0.04), transparent 30%),
-    linear-gradient(180deg, #fdfaf7 0%, var(--bg) 40%, #ede4da 100%);
-  background-size: 32px 32px, auto, auto, auto, auto, auto;
-}
-
+/* Remove the pseudo-elements for the floating blobs since we're using background instead */
 body::before,
 body::after {
-  content: '';
-  position: fixed;
-  inset: auto;
-  width: 30rem;
-  height: 30rem;
-  border-radius: 999px;
-  filter: blur(120px);
-  opacity: 0.12;
-  pointer-events: none;
-  z-index: -1;
-}
-
-body::before {
-  top: -12rem;
-  right: -10rem;
-  background: radial-gradient(circle, #c8924b, #d4a96a);
-  animation: ambientFloat 20s ease-in-out infinite;
-}
-
-body::after {
-  left: -14rem;
-  bottom: -12rem;
-  background: radial-gradient(circle, #8a7a6a, #b8a088);
-  animation: ambientFloat 25s ease-in-out infinite reverse;
-  animation-delay: -10s;
-}
-
-/* ── Subtle architectural dot grid ── */
-body {
-  background-image:
-    radial-gradient(circle, rgba(28, 24, 22, 0.04) 1px, transparent 1px);
-  background-size: 32px 32px;
+  display: none;
 }
 
 a {
@@ -960,7 +935,7 @@ input[type='submit'],
 
 .toast-success i { color: #16a34a; }
 .toast-error i { color: #dc2626; }
-.toast-info i { color: #2563eb; }
+.toast-info i { color: var(--accent-ocean); }
 .toast-warning i { color: #d97706; }
 
 /* ── Image blur-up loading ── */
