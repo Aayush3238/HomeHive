@@ -102,8 +102,8 @@ model BuyRequest {
 model Message {
   id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   conversationId String    @map("conversation_id") @db.Uuid
-  senderId       String    @map("sender_id") @db.Uid
-  receiverId     String    @map("receiver_id") @db.Uid
+  senderId       String    @map("sender_id") @db.Uuid
+  receiverId     String    @map("receiver_id") @db.Uuid
   message        String    // Encrypted with receiver's public key
   senderCopy     String?   // Encrypted with sender's public key, for sender to decrypt
   read           Boolean   @default(false)
