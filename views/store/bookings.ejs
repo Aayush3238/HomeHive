@@ -1,49 +1,19 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeHive - Meetings</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <%- include('../partials/head', {
+        pageTitle: 'HomeHive | Meetings',
+        pageDescription: 'Track scheduled meetings and continue buyer-owner conversations.'
+    }) %>
 </head>
 <body>
-    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
-    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
-    <div class="bg-blob-mid" aria-hidden="true"></div>
-    <div class="particle particle-circle particle-1" aria-hidden="true"></div>
-    <div class="particle particle-diamond particle-3" aria-hidden="true"></div>
-    <div class="particle particle-circle particle-6" aria-hidden="true"></div>
+    <%- include('../partials/nav', { activeNav: 'bookings' }) %>
 
-    <div class="site-nav">
-        <div class="navbar">
-            <a class="nav-brand" href="/">
-                <i class="fa-solid fa-house"></i>
-                <span>HomeHive</span>
-            </a>
-            <div class="nav-links">
-                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
-                <% if (user && user.role === 'Owner') { %>
-                    <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
-                    <a href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
-                    <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
-                <% } %>
-                <% if (user && user.role === 'Buyer') { %>
-                    <a href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
-                <% } %>
-                <a class="is-active" href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
-                <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
-            </div>
-        </div>
-    </div>
-
-    <section class="page-section">
+    <section class="page-section reveal">
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-regular fa-calendar-check"></i> Meetings</span>
-            <h1>Your scheduled meetings</h1>
+            <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Scheduled conversations</h1>
+            <p>Everything booked through the request workflow appears here so both sides can keep momentum after an offer is accepted.</p>
         </div>
 
         <% if (meetings && meetings.length > 0) { %>
@@ -51,29 +21,37 @@
                 <% meetings.forEach(meeting => { %>
                     <% const otherParticipant = meeting.participants.find(p => p._id.toString() !== user.id); %>
                     <article class="meeting-card card-item" style="padding:1.25rem; display:grid; gap:1rem;">
-                        <div class="stack" style="gap:0.65rem;">
-                            <h3>Meeting with <%= otherParticipant.firstname %> <%= otherParticipant.lastname %></h3>
+                        <div class="stack">
+                            <div class="price-highlight">
+                                <div>
+                                    <div class="price-label">Meeting partner</div>
+                                    <strong style="font-size:1.1rem;">Meeting with <%= otherParticipant.firstname %> <%= otherParticipant.lastname %></strong>
+                                </div>
+                                <span class="status <%= meeting.status %>"><%= meeting.status %></span>
+                            </div>
                             <div class="home-meta">
                                 <span class="meta-pill"><i class="fa-regular fa-calendar"></i><%= new Date(meeting.scheduledDate).toLocaleString() %></span>
                                 <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= meeting.location %></span>
-                                <span class="status <%= meeting.status %>"><%= meeting.status %></span>
                             </div>
                             <% if (meeting.notes) { %>
-                                <p><strong style="color: var(--color-stone-700);">Notes:</strong> <%= meeting.notes %></p>
+                                <p><%= meeting.notes %></p>
                             <% } %>
                         </div>
                         <div class="card-actions">
                             <button type="button" class="btn btn-accent" onclick="openChat('<%= meeting.buyRequest._id %>', <%- JSON.stringify(`${otherParticipant.firstname} ${otherParticipant.lastname}`) %>)">
                                 <i class="fa-solid fa-comments"></i>
-                                <span>Open Chat</span>
+                                <span>Open chat</span>
                             </button>
                         </div>
                     </article>
                 <% }) %>
             </div>
         <% } else { %>
-            <div class="page-card" style="text-align:center;">
-                <h2>No meetings scheduled yet</h2>
+            <div class="empty-state page-card">
+                <span class="empty-state-icon"><i class="fa-regular fa-calendar"></i></span>
+                <span class="eyebrow">No meetings scheduled</span>
+                <h3>There are no confirmed meetings yet.</h3>
+                <p>Accepted requests that turn into meetings will show up here automatically.</p>
             </div>
         <% } %>
     </section>
@@ -87,7 +65,7 @@
                 <div class="chat-header">
                     <span class="chat-avatar"><i class="fa-solid fa-user"></i></span>
                     <div>
-                        <h2 id="chatTitle">Conversation</h2>
+                        <h3 id="chatTitle">Conversation</h3>
                         <p class="chat-notice">Messages are not end-to-end encrypted.</p>
                     </div>
                 </div>
@@ -112,7 +90,6 @@
         const chatMessages = document.getElementById('chatMessages');
         const chatTitle = document.getElementById('chatTitle');
         let currentRequestId = null;
-        let currentRecipientId = null;
 
         function escapeHtml(value) {
             return String(value ?? '')
@@ -131,37 +108,26 @@
                 return;
             }
 
-            // Process messages in sequence to handle decryption properly
             for (const msg of messages) {
                 const isMine = msg.sender && msg.sender._id === currentUserId;
                 const row = document.createElement('div');
                 row.className = `message-row ${isMine ? 'mine' : 'theirs'}`;
-                const senderName = isMine
-                    ? currentUserName
-                    : `${msg.sender.firstname} ${msg.sender.lastname}`;
-                const timeLabel = new Date(msg.createdAt).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
-                // Decrypt message if needed
+                const senderName = isMine ? currentUserName : `${msg.sender.firstname} ${msg.sender.lastname}`;
+                const timeLabel = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 let decryptedMessage = msg.message;
+
                 try {
-                    // Check if message appears to be encrypted (has our ENCRYPTED prefix when decoded)
                     const decoded = atob(msg.message);
                     if (decoded.startsWith('ENCRYPTED:')) {
-                        // Attempt to decrypt with user's private key
                         const privateKey = CryptoUtils.getPrivateKey();
                         if (privateKey) {
                             decryptedMessage = await CryptoUtils.decryptMessage(msg.message, privateKey);
                         }
-                        // If decryption fails, we'll show the encrypted content
                     }
                 } catch (error) {
-                    // If not base64 or decryption fails, show original message
                     console.warn('Could not decrypt message:', error);
                 }
-                
+
                 row.innerHTML = `
                     ${isMine ? '' : '<span class="chat-avatar"><i class="fa-solid fa-user"></i></span>'}
                     <div class="message-card">
@@ -184,10 +150,7 @@
             currentRequestId = requestId;
             chatTitle.textContent = `Chat with ${otherName}`;
             chatModal.classList.add('show');
-            
-            // Initialize crypto
             await CryptoUtils.initCrypto();
-            
             loadMessages(requestId);
             socket.emit('joinRoom', requestId);
         }
@@ -207,43 +170,33 @@
         async function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
-            if (message && currentRequestId) {
-                try {
-                    // Encrypt the message before sending
-                    // In a real implementation, we would get the recipient's public key from the server
-                    // For this example, we'll simulate encryption
-                    const encryptedMessage = await CryptoUtils.encryptMessage(message, "recipient-public-key-placeholder");
-                    
-                    socket.emit('sendMessage', {
-                        requestId: currentRequestId,
-                        message: encryptedMessage,
-                        senderId: currentUserId
-                    });
-                    messageInput.value = '';
-                    messageInput.focus();
-                } catch (error) {
-                    console.error('Error encrypting message:', error);
-                    alert('Failed to send message due to encryption error');
-                }
+            if (!message || !currentRequestId) return;
+
+            try {
+                const encryptedMessage = await CryptoUtils.encryptMessage(message, 'recipient-public-key-placeholder');
+                socket.emit('sendMessage', {
+                    requestId: currentRequestId,
+                    message: encryptedMessage,
+                    senderId: currentUserId
+                });
+                messageInput.value = '';
+                if (window.showToast) window.showToast('Message sent.', 'success');
+            } catch (error) {
+                console.error('Error encrypting message:', error);
+                if (window.showToast) window.showToast('Failed to send the message.', 'error');
             }
         }
 
         socket.on('newMessage', (data) => {
-            if (data.requestId === currentRequestId) {
-                loadMessages(currentRequestId);
-            }
+            if (data.requestId === currentRequestId) loadMessages(currentRequestId);
         });
 
         document.getElementById('messageInput').addEventListener('keypress', function (event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
+            if (event.key === 'Enter') sendMessage();
         });
 
         chatModal.addEventListener('click', (event) => {
-            if (event.target === chatModal) {
-                closeChatModal();
-            }
+            if (event.target === chatModal) closeChatModal();
         });
     </script>
     <script src="/js/animations.js"></script>

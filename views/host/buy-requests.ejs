@@ -1,93 +1,98 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeHive - Buy Requests</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <%- include('../partials/head', {
+        pageTitle: 'HomeHive | Buyer Requests',
+        pageDescription: 'Review incoming offers, continue conversations, and schedule meetings with buyers.'
+    }) %>
 </head>
 <body>
+    <%- include('../partials/nav', { activeNav: 'requests' }) %>
 
-    <div class="site-nav">
-        <div class="navbar">
-            <a class="nav-brand" href="/">
-                <i class="fa-solid fa-house"></i>
-                <span>HomeHive</span>
-            </a>
-            <div class="nav-links">
-                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
-                <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
-                <a href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
-                <a class="is-active" href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
-                <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
-                <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
-            </div>
-        </div>
-    </div>
+    <section class="dashboard-page dashboard-page-spaced">
+        <div class="dashboard-layout">
+            <aside class="dashboard-sidebar reveal" data-sidebar>
+                <div class="dashboard-profile">
+                    <div class="dashboard-avatar"><i class="fa-solid fa-comments-dollar"></i></div>
+                    <div>
+                        <span class="eyebrow"><i class="fa-solid fa-wave-square"></i> Demand pipeline</span>
+                        <h3 style="margin-top:0.75rem;">Buyer requests</h3>
+                        <p style="margin:0.35rem 0 0;">Review inbound offers, reply quickly, and move accepted buyers into meetings.</p>
+                    </div>
+                </div>
+                <nav class="dashboard-menu">
+                    <a class="btn btn-secondary" href="/host/host-homelist"><i class="fa-solid fa-chart-line"></i><span>Overview</span></a>
+                    <a class="btn btn-secondary" href="/host/add-home"><i class="fa-solid fa-square-plus"></i><span>Add listing</span></a>
+                    <a class="btn btn-secondary" href="/store/bookings"><i class="fa-regular fa-calendar-check"></i><span>Meetings</span></a>
+                </nav>
+            </aside>
 
-    <section class="page-section">
-        <div class="section-heading">
-            <span class="eyebrow"><i class="fa-solid fa-comments-dollar"></i> Buy requests</span>
-            <h1>Requests for your properties</h1>
-        </div>
+            <main class="dashboard-main reveal">
+                <div class="section-heading" style="margin-bottom:0;">
+                    <span class="eyebrow"><i class="fa-solid fa-comments"></i> Incoming demand</span>
+                    <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Requests for your properties</h1>
+                    <p>Approve, reject, or move buyers forward to scheduling without losing chat context.</p>
+                </div>
 
-        <% if (buyRequests.length === 0) { %>
-            <div class="page-card" style="text-align:center;">
-                <h2>No buy requests yet</h2>
-            </div>
-        <% } else { %>
-            <div class="card-list">
-                <% buyRequests.forEach(request => { %>
-                    <article class="request-card card-item" style="padding:1.25rem; display:grid; gap:1rem;">
-                        <div class="stack" style="gap:0.6rem;">
-                            <h3><%= request.home.address.formattedAddress %></h3>
-                            <div class="home-meta">
-                                <span class="meta-pill"><i class="fa-solid fa-user"></i><%= request.buyer.firstname %> <%= request.buyer.lastname %></span>
-                                <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= request.offeredPrice %></span>
-                                <span class="status <%= request.status %>"><%= request.status %></span>
-                            </div>
-                            <p><strong style="color: var(--color-stone-700);">Email:</strong> <%= request.buyer.email %></p>
-                            <p><strong style="color: var(--color-stone-700);">Message:</strong> <%= request.message %></p>
-                            <p><strong style="color: var(--color-stone-700);">Requested on:</strong> <%= request.createdAt.toDateString() %></p>
-                        </div>
-
-                        <div class="card-actions">
-                            <% if (request.status === 'pending') { %>
-                                <form action="/host/buy-request/<%= request._id %>/accept" method="POST" class="inline-form">
-                                    <button type="submit">
-                                        <i class="fa-solid fa-check"></i>
-                                        <span>Accept</span>
+                <% if (buyRequests.length === 0) { %>
+                    <div class="empty-state page-card">
+                        <span class="empty-state-icon"><i class="fa-solid fa-inbox"></i></span>
+                        <span class="eyebrow">No requests yet</span>
+                        <h3>Nothing has landed in the pipeline yet.</h3>
+                        <p>Once buyers start submitting offers, this page becomes your control center for replies, chat, and scheduling.</p>
+                    </div>
+                <% } else { %>
+                    <div class="card-list">
+                        <% buyRequests.forEach(request => { %>
+                            <article class="request-card card-item" style="padding:1.25rem; display:grid; gap:1rem;">
+                                <div class="stack">
+                                    <div class="price-highlight">
+                                        <div>
+                                            <div class="price-label">Offered price</div>
+                                            <strong>Rs <%= request.offeredPrice %></strong>
+                                        </div>
+                                        <span class="status <%= request.status %>"><%= request.status %></span>
+                                    </div>
+                                    <h3><%= request.home.address.formattedAddress %></h3>
+                                    <div class="home-meta">
+                                        <span class="meta-pill"><i class="fa-solid fa-user"></i><%= request.buyer.firstname %> <%= request.buyer.lastname %></span>
+                                        <span class="meta-pill"><i class="fa-solid fa-envelope"></i><%= request.buyer.email %></span>
+                                    </div>
+                                    <p><%= request.message %></p>
+                                    <p class="helper-text">Requested on <%= request.createdAt.toDateString() %></p>
+                                </div>
+                                <div class="card-actions">
+                                    <% if (request.status === 'pending') { %>
+                                        <form action="/host/buy-request/<%= request._id %>/accept" method="POST" class="inline-form">
+                                            <button type="submit" class="btn btn-accent">
+                                                <i class="fa-solid fa-check"></i>
+                                                <span>Accept</span>
+                                            </button>
+                                        </form>
+                                        <form action="/host/buy-request/<%= request._id %>/reject" method="POST" class="inline-form">
+                                            <button type="submit" class="btn-danger">
+                                                <i class="fa-solid fa-xmark"></i>
+                                                <span>Reject</span>
+                                            </button>
+                                        </form>
+                                    <% } %>
+                                    <button type="button" class="btn btn-secondary" onclick="openChat('<%= request._id %>', <%- JSON.stringify(`${request.buyer.firstname} ${request.buyer.lastname}`) %>)">
+                                        <i class="fa-solid fa-comments"></i>
+                                        <span>Open chat</span>
                                     </button>
-                                </form>
-                                <form action="/host/buy-request/<%= request._id %>/reject" method="POST" class="inline-form">
-                                    <button type="submit" class="btn-danger" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1rem;border:none;border-radius:0.85rem;font-weight:700;font-size:0.88rem;cursor:pointer;color:#fff;width:100%;background:#b45353;transition:all 0.25s ease;">
-                                        <i class="fa-solid fa-xmark"></i>
-                                        <span>Reject</span>
-                                    </button>
-                                </form>
-                                <button type="button" class="btn btn-accent" onclick="openChat('<%= request._id %>', <%- JSON.stringify(`${request.buyer.firstname} ${request.buyer.lastname}`) %>)">
-                                    <i class="fa-solid fa-comments"></i>
-                                    <span>Open Chat</span>
-                                </button>
-                            <% } else if (request.status === 'accepted') { %>
-                                <button type="button" class="btn btn-accent" onclick="openChat('<%= request._id %>', <%- JSON.stringify(`${request.buyer.firstname} ${request.buyer.lastname}`) %>)">
-                                    <i class="fa-solid fa-comments"></i>
-                                    <span>Open Chat</span>
-                                </button>
-                                <button type="button" class="btn-secondary" onclick="scheduleMeeting('<%= request._id %>')" style="border:1px solid rgba(28,24,22,0.10);background:rgba(255,252,249,0.95);color:#1c1816;border-radius:0.85rem;padding:0.75rem 1rem;font-weight:700;font-size:0.88rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.25s ease;width:100%;">
-                                    <i class="fa-regular fa-calendar-check"></i>
-                                    <span>Schedule Meeting</span>
-                                </button>
-                            <% } %>
-                        </div>
-                    </article>
-                <% }) %>
-            </div>
-        <% } %>
+                                    <% if (request.status === 'accepted') { %>
+                                        <button type="button" class="btn btn-accent" onclick="scheduleMeeting('<%= request._id %>')">
+                                            <i class="fa-regular fa-calendar-check"></i>
+                                            <span>Schedule meeting</span>
+                                        </button>
+                                    <% } %>
+                                </div>
+                            </article>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </main>
+        </div>
     </section>
 
     <div id="chatModal" class="modal">
@@ -99,7 +104,7 @@
                 <div class="chat-header">
                     <span class="chat-avatar"><i class="fa-solid fa-user"></i></span>
                     <div>
-                        <h2 id="chatTitle">Conversation</h2>
+                        <h3 id="chatTitle">Conversation</h3>
                         <p class="chat-notice">Messages are not end-to-end encrypted.</p>
                     </div>
                 </div>
@@ -119,14 +124,14 @@
             <button type="button" class="close" onclick="closeMeetingModal()">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <div class="section-heading" style="width:auto; margin-bottom:1rem;">
-                <span class="eyebrow"><i class="fa-regular fa-calendar-check"></i> Meetings</span>
-                <h2>Schedule Meeting</h2>
+            <div class="section-heading" style="margin-bottom:1rem;">
+                <span class="eyebrow"><i class="fa-regular fa-calendar-check"></i> Meeting setup</span>
+                <h3>Schedule meeting</h3>
             </div>
-            <form id="meetingForm" action="/schedule-meeting" method="POST" class="stack">
+            <form id="meetingForm" action="/schedule-meeting" method="POST">
                 <input type="hidden" id="meetingRequestId" name="requestId">
                 <div class="field">
-                    <label for="meetingDate">Date &amp; Time</label>
+                    <label for="meetingDate">Date and time</label>
                     <input type="datetime-local" id="meetingDate" name="scheduledDate" required>
                 </div>
                 <div class="field">
@@ -137,9 +142,9 @@
                     <label for="meetingNotes">Notes</label>
                     <textarea id="meetingNotes" name="notes" rows="3" placeholder="Additional notes..."></textarea>
                 </div>
-                <button type="submit">
+                <button type="submit" class="btn btn-accent">
                     <i class="fa-regular fa-calendar-check"></i>
-                    <span>Schedule Meeting</span>
+                    <span>Schedule meeting</span>
                 </button>
             </form>
         </div>
@@ -156,7 +161,6 @@
         const chatMessages = document.getElementById('chatMessages');
         const chatTitle = document.getElementById('chatTitle');
         let currentRequestId = null;
-        let currentRecipientId = null;
 
         function escapeHtml(value) {
             return String(value ?? '')
@@ -169,43 +173,29 @@
 
         async function renderMessages(messages) {
             chatMessages.innerHTML = '';
-
             if (!messages.length) {
                 chatMessages.innerHTML = '<div class="chat-empty">No messages yet. Start the conversation.</div>';
                 return;
             }
 
-            // Process messages in sequence to handle decryption properly
             for (const msg of messages) {
                 const isMine = msg.sender && msg.sender._id === currentUserId;
                 const row = document.createElement('div');
                 row.className = `message-row ${isMine ? 'mine' : 'theirs'}`;
-                const senderName = isMine
-                    ? currentUserName
-                    : `${msg.sender.firstname} ${msg.sender.lastname}`;
-                const timeLabel = new Date(msg.createdAt).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
-                // Decrypt message if needed
+                const senderName = isMine ? currentUserName : `${msg.sender.firstname} ${msg.sender.lastname}`;
+                const timeLabel = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 let decryptedMessage = msg.message;
+
                 try {
-                    // Check if message appears to be encrypted (has our ENCRYPTED prefix when decoded)
                     const decoded = atob(msg.message);
                     if (decoded.startsWith('ENCRYPTED:')) {
-                        // Attempt to decrypt with user's private key
                         const privateKey = CryptoUtils.getPrivateKey();
-                        if (privateKey) {
-                            decryptedMessage = await CryptoUtils.decryptMessage(msg.message, privateKey);
-                        }
-                        // If decryption fails, we'll show the encrypted content
+                        if (privateKey) decryptedMessage = await CryptoUtils.decryptMessage(msg.message, privateKey);
                     }
                 } catch (error) {
-                    // If not base64 or decryption fails, show original message
                     console.warn('Could not decrypt message:', error);
                 }
-                
+
                 row.innerHTML = `
                     ${isMine ? '' : '<span class="chat-avatar"><i class="fa-solid fa-user"></i></span>'}
                     <div class="message-card">
@@ -226,14 +216,9 @@
 
         async function openChat(requestId, buyerName) {
             currentRequestId = requestId;
-            // Extract recipient ID from the request context (we'll need to pass it)
-            // For now, we'll get it from the message loading
             chatTitle.textContent = `Chat with ${buyerName}`;
             chatModal.classList.add('show');
-            
-            // Initialize crypto
             await CryptoUtils.initCrypto();
-            
             loadMessages(requestId);
             socket.emit('joinRoom', requestId);
         }
@@ -262,49 +247,37 @@
         async function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
-            if (message && currentRequestId) {
-                try {
-                    // Encrypt the message before sending
-                    // In a real implementation, we would get the recipient's public key from the server
-                    // For this example, we'll simulate encryption
-                    const encryptedMessage = await CryptoUtils.encryptMessage(message, "recipient-public-key-placeholder");
-                    
-                    socket.emit('sendMessage', {
-                        requestId: currentRequestId,
-                        message: encryptedMessage,
-                        senderId: currentUserId
-                    });
-                    messageInput.value = '';
-                    messageInput.focus();
-                } catch (error) {
-                    console.error('Error encrypting message:', error);
-                    alert('Failed to send message due to encryption error');
-                }
+            if (!message || !currentRequestId) return;
+
+            try {
+                const encryptedMessage = await CryptoUtils.encryptMessage(message, 'recipient-public-key-placeholder');
+                socket.emit('sendMessage', {
+                    requestId: currentRequestId,
+                    message: encryptedMessage,
+                    senderId: currentUserId
+                });
+                messageInput.value = '';
+                if (window.showToast) window.showToast('Message sent.', 'success');
+            } catch (error) {
+                console.error('Error encrypting message:', error);
+                if (window.showToast) window.showToast('Failed to send the message.', 'error');
             }
         }
 
         socket.on('newMessage', (data) => {
-            if (data.requestId === currentRequestId) {
-                loadMessages(currentRequestId);
-            }
+            if (data.requestId === currentRequestId) loadMessages(currentRequestId);
         });
 
         document.getElementById('messageInput').addEventListener('keypress', function (event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
+            if (event.key === 'Enter') sendMessage();
         });
 
         chatModal.addEventListener('click', (event) => {
-            if (event.target === chatModal) {
-                closeChatModal();
-            }
+            if (event.target === chatModal) closeChatModal();
         });
 
         meetingModal.addEventListener('click', (event) => {
-            if (event.target === meetingModal) {
-                closeMeetingModal();
-            }
+            if (event.target === meetingModal) closeMeetingModal();
         });
     </script>
     <script src="/js/animations.js"></script>

@@ -1,0 +1,39 @@
+<header class="site-nav">
+    <div class="nav-shell">
+        <a class="nav-brand" href="/">
+            <span class="nav-brand-mark"><i class="fa-solid fa-house"></i></span>
+            <span>
+                HomeHive
+                <small>Premium property workflow</small>
+            </span>
+        </a>
+        <button
+            type="button"
+            class="nav-toggle"
+            aria-expanded="false"
+            aria-controls="primary-nav"
+            data-nav-toggle
+        >
+            <i class="fa-solid fa-bars"></i>
+            <span>Menu</span>
+        </button>
+        <nav class="nav-links" id="primary-nav" data-nav-panel>
+            <a class="<%= activeNav === 'explore' ? 'is-active' : '' %>" href="/"><i class="fa-solid fa-compass"></i> Explore</a>
+            <% if (isLoggedIn) { %>
+                <% if (user && user.role === 'Buyer') { %>
+                    <a class="<%= activeNav === 'saved' ? 'is-active' : '' %>" href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
+                <% } %>
+                <% if (user && user.role === 'Owner') { %>
+                    <a class="<%= activeNav === 'add-home' ? 'is-active' : '' %>" href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
+                    <a class="<%= activeNav === 'dashboard' ? 'is-active' : '' %>" href="/host/host-homelist"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+                    <a class="<%= activeNav === 'requests' ? 'is-active' : '' %>" href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
+                <% } %>
+                <a class="<%= activeNav === 'bookings' ? 'is-active' : '' %>" href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
+                <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            <% } else { %>
+                <a class="<%= activeNav === 'login' ? 'is-active' : '' %>" href="/login"><i class="fa-solid fa-user"></i> Login</a>
+                <a class="nav-cta <%= activeNav === 'signup' ? 'is-active' : '' %>" href="/signup"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+            <% } %>
+        </nav>
+    </div>
+</header>

@@ -1,102 +1,94 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeHive - Edit Home</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <%- include('../partials/head', {
+        pageTitle: 'HomeHive | Edit Listing',
+        pageDescription: 'Update listing details while keeping the same premium browsing experience.'
+    }) %>
 </head>
 <body>
-    <div class="listing-bg listing-bg-left" aria-hidden="true"></div>
-    <div class="listing-bg listing-bg-right" aria-hidden="true"></div>
-    <div class="bg-blob-mid" aria-hidden="true"></div>
-    <div class="particle particle-circle particle-3" aria-hidden="true"></div>
-    <div class="particle particle-diamond particle-6" aria-hidden="true"></div>
+    <%- include('../partials/nav', { activeNav: 'dashboard' }) %>
 
-    <div class="site-nav">
-        <div class="navbar">
-            <a class="nav-brand" href="/">
-                <i class="fa-solid fa-house"></i>
-                <span>HomeHive</span>
-            </a>
-            <div class="nav-links">
-                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
-                <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
-                <a class="is-active" href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
-                <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
-                <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
-                <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+    <section class="dashboard-page dashboard-page-spaced">
+        <div class="dashboard-layout">
+            <aside class="dashboard-sidebar reveal">
+                <div class="dashboard-profile">
+                    <div class="dashboard-avatar"><i class="fa-solid fa-pen"></i></div>
+                    <div>
+                        <span class="eyebrow"><i class="fa-solid fa-sliders"></i> Listing control</span>
+                        <h3 style="margin-top:0.75rem;">Update property details</h3>
+                        <p style="margin:0.35rem 0 0;">Keep pricing, location, and copy current so the premium card experience stays trustworthy.</p>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="dashboard-main reveal">
+                <form action="/host/edit/<%= home._id %>" method="POST" enctype="multipart/form-data" class="listing-form">
+                    <div class="section-heading">
+                        <span class="eyebrow"><i class="fa-solid fa-pen-to-square"></i> Edit listing</span>
+                        <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Refine your property</h1>
+                    </div>
+
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="houseNo">House number</label>
+                            <input id="houseNo" type="text" name="houseNo" value="<%= home.address?.houseNo || '' %>" required>
+                        </div>
+                        <div class="field">
+                            <label for="city">City</label>
+                            <input id="city" type="text" name="city" value="<%= home.address?.city || '' %>" required>
+                        </div>
+                        <div class="field">
+                            <label for="district">District</label>
+                            <input id="district" type="text" name="district" value="<%= home.address?.district || '' %>">
+                        </div>
+                        <div class="field">
+                            <label for="state">State</label>
+                            <input id="state" type="text" name="state" value="<%= home.address?.state || '' %>" required>
+                        </div>
+                        <div class="field">
+                            <label for="country">Country</label>
+                            <input id="country" type="text" name="country" value="<%= home.address?.country || '' %>" required>
+                        </div>
+                        <div class="field">
+                            <label for="price">Price</label>
+                            <input id="price" type="number" name="price" value="<%= home.price %>" min="1" step="0.01" inputmode="decimal" required>
+                        </div>
+                        <div class="field">
+                            <label for="propertyType">Property type</label>
+                            <select id="propertyType" name="propertyType" required>
+                                <option value="" <%= !home.propertyType ? 'selected' : '' %>>Select property type</option>
+                                <option value="house" <%= home.propertyType === 'house' ? 'selected' : '' %>>House</option>
+                                <option value="apartment" <%= home.propertyType === 'apartment' ? 'selected' : '' %>>Apartment</option>
+                                <option value="villa" <%= home.propertyType === 'villa' ? 'selected' : '' %>>Villa</option>
+                                <option value="studio" <%= home.propertyType === 'studio' ? 'selected' : '' %>>Studio</option>
+                                <option value="plot" <%= home.propertyType === 'plot' ? 'selected' : '' %>>Plot</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="homeImage">Replace listing image</label>
+                        <input id="homeImage" type="file" name="homeImage" accept="image/*">
+                    </div>
+                    <div class="field">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" required><%= home.description %></textarea>
+                    </div>
+                    <div class="action-row">
+                        <button type="submit" class="btn btn-accent">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>Save changes</span>
+                        </button>
+                        <a href="/host/host-homelist" class="btn btn-secondary">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span>Back</span>
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="simple-shell edit-shell">
-        <div class="page-card edit-card">
-            <span class="eyebrow"><i class="fa-solid fa-pen"></i> Edit listing</span>
-            <h1>Update property details</h1>
-            <form action="/host/edit/<%= home._id %>" method="POST" enctype="multipart/form-data" class="stack" style="margin-top:1rem;">
-                <div class="field-grid">
-                    <div class="field">
-                        <label for="houseNo">House Number</label>
-                        <input id="houseNo" type="text" name="houseNo" value="<%= home.address?.houseNo || '' %>" required>
-                    </div>
-                    <div class="field">
-                        <label for="city">City</label>
-                        <input id="city" type="text" name="city" value="<%= home.address?.city || '' %>" required>
-                    </div>
-                    <div class="field">
-                        <label for="district">District</label>
-                        <input id="district" type="text" name="district" value="<%= home.address?.district || '' %>">
-                    </div>
-                    <div class="field">
-                        <label for="state">State</label>
-                        <input id="state" type="text" name="state" value="<%= home.address?.state || '' %>" required>
-                    </div>
-                    <div class="field">
-                        <label for="country">Country</label>
-                        <input id="country" type="text" name="country" value="<%= home.address?.country || '' %>" required>
-                    </div>
-                    <div class="field">
-                        <label for="price">Price</label>
-                        <input id="price" type="number" name="price" value="<%= home.price %>" min="1" step="0.01" inputmode="decimal" required>
-                    </div>
-                    <div class="field">
-                        <label for="propertyType">Property Type</label>
-                        <select id="propertyType" name="propertyType" required>
-                            <option value="" <%= !home.propertyType ? 'selected' : '' %>>Select property type</option>
-                            <option value="house" <%= home.propertyType === 'house' ? 'selected' : '' %>>House</option>
-                            <option value="apartment" <%= home.propertyType === 'apartment' ? 'selected' : '' %>>Apartment</option>
-                            <option value="villa" <%= home.propertyType === 'villa' ? 'selected' : '' %>>Villa</option>
-                            <option value="studio" <%= home.propertyType === 'studio' ? 'selected' : '' %>>Studio</option>
-                            <option value="plot" <%= home.propertyType === 'plot' ? 'selected' : '' %>>Plot</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="homeImage">Replace Listing Image</label>
-                    <input id="homeImage" type="file" name="homeImage" accept="image/*">
-                </div>
-                <div class="field">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" required><%= home.description %></textarea>
-                </div>
-                <div class="action-row">
-                    <button type="submit">
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        <span>Save Changes</span>
-                    </button>
-                    <a href="/host/host-homelist" class="btn-secondary" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.85rem 1.2rem;border-radius:999px;font-weight:700;font-size:0.92rem;cursor:pointer;border:1px solid rgba(28,24,22,0.10);background:rgba(255,252,249,0.95);color:#1c1816;text-decoration:none;transition:all 0.25s ease;">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        <span>Back</span>
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
     <script src="/js/animations.js"></script>
 </body>
 </html>

@@ -1,139 +1,137 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeHive - Add Home</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <%- include('../partials/head', {
+        pageTitle: 'HomeHive | Add Listing',
+        pageDescription: 'Publish a new property with stronger validation, map support, and cleaner form UX.',
+        extraHead: '<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />'
+    }) %>
 </head>
 <body>
+    <%- include('../partials/nav', { activeNav: 'add-home' }) %>
 
-    <div class="site-nav">
-        <div class="navbar">
-            <a class="nav-brand" href="/">
-                <i class="fa-solid fa-house"></i>
-                <span>HomeHive</span>
-            </a>
-            <div class="nav-links">
-                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
-                <a class="is-active" href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
-                <a href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
-                <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
-                <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
-                <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+    <section class="dashboard-page dashboard-page-spaced">
+        <div class="dashboard-layout">
+            <aside class="dashboard-sidebar reveal">
+                <div class="dashboard-profile">
+                    <div class="dashboard-avatar"><i class="fa-solid fa-square-plus"></i></div>
+                    <div>
+                        <span class="eyebrow"><i class="fa-solid fa-pen-nib"></i> Listing studio</span>
+                        <h3 style="margin-top:0.75rem;">Create a premium listing</h3>
+                        <p style="margin:0.35rem 0 0;">Use strong imagery, accurate pricing, and clean location details to maximize buyer confidence.</p>
+                    </div>
+                </div>
+                <div class="detail-panel">
+                    <strong>Checklist</strong>
+                    <p style="margin:0.55rem 0 0;">Add a precise address, clear property type, compelling description, and at least one good image.</p>
+                </div>
+            </aside>
+
+            <div class="dashboard-main reveal">
+                <form action="/host/add-home" method="POST" enctype="multipart/form-data" class="listing-form">
+                    <div class="section-heading">
+                        <span class="eyebrow"><i class="fa-solid fa-building"></i> New property</span>
+                        <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Add a new listing</h1>
+                        <p>Everything below feeds the upgraded cards, detail pages, and dashboard views throughout HomeHive.</p>
+                    </div>
+
+                    <div class="field">
+                        <label for="locationSearch">Search address</label>
+                        <div class="autocomplete">
+                            <input type="text" id="locationSearch" placeholder="Start typing a full address or landmark" autocomplete="off" required>
+                            <div id="locationSuggestions" class="autocomplete-list" hidden></div>
+                        </div>
+                    </div>
+
+                    <div class="map-card">
+                        <div class="map-toolbar">
+                            <span class="helper-text"><i class="fa-solid fa-circle-info"></i> Click the map or drag the marker to refine the address.</span>
+                            <button type="button" id="useCurrentLocation" class="btn-secondary">
+                                <i class="fa-solid fa-location-crosshairs"></i>
+                                <span>Use current location</span>
+                            </button>
+                        </div>
+                        <div class="map-wrapper">
+                            <div id="map"></div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="lat" id="lat">
+                    <input type="hidden" name="lng" id="lng">
+
+                    <div class="coordinates-row">
+                        <div class="field">
+                            <label for="latPreview">Latitude</label>
+                            <input id="latPreview" type="text" value="" readonly>
+                        </div>
+                        <div class="field">
+                            <label for="lngPreview">Longitude</label>
+                            <input id="lngPreview" type="text" value="" readonly>
+                        </div>
+                    </div>
+
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="houseNo">House number</label>
+                            <input id="houseNo" type="text" name="houseNo" placeholder="House number" required>
+                        </div>
+                        <div class="field">
+                            <label for="city">City</label>
+                            <input id="city" type="text" name="city" placeholder="City" required>
+                        </div>
+                        <div class="field">
+                            <label for="district">District</label>
+                            <input id="district" type="text" name="district" placeholder="District">
+                        </div>
+                        <div class="field">
+                            <label for="state">State</label>
+                            <input id="state" type="text" name="state" placeholder="State" required>
+                        </div>
+                        <div class="field">
+                            <label for="country">Country</label>
+                            <input id="country" type="text" name="country" placeholder="Country" required>
+                        </div>
+                        <div class="field">
+                            <label for="price">Price</label>
+                            <input id="price" type="number" name="price" placeholder="Enter price" min="1" step="0.01" inputmode="decimal" required>
+                        </div>
+                        <div class="field">
+                            <label for="propertyType">Property type</label>
+                            <select id="propertyType" name="propertyType" required>
+                                <option value="">Select property type</option>
+                                <option value="house">House</option>
+                                <option value="apartment">Apartment</option>
+                                <option value="villa">Villa</option>
+                                <option value="studio">Studio</option>
+                                <option value="plot">Plot</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="homeImage">Home image</label>
+                            <input type="file" id="homeImage" name="homeImage" accept="image/*">
+                        </div>
+                        <div class="field">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" placeholder="Describe what makes this listing special" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+                        <button type="submit" class="btn btn-accent">
+                            <i class="fa-solid fa-square-plus"></i>
+                            <span>Add home</span>
+                        </button>
+                        <a href="/host/host-homelist" class="btn btn-secondary">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span>Back to dashboard</span>
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
-    </div>
-
-    <section class="form-page">
-        <div class="form-layout">
-            <form action="/host/add-home" method="POST" enctype="multipart/form-data" class="listing-form">
-                <div class="form-header">
-                    <span class="eyebrow"><i class="fa-solid fa-building"></i> New property</span>
-                    <h1>Add a new listing</h1>
-                </div>
-                <div class="field">
-                    <label for="locationSearch">Search address</label>
-                    <div class="autocomplete">
-                        <input type="text" id="locationSearch" placeholder="Start typing a full address or landmark" autocomplete="off" required>
-                        <div id="locationSuggestions" class="autocomplete-list" hidden></div>
-                    </div>
-                </div>
-
-                <div class="map-card">
-                    <div class="map-toolbar">
-                        <span class="map-helper"><i class="fa-solid fa-circle-info"></i> Click the map or drag the marker to refine the address.</span>
-                        <button type="button" id="useCurrentLocation" class="btn-secondary" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.1rem;border-radius:0.85rem;font-weight:700;font-size:0.88rem;cursor:pointer;border:1px solid rgba(28,24,22,0.10);background:rgba(255,252,249,0.95);color:#1c1816;transition:all 0.25s ease;">
-                            <i class="fa-solid fa-location-crosshairs"></i>
-                            <span>Use My Current Location</span>
-                        </button>
-                    </div>
-                    <div class="map-wrapper">
-                        <div id="map"></div>
-                    </div>
-                </div>
-
-                <input type="hidden" name="lat" id="lat">
-                <input type="hidden" name="lng" id="lng">
-
-                <div class="coordinates-row">
-                    <div class="field">
-                        <label for="latPreview">Latitude</label>
-                        <input id="latPreview" type="text" value="" readonly>
-                    </div>
-                    <div class="field">
-                        <label for="lngPreview">Longitude</label>
-                        <input id="lngPreview" type="text" value="" readonly>
-                    </div>
-                </div>
-
-                <div class="field-grid">
-                    <div class="field">
-                        <label for="houseNo">House Number</label>
-                        <input id="houseNo" type="text" name="houseNo" placeholder="House number" required>
-                    </div>
-                    <div class="field">
-                        <label for="city">City</label>
-                        <input id="city" type="text" name="city" placeholder="City" required>
-                    </div>
-                    <div class="field">
-                        <label for="district">District</label>
-                        <input id="district" type="text" name="district" placeholder="District">
-                    </div>
-                    <div class="field">
-                        <label for="state">State</label>
-                        <input id="state" type="text" name="state" placeholder="State" required>
-                    </div>
-                    <div class="field">
-                        <label for="country">Country</label>
-                        <input id="country" type="text" name="country" placeholder="Country" required>
-                    </div>
-                    <div class="field">
-                        <label for="price">Price</label>
-                        <input id="price" type="number" name="price" placeholder="Enter price" min="1" step="0.01" inputmode="decimal" required>
-                    </div>
-                    <div class="field">
-                        <label for="propertyType">Property Type</label>
-                        <select id="propertyType" name="propertyType" required>
-                            <option value="">Select property type</option>
-                            <option value="house">House</option>
-                            <option value="apartment">Apartment</option>
-                            <option value="villa">Villa</option>
-                            <option value="studio">Studio</option>
-                            <option value="plot">Plot</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="field-grid">
-                    <div class="field">
-                        <label for="homeImage">Home Image</label>
-                        <input type="file" id="homeImage" name="homeImage" accept="image/*">
-                    </div>
-                    <div class="field">
-                        <label for="description">Description</label>
-                        <textarea id="description" name="description" placeholder="Describe what makes this listing special" required></textarea>
-                    </div>
-                </div>
-
-                <div class="action-row">
-                    <button type="submit">
-                        <i class="fa-solid fa-square-plus"></i>
-                        <span>Add Home</span>
-                    </button>
-                    <a href="/host/host-homelist" class="btn-secondary" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.85rem 1.2rem;border-radius:999px;font-weight:700;font-size:0.92rem;cursor:pointer;border:1px solid rgba(28,24,22,0.10);background:rgba(255,252,249,0.95);color:#1c1816;text-decoration:none;transition:all 0.25s ease;">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        <span>Back to Listings</span>
-                    </a>
-                </div>
-            </form>
-        </div>
-        <div class="page-end-spacer"></div>
     </section>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>

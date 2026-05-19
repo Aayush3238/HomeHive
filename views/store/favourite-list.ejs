@@ -1,92 +1,76 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeHive - Saved Homes</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <%- include('../partials/head', {
+        pageTitle: 'HomeHive | Saved Homes',
+        pageDescription: 'Return to your shortlisted homes and continue comparing options.'
+    }) %>
 </head>
 <body>
+    <%- include('../partials/nav', { activeNav: 'saved' }) %>
 
-    <div class="site-nav">
-        <div class="navbar">
-            <a class="nav-brand" href="/">
-                <i class="fa-solid fa-house"></i>
-                <span>HomeHive</span>
-            </a>
-            <div class="nav-links">
-                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
-                <% if (isLoggedIn) { %>
-                    <% if (user && user.role === 'Buyer') { %>
-                        <a class="is-active" href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
-                    <% } %>
-                    <% if (user && user.role === 'Owner') { %>
-                        <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
-                        <a href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
-                        <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
-                    <% } %>
-                    <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
-                    <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
-                <% } else { %>
-                    <a href="/login"><i class="fa-solid fa-user"></i> Login</a>
-                    <a href="/signup"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
-                <% } %>
-            </div>
-        </div>
-    </div>
-
-    <section class="page-section">
+    <section class="page-section reveal">
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-regular fa-heart"></i> Saved homes</span>
-            <h1>Your favourites</h1>
+            <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Your shortlist</h1>
+            <p>Keep promising properties in one calmer workspace so you can compare them later without restarting your search.</p>
         </div>
 
         <% if (favourites && favourites.length > 0) { %>
             <div class="homes-list">
                 <% favourites.forEach(home => { %>
-                    <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 420 }); %>
-                    <div class="home-card">
+                    <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 450 }); %>
+                    <article class="home-card">
                         <div class="home-media">
                             <img
                                 src="<%= imageUrl %>"
-                                alt="Photo of <%= home.address.formattedAddress %>"
+                                alt="Photo of <%= home.address?.formattedAddress || 'property' %>"
                                 class="home-img"
                                 loading="lazy"
                                 decoding="async"
                                 onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
                             />
+                            <div class="card-badges">
+                                <span class="verified-badge"><i class="fa-solid fa-heart"></i> Saved</span>
+                            </div>
                         </div>
                         <div class="home-card-body">
-                            <h3><%= home.address.formattedAddress %></h3>
+                            <div class="price-highlight">
+                                <div>
+                                    <div class="price-label">Shortlist price</div>
+                                    <strong>Rs <%= home.price %></strong>
+                                </div>
+                            </div>
+                            <h3><%= home.address?.formattedAddress || 'Property listing' %></h3>
                             <div class="home-meta">
-                                <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address.city || home.address.state %></span>
-                                <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
+                                <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address?.city || home.address?.state || 'Location pending' %></span>
+                                <span class="meta-pill"><i class="fa-solid fa-star"></i>Favourite</span>
                             </div>
                             <p class="home-description"><%= home.description %></p>
                         </div>
                         <div class="card-actions">
                             <a class="Details" href="/home/<%= home.id %>">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                <span>View Details</span>
+                                <span>View details</span>
                             </a>
                         </div>
-                    </div>
+                    </article>
                 <% }) %>
             </div>
         <% } else { %>
-            <div class="page-card" style="text-align:center;">
-                <h2>No saved homes yet</h2>
-                <a href="/" class="btn btn-accent" style="display:inline-flex;margin-top:1rem;">
+            <div class="empty-state page-card">
+                <span class="empty-state-icon"><i class="fa-regular fa-heart"></i></span>
+                <span class="eyebrow">Nothing saved yet</span>
+                <h3>Your shortlist is empty.</h3>
+                <p>Save properties from the listing grid to build a smaller set of homes worth revisiting.</p>
+                <a href="/" class="btn btn-accent">
                     <i class="fa-solid fa-compass"></i>
-                    <span>Explore Listings</span>
+                    <span>Explore listings</span>
                 </a>
             </div>
         <% } %>
     </section>
+
     <script src="/js/animations.js"></script>
 </body>
 </html>

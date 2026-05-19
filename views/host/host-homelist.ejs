@@ -1,86 +1,197 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeHive - My Listings</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <%- include('../partials/head', {
+        pageTitle: 'HomeHive | Owner Dashboard',
+        pageDescription: 'Manage listings, track activity, and respond to buyer demand from the HomeHive owner dashboard.'
+    }) %>
 </head>
 <body>
+    <%- include('../partials/nav', { activeNav: 'dashboard' }) %>
 
-    <div class="site-nav">
-        <div class="navbar">
-            <a class="nav-brand" href="/">
-                <i class="fa-solid fa-house"></i>
-                <span>HomeHive</span>
-            </a>
-            <div class="nav-links">
-                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
-                <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
-                <a class="is-active" href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
-                <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
-                <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
-                <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
-            </div>
-        </div>
-    </div>
+    <section class="dashboard-page dashboard-page-spaced">
+        <div class="dashboard-layout">
+            <aside class="dashboard-sidebar reveal" data-sidebar>
+                <div class="dashboard-profile">
+                    <div class="dashboard-avatar"><i class="fa-solid fa-house-user"></i></div>
+                    <div>
+                        <span class="eyebrow"><i class="fa-solid fa-circle"></i> Owner workspace</span>
+                        <h3 style="margin-top:0.75rem;"><%= user?.firstname || 'Host' %> <%= user?.lastname || '' %></h3>
+                        <p style="margin:0.35rem 0 0;">A cleaner operating view for managing inventory, buyer attention, and next actions.</p>
+                    </div>
+                </div>
 
-    <section class="page-section">
-        <div class="section-heading">
-            <h1>My listings</h1>
-        </div>
+                <button type="button" class="btn btn-secondary" data-sidebar-toggle>
+                    <i class="fa-solid fa-bars-staggered"></i>
+                    <span>Collapse sidebar</span>
+                </button>
 
-        <% if (SubmittedDetails && SubmittedDetails.length > 0) { %>
-            <div class="homes-list">
-                <% SubmittedDetails.forEach(home => { %>
-                    <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 420 }); %>
-                    <div class="home-card" style="cursor:default;">
-                        <div class="home-media">
-                            <img
-                                src="<%= imageUrl %>"
-                                alt="Photo of <%= home.address.formattedAddress %>"
-                                class="home-img"
-                                loading="lazy"
-                                decoding="async"
-                                onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
-                            />
+                <nav class="dashboard-menu">
+                    <a class="btn btn-secondary" href="/host/host-homelist"><i class="fa-solid fa-chart-line"></i><span>Overview</span></a>
+                    <a class="btn btn-secondary" href="/host/add-home"><i class="fa-solid fa-square-plus"></i><span>Add listing</span></a>
+                    <a class="btn btn-secondary" href="/host/buy-requests"><i class="fa-solid fa-comments"></i><span>Buyer requests</span></a>
+                    <a class="btn btn-secondary" href="/store/bookings"><i class="fa-regular fa-calendar-check"></i><span>Meetings</span></a>
+                </nav>
+
+                <div class="detail-panel">
+                    <span class="eyebrow"><i class="fa-solid fa-lightbulb"></i> Empty state strategy</span>
+                    <p style="margin:0.8rem 0 0;">A strong dashboard is useful even with zero data. This layout keeps the primary CTA visible and communicates what happens next.</p>
+                </div>
+            </aside>
+
+            <main class="dashboard-main reveal">
+                <div class="dashboard-header">
+                    <div class="section-heading" style="margin-bottom:0;">
+                        <span class="eyebrow"><i class="fa-solid fa-chart-pie"></i> Portfolio overview</span>
+                        <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Your listings dashboard</h1>
+                        <p>Track active inventory, listing quality, and next actions without losing the visual polish of the buyer-facing experience.</p>
+                    </div>
+                    <a href="/host/add-home" class="btn btn-accent">
+                        <i class="fa-solid fa-square-plus"></i>
+                        <span>Add new listing</span>
+                    </a>
+                </div>
+
+                <section class="dashboard-metrics">
+                    <article class="stat-card">
+                        <span class="stat-label">Total listings</span>
+                        <strong><%= SubmittedDetails.length %></strong>
+                        <p>Properties currently available on your HomeHive workspace.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Map coverage</span>
+                        <strong><%= SubmittedDetails.filter(home => home.location && home.location.coordinates && home.location.coordinates.length === 2).length %></strong>
+                        <p>Listings with map-ready coordinates and stronger discovery quality.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Property mix</span>
+                        <strong><%= [...new Set(SubmittedDetails.map(home => home.propertyType).filter(Boolean))].length || 0 %></strong>
+                        <p>Distinct property types across your current portfolio.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Average price</span>
+                        <strong>Rs <%= SubmittedDetails.length ? Math.round(SubmittedDetails.reduce((sum, home) => sum + (Number(home.price) || 0), 0) / SubmittedDetails.length).toLocaleString('en-IN') : 0 %></strong>
+                        <p>Mean list price across your active inventory.</p>
+                    </article>
+                </section>
+
+                <section class="dashboard-panels">
+                    <div class="page-card">
+                        <div class="section-heading" style="margin-bottom:1rem;">
+                            <span class="eyebrow"><i class="fa-solid fa-clock-rotate-left"></i> Recent activity</span>
+                            <h3>What just changed</h3>
                         </div>
-                        <div class="home-card-body">
-                            <h3><%= home.address.formattedAddress %></h3>
-                            <div class="home-meta">
-                                <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address.city || home.address.state %></span>
-                                <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <a href="/host/edit/<%= home.id %>" class="Details">
-                                <i class="fa-solid fa-pen"></i>
-                                <span>Edit</span>
-                            </a>
-                            <form action="/host/home-delete/<%= home.id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this listing permanently?');">
-                                <button type="submit" class="btn-danger" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1rem;border:none;border-radius:0.85rem;font-weight:700;font-size:0.88rem;cursor:pointer;color:#fff;width:100%;background:#b45353;transition:all 0.25s ease;">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                    <span>Delete</span>
-                                </button>
-                            </form>
+                        <div class="activity-list">
+                            <% if (SubmittedDetails.length > 0) { %>
+                                <% SubmittedDetails.slice(0, 3).forEach(home => { %>
+                                    <article class="activity-item">
+                                        <strong><%= home.address?.formattedAddress || 'Property listing' %></strong>
+                                        <p style="margin:0.35rem 0 0;">Published with a <%= home.propertyType || 'residential' %> profile at Rs <%= Number(home.price || 0).toLocaleString('en-IN') %>.</p>
+                                    </article>
+                                <% }) %>
+                            <% } else { %>
+                                <article class="activity-item">
+                                    <strong>No activity yet</strong>
+                                    <p style="margin:0.35rem 0 0;">Create your first listing to start seeing portfolio activity, request flow, and meetings here.</p>
+                                </article>
+                            <% } %>
                         </div>
                     </div>
-                <% }) %>
-            </div>
-        <% } else { %>
-            <div class="page-card" style="text-align:center;">
-                <h2>No listings yet</h2>
-                <a href="/host/add-home" class="btn btn-accent" style="display:inline-flex;margin-top:1rem;">
-                    <i class="fa-solid fa-square-plus"></i>
-                    <span>Add Listing</span>
-                </a>
-            </div>
-        <% } %>
+                    <div class="page-card">
+                        <div class="section-heading" style="margin-bottom:1rem;">
+                            <span class="eyebrow"><i class="fa-solid fa-bullseye"></i> Quick guidance</span>
+                            <h3>What improves conversion</h3>
+                        </div>
+                        <div class="insight-list">
+                            <article class="insight-item">
+                                <strong>Keep imagery sharp</strong>
+                                <p style="margin:0.35rem 0 0;">Listings with strong photos carry the premium feel through discovery and detail pages.</p>
+                            </article>
+                            <article class="insight-item">
+                                <strong>Use clear pricing</strong>
+                                <p style="margin:0.35rem 0 0;">Pricing is visually emphasized everywhere, so accuracy directly affects trust.</p>
+                            </article>
+                            <article class="insight-item">
+                                <strong>Respond quickly</strong>
+                                <p style="margin:0.35rem 0 0;">The request workflow is built for faster follow-up through chat and scheduling.</p>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <% if (SubmittedDetails && SubmittedDetails.length > 0) { %>
+                    <section>
+                        <div class="listings-toolbar">
+                            <div class="section-heading" style="margin-bottom:0;">
+                                <span class="eyebrow"><i class="fa-solid fa-building"></i> Inventory</span>
+                                <h2 style="font-size:clamp(1.5rem,2.6vw,2.3rem);">Your live listings</h2>
+                            </div>
+                        </div>
+
+                        <div class="homes-list">
+                            <% SubmittedDetails.forEach(home => { %>
+                                <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 450 }); %>
+                                <article class="home-card">
+                                    <div class="home-media">
+                                        <img
+                                            src="<%= imageUrl %>"
+                                            alt="Photo of <%= home.address?.formattedAddress || 'property' %>"
+                                            class="home-img"
+                                            loading="lazy"
+                                            decoding="async"
+                                            onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
+                                        />
+                                        <div class="card-badges">
+                                            <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Live</span>
+                                            <span class="match-badge"><i class="fa-solid fa-location-arrow"></i> Map aware</span>
+                                        </div>
+                                    </div>
+                                    <div class="home-card-body">
+                                        <div class="price-highlight">
+                                            <div>
+                                                <div class="price-label">Current price</div>
+                                                <strong>Rs <%= home.price %></strong>
+                                            </div>
+                                            <span class="meta-pill"><i class="fa-solid fa-house"></i><%= home.propertyType || 'Home' %></span>
+                                        </div>
+                                        <h3><%= home.address?.formattedAddress || 'Property listing' %></h3>
+                                        <div class="home-meta">
+                                            <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address?.city || home.address?.state || 'Location pending' %></span>
+                                            <span class="meta-pill"><i class="fa-solid fa-pen-ruler"></i>Editable</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-actions">
+                                        <a href="/host/edit/<%= home.id %>" class="Details">
+                                            <i class="fa-solid fa-pen"></i>
+                                            <span>Edit</span>
+                                        </a>
+                                        <form action="/host/home-delete/<%= home.id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this listing permanently?');">
+                                            <button type="submit" class="btn-danger">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                                <span>Delete</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </article>
+                            <% }) %>
+                        </div>
+                    </section>
+                <% } else { %>
+                    <div class="empty-state page-card">
+                        <span class="empty-state-icon"><i class="fa-solid fa-house"></i></span>
+                        <span class="eyebrow">No listings yet</span>
+                        <h3>Your dashboard is ready for the first property.</h3>
+                        <p>Add a listing to populate performance cards, recent activity, and request management modules.</p>
+                        <a href="/host/add-home" class="btn btn-accent">
+                            <i class="fa-solid fa-square-plus"></i>
+                            <span>Add first listing</span>
+                        </a>
+                    </div>
+                <% } %>
+            </main>
+        </div>
     </section>
+
     <script src="/js/animations.js"></script>
 </body>
 </html>

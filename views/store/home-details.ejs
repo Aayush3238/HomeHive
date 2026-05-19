@@ -1,88 +1,78 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeHive - Home Details</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <%- include('../partials/head', {
+        pageTitle: `HomeHive | ${home.address?.city || 'Property'} Listing`,
+        pageDescription: home.description || 'Explore full property details on HomeHive.'
+    }) %>
 </head>
-<body class="theme-ocean">
+<body>
+    <%- include('../partials/nav', { activeNav: 'explore' }) %>
 
-    <div class="site-nav">
-        <div class="navbar">
-            <a class="nav-brand" href="/">
-                <i class="fa-solid fa-house"></i>
-                <span>HomeHive</span>
-            </a>
-            <div class="nav-links">
-                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
-                <% if (isLoggedIn) { %>
-                    <% if (user && user.role === 'Buyer') { %>
-                        <a href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
-                    <% } %>
-                    <% if (user && user.role === 'Owner') { %>
-                        <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
-                        <a href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
-                        <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
-                    <% } %>
-                    <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
-                    <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
-                <% } else { %>
-                    <a href="/login"><i class="fa-solid fa-user"></i> Login</a>
-                    <a href="/signup"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
-                <% } %>
-            </div>
-        </div>
-    </div>
-
-    <div class="home-details-container hero-card detail-shell">
-        <div class="detail-layout">
-            <div class="detail-media">
-                <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 1280, height: 760 }); %>
-                <% const imageSrcSet = getHomeImageSrcSet(home.homeImage, [640, 960, 1280, 1600], { height: 760 }); %>
-                <img
-                    src="<%= imageUrl %>"
-                    <% if (imageSrcSet) { %>srcset="<%= imageSrcSet %>"<% } %>
-                    sizes="(max-width: 900px) 100vw, 58vw"
-                    alt="Photo of <%= home.address?.formattedAddress || 'property' %>"
-                    class="home-img"
-                    loading="eager"
-                    decoding="async"
-                    onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
-                />
-            </div>
-            <div class="detail-content">
-                <span class="eyebrow"><i class="fa-solid fa-house-chimney"></i> Property details</span>
-                <h1><%= home.address?.formattedAddress || '' %></h1>
-                <div class="detail-description">
-                    <h2>Overview</h2>
+    <section class="hero-section detail-shell">
+        <div class="hero-card reveal home-details-container">
+            <div class="detail-layout">
+                <div class="detail-media">
+                    <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 1280, height: 760 }); %>
+                    <% const imageSrcSet = getHomeImageSrcSet(home.homeImage, [640, 960, 1280, 1600], { height: 760 }); %>
+                    <img
+                        src="<%= imageUrl %>"
+                        <% if (imageSrcSet) { %>srcset="<%= imageSrcSet %>"<% } %>
+                        sizes="(max-width: 1100px) 100vw, 54vw"
+                        alt="Photo of <%= home.address?.formattedAddress || 'property' %>"
+                        loading="eager"
+                        decoding="async"
+                        onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
+                    />
+                </div>
+                <div class="detail-content">
+                    <span class="eyebrow"><i class="fa-solid fa-house-chimney-window"></i> Property details</span>
+                    <h1 style="font-size:clamp(2rem,4vw,3.4rem);"><%= home.address?.formattedAddress || 'Property listing' %></h1>
                     <p><%= home.description %></p>
+
+                    <div class="detail-highlights">
+                        <div class="detail-highlight">
+                            <span>Listing type</span>
+                            <strong><%= home.propertyType ? `${home.propertyType.charAt(0).toUpperCase()}${home.propertyType.slice(1)}` : 'Residential' %></strong>
+                        </div>
+                        <div class="detail-highlight">
+                            <span>Location focus</span>
+                            <strong><%= home.address?.city || home.address?.state || 'Flexible location' %></strong>
+                        </div>
+                        <div class="detail-highlight">
+                            <span>Budget band</span>
+                            <strong>Rs <%= home.price %></strong>
+                        </div>
+                        <div class="detail-highlight">
+                            <span>Experience</span>
+                            <strong>Image-first preview</strong>
+                        </div>
+                    </div>
+
+                    <div class="detail-panel">
+                        <span class="eyebrow"><i class="fa-solid fa-circle-check"></i> Verified-ready listing</span>
+                        <p style="margin:0.9rem 0 0;">This view keeps the most important information prominent: full address, pricing, listing type, and a larger property photo for quicker decision-making.</p>
+                    </div>
+
+                    <div class="card-actions" style="padding:0;">
+                        <a href="/" class="btn btn-accent">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span>Back to listings</span>
+                        </a>
+                        <% if (isLoggedIn && user && user.role === 'Buyer') { %>
+                            <form action="/favourites/<%= home.id %>" method="POST" class="inline-form" data-toast-submit="Saved to your shortlist." data-toast-type="success">
+                                <button type="submit" class="btn-secondary">
+                                    <i class="fa-regular fa-heart"></i>
+                                    <span>Save property</span>
+                                </button>
+                            </form>
+                        <% } %>
+                    </div>
                 </div>
-                <div class="detail-highlights">
-                    <div class="detail-highlight">
-                        <span>Listing type</span>
-                        <strong><%= home.propertyType ? `${home.propertyType.charAt(0).toUpperCase()}${home.propertyType.slice(1)}` : 'Residential' %></strong>
-                    </div>
-                    <div class="detail-highlight">
-                        <span>Best for</span>
-                        <strong><%= home.address?.city || 'Flexible location' %></strong>
-                    </div>
-                    <div class="detail-highlight">
-                        <span>Budget band</span>
-                        <strong>Rs <%= home.price %></strong>
-                    </div>
-                </div>
-                <a href="/" class="btn btn-accent" style="justify-self:start;">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    <span>Back to listings</span>
-                </a>
             </div>
         </div>
-    </div>
+    </section>
+
     <script src="/js/animations.js"></script>
 </body>
 </html>

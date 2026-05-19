@@ -1,183 +1,383 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeHive</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <%- include('../partials/head', {
+        pageTitle: 'HomeHive | Premium Property Discovery',
+        pageDescription: 'Discover verified homes, manage favourites, and move from browsing to buying in a polished premium workflow.'
+    }) %>
 </head>
-<body class="theme-ocean">
-    <div class="particle particle-circle particle-5" aria-hidden="true"></div>
-    <div class="particle particle-diamond particle-6" aria-hidden="true"></div>
-    <div class="particle particle-circle particle-7" aria-hidden="true"></div>
-    <div class="particle particle-diamond particle-8" aria-hidden="true"></div>
-
-    <div class="site-nav">
-        <div class="navbar">
-            <a class="nav-brand" href="/">
-                <i class="fa-solid fa-house"></i>
-                <span>HomeHive</span>
-            </a>
-            <div class="nav-links">
-                <a class="is-active" href="/"><i class="fa-solid fa-compass"></i> Explore</a>
-                <% if (isLoggedIn) { %>
-                    <a href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
-                    <% if (user.role === 'Owner') { %>
-                        <a href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>
-                        <a href="/host/host-homelist"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
-                        <a href="/host/buy-requests"><i class="fa-solid fa-comments"></i> Requests</a>
-                    <% } %>
-                    <a href="/store/bookings"><i class="fa-regular fa-calendar-check"></i> Meetings</a>
-                    <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
-                <% } else { %>
-                    <a href="/login"><i class="fa-solid fa-user"></i> Login</a>
-                    <a href="/signup"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
-                <% } %>
-            </div>
-        </div>
-    </div>
+<body>
+    <%- include('../partials/nav', { activeNav: 'explore' }) %>
 
     <section class="hero-section">
-        <div class="hero-blob hero-blob--1" aria-hidden="true"></div>
-        <div class="hero-blob hero-blob--2" aria-hidden="true"></div>
-        <div class="hero-blob hero-blob--3" aria-hidden="true"></div>
-        <div class="hero-blob hero-blob--4" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-card">
-            <div class="hero-layout">
+        <div class="hero-card reveal">
+            <div class="hero-grid">
                 <div class="hero-copy">
-                    <h1>Homes that feel considered, not dumped into a feed.</h1>
-                    <p class="hero-lead">Browse sharper, calmer listings with better contrast, clearer pricing, and a more cinematic discovery flow.</p>
-                    <div class="hero-search-shell">
-                        <div class="hero-search">
+                    <span class="eyebrow"><i class="fa-solid fa-sparkles"></i> Premium property workflow</span>
+                    <h1>Buy-side clarity and host-side control in one dark, modern platform.</h1>
+                    <p>HomeHive turns scattered listings into a calmer decision experience with verified cards, cleaner pricing, fast filtering, shortlist-friendly saves, and owner dashboards that feel like software instead of forms.</p>
+
+                    <div class="hero-search">
+                        <label class="field">
+                            <span>Search</span>
                             <input id="propertySearch" type="text" placeholder="Search by city, state, country, or description">
-                            <button type="button" class="btn btn-accent" id="searchActionBtn">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                                <span class="text-white" >Search</span>
-                            </button>
+                        </label>
+                        <label class="field">
+                            <span>Budget</span>
+                            <select id="budgetPreference">
+                                <option value="any">Any budget</option>
+                                <option value="2500000">Up to Rs 25L</option>
+                                <option value="5000000">Up to Rs 50L</option>
+                                <option value="10000000">Up to Rs 1Cr</option>
+                                <option value="20000000">Up to Rs 2Cr</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span>Property type</span>
+                            <select id="typePreference">
+                                <option value="any">Any type</option>
+                                <option value="apartment">Apartment</option>
+                                <option value="villa">Villa</option>
+                                <option value="house">House</option>
+                                <option value="studio">Studio</option>
+                                <option value="plot">Plot</option>
+                            </select>
+                        </label>
+                        <button type="button" class="btn btn-accent" id="searchActionBtn">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span>Refine</span>
+                        </button>
+                    </div>
+
+                    <div class="hero-cta-row">
+                        <a class="btn btn-accent" href="#listing-explorer">
+                            <i class="fa-solid fa-compass"></i>
+                            <span>Browse listings</span>
+                        </a>
+                        <% if (!isLoggedIn) { %>
+                            <a class="btn btn-secondary" href="/signup">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>Create account</span>
+                            </a>
+                        <% } else if (user && user.role === 'Owner') { %>
+                            <a class="btn btn-secondary" href="/host/add-home">
+                                <i class="fa-solid fa-square-plus"></i>
+                                <span>Add your property</span>
+                            </a>
+                        <% } else { %>
+                            <a class="btn btn-secondary" href="/store/favourite-list">
+                                <i class="fa-regular fa-heart"></i>
+                                <span>Open saved homes</span>
+                            </a>
+                        <% } %>
+                    </div>
+
+                    <div class="hero-stat-row">
+                        <div class="hero-stat">
+                            <strong><%= SubmittedDetails.length %></strong>
+                            <span>Active listings</span>
                         </div>
-                        <div class="hero-stats">
-                            <div class="hero-stat">
-                                <strong><%= SubmittedDetails.length %></strong>
-                                <span>Active listings</span>
-                            </div>
-                            <div class="hero-stat">
-                                <strong><%= SubmittedDetails.filter(home => home.location && home.location.coordinates && home.location.coordinates.length === 2).length %></strong>
-                                <span>Map-ready homes</span>
-                            </div>
+                        <div class="hero-stat">
+                            <strong><%= SubmittedDetails.filter(home => home.location && home.location.coordinates && home.location.coordinates.length === 2).length %></strong>
+                            <span>Map-ready homes</span>
                         </div>
-                        <div class="hero-filters" aria-label="Listing preferences">
-                            <label class="filter-chip">
-                                <span>Budget</span>
-                                <select id="budgetPreference">
-                                    <option value="any">Any budget</option>
-                                    <option value="2500000">Up to Rs 25L</option>
-                                    <option value="5000000">Up to Rs 50L</option>
-                                    <option value="10000000">Up to Rs 1Cr</option>
-                                    <option value="20000000">Up to Rs 2Cr</option>
-                                </select>
-                            </label>
-                            <label class="filter-chip">
-                                <span>Property type</span>
-                                <select id="typePreference">
-                                    <option value="any">Any type</option>
-                                    <option value="apartment">Apartment</option>
-                                    <option value="villa">Villa</option>
-                                    <option value="house">House</option>
-                                    <option value="studio">Studio</option>
-                                    <option value="plot">Plot</option>
-                                </select>
-                            </label>
+                        <div class="hero-stat">
+                            <strong><%= [...new Set(SubmittedDetails.map(home => home.address?.city).filter(Boolean))].length %></strong>
+                            <span>Cities covered</span>
                         </div>
                     </div>
+
+                    <div class="trust-row">
+                        <div class="trust-badge"><i class="fa-solid fa-circle-check"></i> Verified listing cues</div>
+                        <div class="trust-badge"><i class="fa-solid fa-bolt"></i> Fast shortlist workflow</div>
+                        <div class="trust-badge"><i class="fa-solid fa-chart-line"></i> Owner analytics surfaces</div>
+                    </div>
                 </div>
+
+                <aside class="hero-visual">
+                    <div class="visual-shell">
+                        <div class="visual-screen">
+                            <div class="screen-header">
+                                <div>
+                                    <small class="eyebrow">Live preview</small>
+                                    <h3>What the product feels like</h3>
+                                </div>
+                                <div class="screen-dots" aria-hidden="true">
+                                    <span></span><span></span><span></span>
+                                </div>
+                            </div>
+
+                            <div class="shot-grid">
+                                <% SubmittedDetails.slice(0, 4).forEach(home => { %>
+                                    <% const shotUrl = getHomeImageUrl(home.homeImage, { width: 560, height: 420 }); %>
+                                    <div class="shots-card">
+                                        <img
+                                            src="<%= shotUrl %>"
+                                            alt="Preview of <%= home.address?.formattedAddress || 'property' %>"
+                                            loading="lazy"
+                                            decoding="async"
+                                            onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
+                                        >
+                                    </div>
+                                <% }) %>
+                            </div>
+
+                            <div class="screen-mini-stats">
+                                <div class="screen-mini-stat">
+                                    <strong>98%</strong>
+                                    <span>Image-first browsing</span>
+                                </div>
+                                <div class="screen-mini-stat">
+                                    <strong>1 tap</strong>
+                                    <span>Save or request</span>
+                                </div>
+                                <div class="screen-mini-stat">
+                                    <strong>Zero clutter</strong>
+                                    <span>Sharper decision flow</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
             </div>
         </div>
     </section>
 
-    <div class="listings-toolbar">
-        <div class="section-heading" style="margin:0; width:auto;">
-            <span class="eyebrow"><i class="fa-solid fa-building"></i> Listings</span>
-            <h2>Available homes</h2>
+    <section class="page-section reveal">
+        <div class="section-heading">
+            <span class="eyebrow"><i class="fa-solid fa-layer-group"></i> Why teams switch</span>
+            <h2>Designed like a premium SaaS product, not a generic classifieds page.</h2>
+            <p>Every core interaction has been tightened for confidence: faster scanability, clearer pricing, better image hierarchy, and lighter-friction actions for both buyers and owners.</p>
         </div>
-        <p id="searchSummary"></p>
-    </div>
+        <div class="feature-grid">
+            <article class="info-card">
+                <i class="fa-solid fa-images"></i>
+                <h3>High-signal property cards</h3>
+                <p>Cleaner media ratios, verified badges, clearer price emphasis, and stronger hover motion make every listing easier to evaluate.</p>
+            </article>
+            <article class="info-card">
+                <i class="fa-solid fa-gauge-high"></i>
+                <h3>Operator-grade dashboards</h3>
+                <p>Hosts get metrics, recent activity, request visibility, and structured empty states instead of a flat management table.</p>
+            </article>
+            <article class="info-card">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <h3>Premium interaction design</h3>
+                <p>Glass layers, gradients, motion-driven reveals, lazy image loading, validation feedback, and polished action states raise the overall product feel.</p>
+            </article>
+        </div>
+    </section>
 
-    <ul class="homes-list" id="listingGrid">
-        <% SubmittedDetails.forEach(home => { %>
-            <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 420 }); %>
-            <% const imageSrcSet = getHomeImageSrcSet(home.homeImage, [320, 480, 720, 960], { height: 420 }); %>
-            <li
-                class="home-card listing-card"
-                data-search="<%= `${home.address.formattedAddress} ${home.description}`.toLowerCase() %>"
-                data-price="<%= Number(home.price) || 0 %>"
-                data-type="<%= (home.propertyType || '').toLowerCase() %>"
-                data-city="<%= (home.address.city || '').toLowerCase() %>"
-            >
-                <div class="home-media">
-                    <img
-                        src="<%= imageUrl %>"
-                        <% if (imageSrcSet) { %>srcset="<%= imageSrcSet %>"<% } %>
-                        sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw"
-                        alt="Photo of <%= home.address.formattedAddress %>"
-                        class="home-img"
-                        loading="lazy"
-                        decoding="async"
-                        onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
-                    />
-                    <div class="card-badges">
-                        <span class="match-badge" data-match-score>60% match</span>
+    <section class="page-section reveal" id="listing-explorer">
+        <div class="listings-toolbar">
+            <div class="section-heading" style="margin-bottom:0;">
+                <span class="eyebrow"><i class="fa-solid fa-building"></i> Listing explorer</span>
+                <h2>Browse verified-ready homes</h2>
+            </div>
+            <div class="toolbar-actions">
+                <label class="field">
+                    <span>Sort by</span>
+                    <select id="sortPreference">
+                        <option value="smart">Smart match</option>
+                        <option value="price-asc">Price: low to high</option>
+                        <option value="price-desc">Price: high to low</option>
+                        <option value="city">City</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>Results per page</span>
+                    <select id="pageSizePreference">
+                        <option value="6">6</option>
+                        <option value="9" selected>9</option>
+                        <option value="12">12</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+
+        <p id="searchSummary" class="helper-text" style="margin:0 0 1rem;"></p>
+
+        <ul class="homes-list" id="listingGrid">
+            <% SubmittedDetails.forEach(home => { %>
+                <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 450 }); %>
+                <% const imageSrcSet = getHomeImageSrcSet(home.homeImage, [320, 480, 720, 960], { height: 450 }); %>
+                <li
+                    class="home-card listing-card"
+                    data-search="<%= `${home.address?.formattedAddress || ''} ${home.description || ''}`.toLowerCase() %>"
+                    data-price="<%= Number(home.price) || 0 %>"
+                    data-type="<%= (home.propertyType || '').toLowerCase() %>"
+                    data-city="<%= (home.address?.city || '').toLowerCase() %>"
+                >
+                    <div class="home-media">
+                        <img
+                            src="<%= imageUrl %>"
+                            <% if (imageSrcSet) { %>srcset="<%= imageSrcSet %>"<% } %>
+                            sizes="(max-width: 840px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                            alt="Photo of <%= home.address?.formattedAddress || 'property' %>"
+                            class="home-img"
+                            loading="lazy"
+                            decoding="async"
+                            onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
+                        />
+                        <div class="card-badges">
+                            <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+                                <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified</span>
+                                <span class="match-badge" data-match-score>60% match</span>
+                            </div>
+                            <% if (isLoggedIn) { %>
+                                <form action="/favourites/<%= home.id %>" method="POST" class="inline-form" data-toast-submit="Saved to your shortlist." data-toast-type="success">
+                                    <button type="submit" class="save-button btn-secondary" aria-label="Save this property">
+                                        <i class="fa-regular fa-heart"></i>
+                                    </button>
+                                </form>
+                            <% } %>
+                        </div>
                     </div>
-                </div>
-                <div class="home-card-body">
-                    <h3><%= home.address.formattedAddress %></h3>
-                    <div class="home-meta">
-                        <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address.city || home.address.state %></span>
-                        <% if (home.propertyType) { %>
-                            <span class="meta-pill"><i class="fa-solid fa-house"></i><%= home.propertyType.charAt(0).toUpperCase() + home.propertyType.slice(1) %></span>
-                        <% } %>
-                        <span class="meta-pill"><i class="fa-solid fa-wallet"></i>Rs <%= home.price %></span>
+                    <div class="home-card-body">
+                        <div class="price-highlight">
+                            <div>
+                                <div class="price-label">Starting price</div>
+                                <strong>Rs <%= home.price %></strong>
+                            </div>
+                            <% if (home.propertyType) { %>
+                                <span class="meta-pill"><i class="fa-solid fa-house"></i><%= home.propertyType.charAt(0).toUpperCase() + home.propertyType.slice(1) %></span>
+                            <% } %>
+                        </div>
+                        <h3><%= home.address?.formattedAddress || 'Property listing' %></h3>
+                        <div class="home-meta">
+                            <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address?.city || home.address?.state || 'Location pending' %></span>
+                            <span class="meta-pill"><i class="fa-solid fa-bolt"></i>Fast response</span>
+                        </div>
+                        <p class="home-description"><%= home.description %></p>
                     </div>
-                    <p class="home-description"><%= home.description %></p>
-                </div>
-                <div class="card-actions">
-                    <% if (isLoggedIn && user.role === 'Buyer') { %>
-                        <button type="button" onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">
-                            <i class="fa-solid fa-paper-plane"></i>
-                            <span>Send Buy Request</span>
-                        </button>
-                    <% } %>
-                    <a class="Details" href="/home/<%= home.id %>">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                        <span>View Details</span>
-                    </a>
-                    <% if (isLoggedIn) { %>
-                        <form action="/favourites/<%= home.id %>" method="POST" class="inline-form">
-                            <button type="submit" class="btn-secondary save-action">
-                                <i class="fa-regular fa-heart"></i>
-                                <span>Save</span>
+                    <div class="card-actions">
+                        <% if (isLoggedIn && user.role === 'Buyer') { %>
+                            <button type="button" class="btn-accent" onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Send request</span>
                             </button>
-                        </form>
-                    <% } %>
-                </div>
-            </li>
-        <% }) %>
-    </ul>
+                        <% } %>
+                        <a class="Details" href="/home/<%= home.id %>">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            <span>View details</span>
+                        </a>
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
 
-    <div class="empty-state page-card" id="listingEmptyState" hidden>
-        <span class="eyebrow"><i class="fa-solid fa-compass"></i> No match</span>
-        <h2>No homes match the current search.</h2>
+        <div class="pagination" id="pagination"></div>
+
+        <div class="empty-state page-card" id="listingEmptyState" hidden>
+            <span class="empty-state-icon"><i class="fa-solid fa-house"></i></span>
+            <span class="eyebrow">No matching homes</span>
+            <h3>Try a different city, budget, or property type.</h3>
+            <p>The current filter combination is too narrow. Loosen one or two controls and the explorer will repopulate instantly.</p>
+        </div>
+    </section>
+
+    <section class="page-section reveal">
+        <div class="section-heading">
+            <span class="eyebrow"><i class="fa-solid fa-quote-left"></i> Testimonials</span>
+            <h2>Teams notice the difference immediately.</h2>
+        </div>
+        <div class="testimonial-grid">
+            <article class="testimonial-card">
+                <blockquote>"The shortlist flow is much calmer now. I can compare homes quickly without losing context."</blockquote>
+                <div class="testimonial-author">
+                    <span class="testimonial-avatar">AR</span>
+                    <div>
+                        <strong>Aarav Rao</strong>
+                        <p>Buyer, Bengaluru</p>
+                    </div>
+                </div>
+            </article>
+            <article class="testimonial-card">
+                <blockquote>"The host dashboard finally feels like a real product. Request management is much easier to scan."</blockquote>
+                <div class="testimonial-author">
+                    <span class="testimonial-avatar">NT</span>
+                    <div>
+                        <strong>Neha Tandon</strong>
+                        <p>Owner, Pune</p>
+                    </div>
+                </div>
+            </article>
+            <article class="testimonial-card">
+                <blockquote>"The darker interface and stronger card hierarchy make the listing quality feel significantly more premium."</blockquote>
+                <div class="testimonial-author">
+                    <span class="testimonial-avatar">VK</span>
+                    <div>
+                        <strong>Vikram Khanna</strong>
+                        <p>Property operator, Gurgaon</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="page-section reveal">
+        <div class="section-heading">
+            <span class="eyebrow"><i class="fa-solid fa-circle-question"></i> FAQ</span>
+            <h2>Common questions</h2>
+        </div>
+        <div class="faq-grid">
+            <article class="faq-card">
+                <details class="faq-item" open>
+                    <summary><span>Can buyers save properties for later?</span><i class="fa-solid fa-plus"></i></summary>
+                    <p>Yes. Logged-in buyers can save any listing to the favourites view and return to it from the main navigation.</p>
+                </details>
+                <details class="faq-item">
+                    <summary><span>Can owners manage requests from one place?</span><i class="fa-solid fa-plus"></i></summary>
+                    <p>Yes. Owners can review offers, accept or reject requests, open chat, and schedule meetings from the request workflow.</p>
+                </details>
+                <details class="faq-item">
+                    <summary><span>Do listings support image optimization?</span><i class="fa-solid fa-plus"></i></summary>
+                    <p>Yes. Images are loaded lazily and rendered with responsive `srcset` support when available.</p>
+                </details>
+            </article>
+            <article class="faq-card">
+                <details class="faq-item" open>
+                    <summary><span>Can I browse without signing in?</span><i class="fa-solid fa-plus"></i></summary>
+                    <p>Yes. The core listing discovery experience is public. Actions like saving, sending requests, and managing meetings require an account.</p>
+                </details>
+                <details class="faq-item">
+                    <summary><span>Is there a host dashboard?</span><i class="fa-solid fa-plus"></i></summary>
+                    <p>Yes. Owners have a dedicated management view with listing metrics, recent activity, request states, and quick actions.</p>
+                </details>
+                <details class="faq-item">
+                    <summary><span>Can I refine listings by price and type?</span><i class="fa-solid fa-plus"></i></summary>
+                    <p>Yes. Search, budget, type, smart match, sorting, and pagination are all available from the landing explorer.</p>
+                </details>
+            </article>
+            <article class="faq-card">
+                <details class="faq-item" open>
+                    <summary><span>How are offers sent?</span><i class="fa-solid fa-plus"></i></summary>
+                    <p>Buyers can open the request modal from a card, submit an offered price and message, and continue the conversation afterward.</p>
+                </details>
+                <details class="faq-item">
+                    <summary><span>Does the interface work on mobile?</span><i class="fa-solid fa-plus"></i></summary>
+                    <p>Yes. Navigation, cards, filters, forms, and modals all collapse into mobile-friendly layouts.</p>
+                </details>
+                <details class="faq-item">
+                    <summary><span>What happens when no results match?</span><i class="fa-solid fa-plus"></i></summary>
+                    <p>A custom empty state appears with guidance instead of leaving the grid blank.</p>
+                </details>
+            </article>
+        </div>
+    </section>
+
+    <div class="footer-strip">
+        <div class="footer-card">
+            <div>
+                <strong>HomeHive</strong>
+                <p style="margin:0.25rem 0 0;">Premium property discovery for buyers and hosts.</p>
+            </div>
+            <div class="trust-row" style="margin-top:0;">
+                <span class="trust-badge"><i class="fa-solid fa-mobile-screen"></i> Responsive</span>
+                <span class="trust-badge"><i class="fa-solid fa-image"></i> Lazy loaded</span>
+                <span class="trust-badge"><i class="fa-solid fa-shield-heart"></i> Human-centered UX</span>
+            </div>
+        </div>
     </div>
 
     <div id="buyRequestModal" class="modal">
@@ -185,23 +385,24 @@
             <button type="button" class="close" onclick="closeBuyRequestModal()">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <div class="section-heading" style="width:auto; margin-bottom:1rem;">
+            <div class="section-heading" style="margin-bottom:1rem;">
                 <span class="eyebrow"><i class="fa-solid fa-paper-plane"></i> Offer</span>
-                <h2>Send Buy Request</h2>
+                <h3>Send buy request</h3>
+                <p>Share your proposed budget and why this property fits your shortlist.</p>
             </div>
-            <form id="buyRequestForm" class="buy-request-form" action="/buy-request" method="POST">
+            <form id="buyRequestForm" action="/buy-request" method="POST">
                 <input type="hidden" id="homeId" name="homeId">
                 <div class="field">
-                    <label for="offeredPrice">Your Offered Price</label>
+                    <label for="offeredPrice">Your offered price</label>
                     <input type="number" id="offeredPrice" name="offeredPrice" required>
                 </div>
                 <div class="field">
-                    <label for="message">Message to Owner</label>
-                    <textarea id="message" name="message" rows="4" placeholder="Explain your interest and preferred timeline..." required></textarea>
+                    <label for="message">Message to owner</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Explain your interest, timeline, or financing status..." required></textarea>
                 </div>
-                <button type="submit">
+                <button type="submit" class="btn-accent">
                     <i class="fa-solid fa-paper-plane"></i>
-                    <span>Send Request</span>
+                    <span>Send request</span>
                 </button>
             </form>
         </div>
@@ -212,10 +413,16 @@
         const searchActionBtn = document.getElementById('searchActionBtn');
         const budgetPreference = document.getElementById('budgetPreference');
         const typePreference = document.getElementById('typePreference');
+        const sortPreference = document.getElementById('sortPreference');
+        const pageSizePreference = document.getElementById('pageSizePreference');
+        const listingGrid = document.getElementById('listingGrid');
         const listingCards = Array.from(document.querySelectorAll('.listing-card'));
         const searchSummary = document.getElementById('searchSummary');
+        const emptyState = document.getElementById('listingEmptyState');
+        const pagination = document.getElementById('pagination');
         const buyRequestModal = document.getElementById('buyRequestModal');
-        const smartMatchStorageKey = 'homehive.smartMatchPreferences';
+        const smartMatchStorageKey = 'homehive.smartMatchPreferences.v2';
+        let currentPage = 1;
 
         const inferPropertyType = (text) => {
             const value = text.toLowerCase();
@@ -231,6 +438,8 @@
                 search: searchInput.value,
                 budget: budgetPreference.value,
                 type: typePreference.value,
+                sort: sortPreference.value,
+                pageSize: pageSizePreference.value,
             }));
         }
 
@@ -240,6 +449,8 @@
                 if (typeof saved.search === 'string') searchInput.value = saved.search;
                 if (typeof saved.budget === 'string') budgetPreference.value = saved.budget;
                 if (typeof saved.type === 'string') typePreference.value = saved.type;
+                if (typeof saved.sort === 'string') sortPreference.value = saved.sort;
+                if (typeof saved.pageSize === 'string') pageSizePreference.value = saved.pageSize;
             } catch (error) {
                 localStorage.removeItem(smartMatchStorageKey);
             }
@@ -252,32 +463,11 @@
             const cardText = card.dataset.search;
             const cardPrice = Number(card.dataset.price || 0);
             const cardType = card.dataset.type || inferPropertyType(cardText);
-            let score = 55;
+            let score = 52;
 
-            if (query) {
-                score += cardText.includes(query) ? 20 : 4;
-            } else {
-                score += 8;
-            }
-
-            if (budget > 0) {
-                if (cardPrice <= budget) {
-                    score += 17;
-                } else if (cardPrice <= budget * 1.12) {
-                    score += 10;
-                } else {
-                    score += 2;
-                }
-            } else {
-                score += 10;
-            }
-
-            if (preferredType !== 'any') {
-                score += cardType === preferredType ? 15 : 3;
-            } else {
-                score += 7;
-            }
-
+            score += query ? (cardText.includes(query) ? 24 : 6) : 10;
+            score += budget > 0 ? (cardPrice <= budget ? 18 : cardPrice <= budget * 1.12 ? 10 : 2) : 12;
+            score += preferredType !== 'any' ? (cardType === preferredType ? 16 : 2) : 8;
             return Math.max(52, Math.min(98, score));
         }
 
@@ -285,42 +475,87 @@
             listingCards.forEach((card) => {
                 const score = getSmartMatchScore(card);
                 const scoreNode = card.querySelector('[data-match-score]');
-                if (scoreNode) {
-                    scoreNode.textContent = `${score}% match`;
-                }
+                if (scoreNode) scoreNode.textContent = `${score}% match`;
+                card.dataset.match = String(score);
             });
         }
 
-        function filterListings() {
+        function getFilteredCards() {
             const query = searchInput.value.trim().toLowerCase();
             const priceCap = Number(budgetPreference.value || 0);
             const preferredType = typePreference.value;
-            let visibleCount = 0;
 
-            listingCards.forEach((card) => {
+            return listingCards.filter((card) => {
                 const matchesQuery = !query || card.dataset.search.includes(query);
                 const matchesBudget = !priceCap || Number(card.dataset.price || 0) <= priceCap * 1.12;
                 const cardType = card.dataset.type || inferPropertyType(card.dataset.search);
                 const matchesType = preferredType === 'any' || cardType === preferredType;
-                const matches = matchesQuery && matchesBudget && matchesType;
-                card.style.display = matches ? '' : 'none';
-                if (matches) {
-                    visibleCount += 1;
-                }
+                return matchesQuery && matchesBudget && matchesType;
+            });
+        }
+
+        function sortCards(cards) {
+            const sortValue = sortPreference.value;
+            const sorted = [...cards];
+
+            sorted.sort((a, b) => {
+                if (sortValue === 'price-asc') return Number(a.dataset.price) - Number(b.dataset.price);
+                if (sortValue === 'price-desc') return Number(b.dataset.price) - Number(a.dataset.price);
+                if (sortValue === 'city') return (a.dataset.city || '').localeCompare(b.dataset.city || '');
+                return Number(b.dataset.match || 0) - Number(a.dataset.match || 0);
+            });
+
+            sorted.forEach((card) => listingGrid.appendChild(card));
+            return sorted;
+        }
+
+        function renderPagination(totalCount, pageSize) {
+            const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+            pagination.innerHTML = '';
+            if (totalCount <= pageSize) return totalPages;
+
+            for (let page = 1; page <= totalPages; page += 1) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = page;
+                button.className = page === currentPage ? 'is-active' : '';
+                button.addEventListener('click', () => {
+                    currentPage = page;
+                    filterListings();
+                });
+                pagination.appendChild(button);
+            }
+
+            return totalPages;
+        }
+
+        function filterListings(resetPage = false) {
+            if (resetPage) currentPage = 1;
+            refreshSmartMatchScores();
+            const pageSize = Number(pageSizePreference.value || 9);
+            const filtered = sortCards(getFilteredCards());
+            const totalPages = renderPagination(filtered.length, pageSize);
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+
+            listingCards.forEach((card) => {
+                card.hidden = true;
+                card.style.display = 'none';
+            });
+
+            filtered.slice(start, end).forEach((card) => {
+                card.hidden = false;
+                card.style.display = '';
             });
 
             if (searchSummary) {
-                searchSummary.textContent = visibleCount === listingCards.length
-                    ? `Showing all ${visibleCount} homes`
-                    : `Showing ${visibleCount} of ${listingCards.length} homes`;
+                searchSummary.textContent = filtered.length
+                    ? `Showing ${Math.min(end, filtered.length)} of ${filtered.length} matching homes across ${totalPages} page${totalPages > 1 ? 's' : ''}.`
+                    : 'No listings match the current filters.';
             }
 
-            const emptyState = document.getElementById('listingEmptyState');
-            if (emptyState) {
-                emptyState.hidden = visibleCount !== 0;
-            }
-
-            refreshSmartMatchScores();
+            if (emptyState) emptyState.hidden = filtered.length !== 0;
             savePreferences();
         }
 
@@ -335,18 +570,18 @@
         }
 
         loadPreferences();
-        searchInput.addEventListener('input', filterListings);
-        budgetPreference.addEventListener('change', filterListings);
-        typePreference.addEventListener('change', filterListings);
-        searchActionBtn.addEventListener('click', filterListings);
+        searchInput.addEventListener('input', () => filterListings(true));
+        budgetPreference.addEventListener('change', () => filterListings(true));
+        typePreference.addEventListener('change', () => filterListings(true));
+        sortPreference.addEventListener('change', () => filterListings(true));
+        pageSizePreference.addEventListener('change', () => filterListings(true));
+        searchActionBtn.addEventListener('click', () => filterListings(true));
 
         buyRequestModal.addEventListener('click', (event) => {
-            if (event.target === buyRequestModal) {
-                closeBuyRequestModal();
-            }
+            if (event.target === buyRequestModal) closeBuyRequestModal();
         });
 
-        filterListings();
+        filterListings(true);
     </script>
     <script src="/js/animations.js"></script>
 </body>

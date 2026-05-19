@@ -1,46 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeHive - Page Not Found</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <%- include('./partials/head', {
+        pageTitle: 'HomeHive | Page Not Found',
+        pageDescription: 'The page you requested is unavailable.'
+    }) %>
 </head>
 <body>
-
-    <div class="site-nav">
-        <div class="navbar">
-            <a class="nav-brand" href="/">
-                <i class="fa-solid fa-house"></i>
-                <span>HomeHive</span>
-            </a>
-            <div class="nav-links">
-                <a href="/"><i class="fa-solid fa-compass"></i> Explore</a>
-                <a href="/login"><i class="fa-solid fa-user"></i> Login</a>
-                <a href="/signup"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
-            </div>
-        </div>
-    </div>
+    <%- include('./partials/nav', { activeNav: 'explore' }) %>
 
     <section class="hero-section">
-        <div class="hero-blob hero-blob--1" aria-hidden="true"></div>
-        <div class="hero-blob hero-blob--2" aria-hidden="true"></div>
-        <div class="hero-blob hero-blob--3" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-mote" aria-hidden="true"></div>
-        <div class="hero-card" style="text-align:center;">
-            <div class="hero-copy">
-                <h1 style="margin:0 auto;">Lost your way?</h1>
-                <div class="hero-search-shell" style="width:auto;align-items:center;">
-                    <a href="/" class="btn btn-accent" style="justify-self:center;">
+        <div class="hero-card reveal" style="text-align:center;">
+            <div class="hero-copy" style="justify-items:center;">
+                <span class="eyebrow"><i class="fa-solid fa-triangle-exclamation"></i> Error state</span>
+                <h1 style="font-size:clamp(2.4rem,7vw,4.6rem);">Lost in the layout?</h1>
+                <p>The page you requested does not exist or is no longer available. Use the main listing explorer to get back into the product flow.</p>
+                <div class="hero-cta-row" style="justify-content:center;">
+                    <a href="/" class="btn btn-accent">
                         <i class="fa-solid fa-compass"></i>
-                        <span>Back to Home</span>
+                        <span>Back to home</span>
+                    </a>
+                    <a href="/login" class="btn btn-secondary">
+                        <i class="fa-solid fa-user"></i>
+                        <span>Go to login</span>
                     </a>
                 </div>
             </div>

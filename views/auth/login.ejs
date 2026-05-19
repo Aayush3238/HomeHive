@@ -1,26 +1,25 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeHive - Login</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <%- include('../partials/head', {
+        pageTitle: 'HomeHive | Login',
+        pageDescription: 'Sign in to manage saved homes, listings, requests, and meetings.'
+    }) %>
 </head>
 <body>
-
     <div class="auth-shell">
-        <div class="page-card auth-card auth-editorial" style="display:grid;gap:1.25rem;">
-        <div>
-            <h1 style="margin-top:0.25rem;">Login</h1>
-        </div>
+        <div class="page-card auth-card reveal">
+            <div class="section-heading" style="margin-bottom:0;">
+                <span class="eyebrow"><i class="fa-solid fa-arrow-right-to-bracket"></i> Welcome back</span>
+                <h1 style="font-size:clamp(2rem,4vw,3.1rem);">Login</h1>
+                <p>Access your saved homes, conversations, meetings, and owner tools.</p>
+            </div>
+
             <% if (errorMessage) { %>
                 <div class="alert alert-error"><%= errorMessage %></div>
             <% } %>
-            <form action="/login" method="post" class="stack">
+
+            <form action="/login" method="post">
                 <div class="field">
                     <label for="email">Email</label>
                     <input id="email" type="email" name="email" placeholder="Email" value="<%= oldInput?.email || '' %>" required>
@@ -29,14 +28,13 @@
                     <label for="password">Password</label>
                     <input id="password" type="password" name="password" placeholder="Password" required>
                 </div>
-                <button type="submit">
+                <button type="submit" class="btn btn-accent">
                     <i class="fa-solid fa-arrow-right-to-bracket"></i>
                     <span>Login</span>
                 </button>
             </form>
-            <p class="helper-text" style="text-align:center;margin-top:0.5rem;">
-                Don't have an account? <a href="/signup" style="color:var(--color-sage-500);font-weight:700;text-decoration:none;">Sign up</a>
-            </p>
+
+            <p class="helper-text" style="text-align:center;margin:0;">Don't have an account? <a href="/signup" style="color:var(--accent);font-weight:700;">Sign up</a></p>
         </div>
     </div>
     <script src="/js/animations.js"></script>
