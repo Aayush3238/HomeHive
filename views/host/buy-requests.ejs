@@ -15,9 +15,9 @@
                 <div class="dashboard-profile">
                     <div class="dashboard-avatar"><i class="fa-solid fa-comments-dollar"></i></div>
                     <div>
-                        <span class="eyebrow"><i class="fa-solid fa-wave-square"></i> Demand pipeline</span>
+                        <span class="eyebrow"><i class="fa-solid fa-comments"></i> Requests</span>
                         <h3 style="margin-top:0.75rem;">Buyer requests</h3>
-                        <p style="margin:0.35rem 0 0;">Review inbound offers, reply quickly, and move accepted buyers into meetings.</p>
+                        <p style="margin:0.35rem 0 0;">Review offers, reply to buyers, and schedule meetings.</p>
                     </div>
                 </div>
                 <nav class="dashboard-menu">
@@ -29,17 +29,17 @@
 
             <main class="dashboard-main reveal">
                 <div class="section-heading" style="margin-bottom:0;">
-                    <span class="eyebrow"><i class="fa-solid fa-comments"></i> Incoming demand</span>
-                    <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Requests for your properties</h1>
-                    <p>Approve, reject, or move buyers forward to scheduling without losing chat context.</p>
+                        <span class="eyebrow"><i class="fa-solid fa-comments"></i> Requests</span>
+                        <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Incoming offers</h1>
+                        <p>Review and respond to buyer offers for your properties.</p>
                 </div>
 
                 <% if (buyRequests.length === 0) { %>
                     <div class="empty-state page-card">
                         <span class="empty-state-icon"><i class="fa-solid fa-inbox"></i></span>
                         <span class="eyebrow">No requests yet</span>
-                        <h3>Nothing has landed in the pipeline yet.</h3>
-                        <p>Once buyers start submitting offers, this page becomes your control center for replies, chat, and scheduling.</p>
+                        <h3>No requests yet</h3>
+                        <p>Buyer offers will appear here once buyers submit them.</p>
                     </div>
                 <% } else { %>
                     <div class="card-list">

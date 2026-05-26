@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <%- include('../partials/head', {
-        pageTitle: 'HomeHive | Premium Property Discovery',
-        pageDescription: 'Discover verified homes, manage favourites, and move from browsing to buying in a polished premium workflow.'
+        pageTitle: 'HomeHive | Find your next home',
+        pageDescription: 'Browse verified properties across India. Filter by budget, type, or location. Save favourites and connect directly with owners.'
     }) %>
 </head>
 <body>
@@ -11,42 +11,53 @@
 
     <section class="hero-section">
         <div class="hero-card reveal">
-            <div class="hero-grid">
+            <div class="hero-layout">
                 <div class="hero-copy">
-                    <span class="eyebrow"><i class="fa-solid fa-sparkles"></i> Premium property workflow</span>
-                    <h1>Buy-side clarity and host-side control in one dark, modern platform.</h1>
-                    <p>HomeHive turns scattered listings into a calmer decision experience with verified cards, cleaner pricing, fast filtering, shortlist-friendly saves, and owner dashboards that feel like software instead of forms.</p>
+                    <h1>Find your next home, simply.</h1>
+                    <p class="hero-lead">Browse verified properties across cities. Filter by budget, type, or location. Save what you like and connect directly with owners.</p>
 
-                    <div class="hero-search">
-                        <label class="field">
-                            <span>Search</span>
-                            <input id="propertySearch" type="text" placeholder="Search by city, state, country, or description">
-                        </label>
-                        <label class="field">
-                            <span>Budget</span>
-                            <select id="budgetPreference">
-                                <option value="any">Any budget</option>
-                                <option value="2500000">Up to Rs 25L</option>
-                                <option value="5000000">Up to Rs 50L</option>
-                                <option value="10000000">Up to Rs 1Cr</option>
-                                <option value="20000000">Up to Rs 2Cr</option>
-                            </select>
-                        </label>
-                        <label class="field">
-                            <span>Property type</span>
-                            <select id="typePreference">
-                                <option value="any">Any type</option>
-                                <option value="apartment">Apartment</option>
-                                <option value="villa">Villa</option>
-                                <option value="house">House</option>
-                                <option value="studio">Studio</option>
-                                <option value="plot">Plot</option>
-                            </select>
-                        </label>
-                        <button type="button" class="btn btn-accent" id="searchActionBtn">
-                            <i class="fa-solid fa-sliders"></i>
-                            <span>Refine</span>
-                        </button>
+                    <div class="hero-search-shell">
+                        <div class="hero-search">
+                            <input id="propertySearch" type="text" placeholder="Search by city, state, or address">
+                            <button type="button" class="btn btn-accent" id="searchActionBtn">
+                                <i class="fa-solid fa-sliders"></i>
+                                <span>Search</span>
+                            </button>
+                        </div>
+                        <div class="hero-filters">
+                            <label class="filter-chip">
+                                <span>Budget</span>
+                                <select id="budgetPreference">
+                                    <option value="any">Any budget</option>
+                                    <option value="2500000">Up to Rs 25L</option>
+                                    <option value="5000000">Up to Rs 50L</option>
+                                    <option value="10000000">Up to Rs 1Cr</option>
+                                    <option value="20000000">Up to Rs 2Cr</option>
+                                </select>
+                            </label>
+                            <label class="filter-chip">
+                                <span>Property type</span>
+                                <select id="typePreference">
+                                    <option value="any">Any type</option>
+                                    <option value="apartment">Apartment</option>
+                                    <option value="villa">Villa</option>
+                                    <option value="house">House</option>
+                                    <option value="studio">Studio</option>
+                                    <option value="plot">Plot</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <strong><%= SubmittedDetails.length %></strong>
+                            <span>Listings</span>
+                        </div>
+                        <div class="hero-stat">
+                            <strong><%= [...new Set(SubmittedDetails.map(home => home.address?.city).filter(Boolean))].length %></strong>
+                            <span>Cities</span>
+                        </div>
                     </div>
 
                     <div class="hero-cta-row">
@@ -67,125 +78,33 @@
                         <% } else { %>
                             <a class="btn btn-secondary" href="/store/favourite-list">
                                 <i class="fa-regular fa-heart"></i>
-                                <span>Open saved homes</span>
+                                <span>Saved homes</span>
                             </a>
                         <% } %>
                     </div>
-
-                    <div class="hero-stat-row">
-                        <div class="hero-stat">
-                            <strong><%= SubmittedDetails.length %></strong>
-                            <span>Active listings</span>
-                        </div>
-                        <div class="hero-stat">
-                            <strong><%= SubmittedDetails.filter(home => home.location && home.location.coordinates && home.location.coordinates.length === 2).length %></strong>
-                            <span>Map-ready homes</span>
-                        </div>
-                        <div class="hero-stat">
-                            <strong><%= [...new Set(SubmittedDetails.map(home => home.address?.city).filter(Boolean))].length %></strong>
-                            <span>Cities covered</span>
-                        </div>
-                    </div>
-
-                    <div class="trust-row">
-                        <div class="trust-badge"><i class="fa-solid fa-circle-check"></i> Verified listing cues</div>
-                        <div class="trust-badge"><i class="fa-solid fa-bolt"></i> Fast shortlist workflow</div>
-                        <div class="trust-badge"><i class="fa-solid fa-chart-line"></i> Owner analytics surfaces</div>
-                    </div>
                 </div>
-
-                <aside class="hero-visual">
-                    <div class="visual-shell">
-                        <div class="visual-screen">
-                            <div class="screen-header">
-                                <div>
-                                    <small class="eyebrow">Live preview</small>
-                                    <h3>What the product feels like</h3>
-                                </div>
-                                <div class="screen-dots" aria-hidden="true">
-                                    <span></span><span></span><span></span>
-                                </div>
-                            </div>
-
-                            <div class="shot-grid">
-                                <% SubmittedDetails.slice(0, 4).forEach(home => { %>
-                                    <% const shotUrl = getHomeImageUrl(home.homeImage, { width: 560, height: 420 }); %>
-                                    <div class="shots-card">
-                                        <img
-                                            src="<%= shotUrl %>"
-                                            alt="Preview of <%= home.address?.formattedAddress || 'property' %>"
-                                            loading="lazy"
-                                            decoding="async"
-                                            onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
-                                        >
-                                    </div>
-                                <% }) %>
-                            </div>
-
-                            <div class="screen-mini-stats">
-                                <div class="screen-mini-stat">
-                                    <strong>98%</strong>
-                                    <span>Image-first browsing</span>
-                                </div>
-                                <div class="screen-mini-stat">
-                                    <strong>1 tap</strong>
-                                    <span>Save or request</span>
-                                </div>
-                                <div class="screen-mini-stat">
-                                    <strong>Zero clutter</strong>
-                                    <span>Sharper decision flow</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </aside>
             </div>
-        </div>
-    </section>
-
-    <section class="page-section reveal">
-        <div class="section-heading">
-            <span class="eyebrow"><i class="fa-solid fa-layer-group"></i> Why teams switch</span>
-            <h2>Designed like a premium SaaS product, not a generic classifieds page.</h2>
-            <p>Every core interaction has been tightened for confidence: faster scanability, clearer pricing, better image hierarchy, and lighter-friction actions for both buyers and owners.</p>
-        </div>
-        <div class="feature-grid">
-            <article class="info-card">
-                <i class="fa-solid fa-images"></i>
-                <h3>High-signal property cards</h3>
-                <p>Cleaner media ratios, verified badges, clearer price emphasis, and stronger hover motion make every listing easier to evaluate.</p>
-            </article>
-            <article class="info-card">
-                <i class="fa-solid fa-gauge-high"></i>
-                <h3>Operator-grade dashboards</h3>
-                <p>Hosts get metrics, recent activity, request visibility, and structured empty states instead of a flat management table.</p>
-            </article>
-            <article class="info-card">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                <h3>Premium interaction design</h3>
-                <p>Glass layers, gradients, motion-driven reveals, lazy image loading, validation feedback, and polished action states raise the overall product feel.</p>
-            </article>
         </div>
     </section>
 
     <section class="page-section reveal" id="listing-explorer">
         <div class="listings-toolbar">
             <div class="section-heading" style="margin-bottom:0;">
-                <span class="eyebrow"><i class="fa-solid fa-building"></i> Listing explorer</span>
-                <h2>Browse verified-ready homes</h2>
+                <span class="eyebrow"><i class="fa-solid fa-building"></i> Listings</span>
+                <h2>Available properties</h2>
             </div>
             <div class="toolbar-actions">
                 <label class="field">
                     <span>Sort by</span>
                     <select id="sortPreference">
-                        <option value="smart">Smart match</option>
+                        <option value="smart">Best match</option>
                         <option value="price-asc">Price: low to high</option>
                         <option value="price-desc">Price: high to low</option>
                         <option value="city">City</option>
                     </select>
                 </label>
                 <label class="field">
-                    <span>Results per page</span>
+                    <span>Per page</span>
                     <select id="pageSizePreference">
                         <option value="6">6</option>
                         <option value="9" selected>9</option>
@@ -271,114 +190,74 @@
         <div class="empty-state page-card" id="listingEmptyState" hidden>
             <span class="empty-state-icon"><i class="fa-solid fa-house"></i></span>
             <span class="eyebrow">No matching homes</span>
-            <h3>Try a different city, budget, or property type.</h3>
-            <p>The current filter combination is too narrow. Loosen one or two controls and the explorer will repopulate instantly.</p>
+            <h3>Try adjusting your filters</h3>
+            <p>No properties match the current criteria. Try a different city, budget, or property type.</p>
         </div>
     </section>
 
-    <section class="page-section reveal">
+    <section class="page-section reveal" id="why-homehive">
         <div class="section-heading">
-            <span class="eyebrow"><i class="fa-solid fa-quote-left"></i> Testimonials</span>
-            <h2>Teams notice the difference immediately.</h2>
+            <span class="eyebrow"><i class="fa-solid fa-house"></i> Why HomeHive</span>
+            <h2>Built for buyers and owners</h2>
         </div>
-        <div class="testimonial-grid">
-            <article class="testimonial-card">
-                <blockquote>"The shortlist flow is much calmer now. I can compare homes quickly without losing context."</blockquote>
-                <div class="testimonial-author">
-                    <span class="testimonial-avatar">AR</span>
-                    <div>
-                        <strong>Aarav Rao</strong>
-                        <p>Buyer, Bengaluru</p>
-                    </div>
-                </div>
+        <div class="feature-grid">
+            <article class="info-card">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <h3>Easy property discovery</h3>
+                <p>Search, filter, and sort listings by location, budget, or type. Smart matching helps you find what fits without endless scrolling.</p>
             </article>
-            <article class="testimonial-card">
-                <blockquote>"The host dashboard finally feels like a real product. Request management is much easier to scan."</blockquote>
-                <div class="testimonial-author">
-                    <span class="testimonial-avatar">NT</span>
-                    <div>
-                        <strong>Neha Tandon</strong>
-                        <p>Owner, Pune</p>
-                    </div>
-                </div>
+            <article class="info-card">
+                <i class="fa-solid fa-circle-check"></i>
+                <h3>Verified listings</h3>
+                <p>Every property goes through verification. What you see is what is available — no stale or misleading posts.</p>
             </article>
-            <article class="testimonial-card">
-                <blockquote>"The darker interface and stronger card hierarchy make the listing quality feel significantly more premium."</blockquote>
-                <div class="testimonial-author">
-                    <span class="testimonial-avatar">VK</span>
-                    <div>
-                        <strong>Vikram Khanna</strong>
-                        <p>Property operator, Gurgaon</p>
-                    </div>
-                </div>
+            <article class="info-card">
+                <i class="fa-solid fa-comments"></i>
+                <h3>Direct communication</h3>
+                <p>Send an offer or message the owner directly. No middlemen, no delays. Discuss pricing, schedule visits, and close faster.</p>
+            </article>
+            <article class="info-card">
+                <i class="fa-solid fa-gauge"></i>
+                <h3>Simple experience</h3>
+                <p>A clean interface for buyers and a straightforward dashboard for owners. No clutter, no confusion.</p>
             </article>
         </div>
     </section>
 
-    <section class="page-section reveal">
-        <div class="section-heading">
-            <span class="eyebrow"><i class="fa-solid fa-circle-question"></i> FAQ</span>
-            <h2>Common questions</h2>
-        </div>
-        <div class="faq-grid">
-            <article class="faq-card">
-                <details class="faq-item" open>
-                    <summary><span>Can buyers save properties for later?</span><i class="fa-solid fa-plus"></i></summary>
-                    <p>Yes. Logged-in buyers can save any listing to the favourites view and return to it from the main navigation.</p>
-                </details>
-                <details class="faq-item">
-                    <summary><span>Can owners manage requests from one place?</span><i class="fa-solid fa-plus"></i></summary>
-                    <p>Yes. Owners can review offers, accept or reject requests, open chat, and schedule meetings from the request workflow.</p>
-                </details>
-                <details class="faq-item">
-                    <summary><span>Do listings support image optimization?</span><i class="fa-solid fa-plus"></i></summary>
-                    <p>Yes. Images are loaded lazily and rendered with responsive `srcset` support when available.</p>
-                </details>
-            </article>
-            <article class="faq-card">
-                <details class="faq-item" open>
-                    <summary><span>Can I browse without signing in?</span><i class="fa-solid fa-plus"></i></summary>
-                    <p>Yes. The core listing discovery experience is public. Actions like saving, sending requests, and managing meetings require an account.</p>
-                </details>
-                <details class="faq-item">
-                    <summary><span>Is there a host dashboard?</span><i class="fa-solid fa-plus"></i></summary>
-                    <p>Yes. Owners have a dedicated management view with listing metrics, recent activity, request states, and quick actions.</p>
-                </details>
-                <details class="faq-item">
-                    <summary><span>Can I refine listings by price and type?</span><i class="fa-solid fa-plus"></i></summary>
-                    <p>Yes. Search, budget, type, smart match, sorting, and pagination are all available from the landing explorer.</p>
-                </details>
-            </article>
-            <article class="faq-card">
-                <details class="faq-item" open>
-                    <summary><span>How are offers sent?</span><i class="fa-solid fa-plus"></i></summary>
-                    <p>Buyers can open the request modal from a card, submit an offered price and message, and continue the conversation afterward.</p>
-                </details>
-                <details class="faq-item">
-                    <summary><span>Does the interface work on mobile?</span><i class="fa-solid fa-plus"></i></summary>
-                    <p>Yes. Navigation, cards, filters, forms, and modals all collapse into mobile-friendly layouts.</p>
-                </details>
-                <details class="faq-item">
-                    <summary><span>What happens when no results match?</span><i class="fa-solid fa-plus"></i></summary>
-                    <p>A custom empty state appears with guidance instead of leaving the grid blank.</p>
-                </details>
-            </article>
-        </div>
-    </section>
-
-    <div class="footer-strip">
-        <div class="footer-card">
-            <div>
-                <strong>HomeHive</strong>
-                <p style="margin:0.25rem 0 0;">Premium property discovery for buyers and hosts.</p>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <i class="fa-solid fa-house"></i>
+                    <strong>HomeHive</strong>
+                </div>
+                <p class="footer-desc">A simple platform for finding and listing properties. No middlemen, no clutter.</p>
             </div>
-            <div class="trust-row" style="margin-top:0;">
-                <span class="trust-badge"><i class="fa-solid fa-mobile-screen"></i> Responsive</span>
-                <span class="trust-badge"><i class="fa-solid fa-image"></i> Lazy loaded</span>
-                <span class="trust-badge"><i class="fa-solid fa-shield-heart"></i> Human-centered UX</span>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <a href="/">Explore listings</a>
+                <a href="#why-homehive">Why HomeHive</a>
+                <% if (!isLoggedIn) { %>
+                    <a href="/login">Login</a>
+                    <a href="/signup">Sign up</a>
+                <% } else if (user && user.role === 'Owner') { %>
+                    <a href="/host/host-homelist">Dashboard</a>
+                    <a href="/host/add-home">Add listing</a>
+                <% } else { %>
+                    <a href="/store/favourite-list">Saved homes</a>
+                    <a href="/store/bookings">Meetings</a>
+                <% } %>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <a href="mailto:support@homehive.com">support@homehive.com</a>
+                <p class="footer-contact-item"><i class="fa-solid fa-location-dot"></i> India</p>
             </div>
         </div>
-    </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HomeHive. All rights reserved.</p>
+        </div>
+    </footer>
 
     <div id="buyRequestModal" class="modal">
         <div class="modal-content">
@@ -387,8 +266,8 @@
             </button>
             <div class="section-heading" style="margin-bottom:1rem;">
                 <span class="eyebrow"><i class="fa-solid fa-paper-plane"></i> Offer</span>
-                <h3>Send buy request</h3>
-                <p>Share your proposed budget and why this property fits your shortlist.</p>
+                <h3>Send an offer</h3>
+                <p>Submit your proposed price and a message to the owner.</p>
             </div>
             <form id="buyRequestForm" action="/buy-request" method="POST">
                 <input type="hidden" id="homeId" name="homeId">

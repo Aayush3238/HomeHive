@@ -12,9 +12,9 @@
     <section class="hero-section">
         <div class="hero-card reveal" style="text-align:center;">
             <div class="hero-copy" style="justify-items:center;">
-                <span class="eyebrow"><i class="fa-solid fa-triangle-exclamation"></i> Error state</span>
-                <h1 style="font-size:clamp(2.4rem,7vw,4.6rem);">Lost in the layout?</h1>
-                <p>The page you requested does not exist or is no longer available. Use the main listing explorer to get back into the product flow.</p>
+                <span class="eyebrow"><i class="fa-solid fa-triangle-exclamation"></i> Error</span>
+                <h1 style="font-size:clamp(2.4rem,7vw,4.6rem);">Page not found</h1>
+                <p>The page you are looking for does not exist or has been removed.</p>
                 <div class="hero-cta-row" style="justify-content:center;">
                     <a href="/" class="btn btn-accent">
                         <i class="fa-solid fa-compass"></i>
@@ -28,6 +28,36 @@
             </div>
         </div>
     </section>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <i class="fa-solid fa-house"></i>
+                    <strong>HomeHive</strong>
+                </div>
+                <p class="footer-desc">A simple platform for finding and listing properties.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <a href="/">Home</a>
+                <% if (!isLoggedIn) { %>
+                    <a href="/login">Login</a>
+                    <a href="/signup">Sign up</a>
+                <% } else { %>
+                    <a href="/store/favourite-list">Saved homes</a>
+                <% } %>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <a href="mailto:support@homehive.com">support@homehive.com</a>
+                <p class="footer-contact-item"><i class="fa-solid fa-location-dot"></i> India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HomeHive. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script src="/js/animations.js"></script>
 </body>

@@ -43,16 +43,11 @@
                             <span>Budget band</span>
                             <strong>Rs <%= home.price %></strong>
                         </div>
-                        <div class="detail-highlight">
-                            <span>Experience</span>
-                            <strong>Image-first preview</strong>
-                        </div>
+                    <div class="detail-highlight">
+                        <span>Status</span>
+                        <strong>Verified</strong>
                     </div>
-
-                    <div class="detail-panel">
-                        <span class="eyebrow"><i class="fa-solid fa-circle-check"></i> Verified-ready listing</span>
-                        <p style="margin:0.9rem 0 0;">This view keeps the most important information prominent: full address, pricing, listing type, and a larger property photo for quicker decision-making.</p>
-                    </div>
+                </div>
 
                     <div class="card-actions" style="padding:0;">
                         <a href="/" class="btn btn-accent">
@@ -72,6 +67,37 @@
             </div>
         </div>
     </section>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <i class="fa-solid fa-house"></i>
+                    <strong>HomeHive</strong>
+                </div>
+                <p class="footer-desc">A simple platform for finding and listing properties.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <a href="/">Explore listings</a>
+                <% if (!isLoggedIn) { %>
+                    <a href="/login">Login</a>
+                    <a href="/signup">Sign up</a>
+                <% } else { %>
+                    <a href="/store/favourite-list">Saved homes</a>
+                    <a href="/store/bookings">Meetings</a>
+                <% } %>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <a href="mailto:support@homehive.com">support@homehive.com</a>
+                <p class="footer-contact-item"><i class="fa-solid fa-location-dot"></i> India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HomeHive. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script src="/js/animations.js"></script>
 </body>
