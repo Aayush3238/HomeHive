@@ -9,13 +9,13 @@
 <body>
     <%- include('../partials/nav', { activeNav: 'dashboard' }) %>
 
-    <section class="hero-section">
-        <div class="hero-card reveal" style="text-align:center;">
-            <div class="hero-copy" style="justify-items:center;">
+    <section class="auth-shell">
+        <div class="page-card auth-card" style="text-align:center;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:0.75rem;">
                 <span class="eyebrow"><i class="fa-solid fa-circle-check"></i> Listing published</span>
                 <h1 style="font-size:clamp(2.4rem,7vw,4.6rem);">Your property is live.</h1>
-                <p>The listing has been added to the premium browse flow and is now ready for buyers to discover, save, and request.</p>
-                <div class="hero-cta-row" style="justify-content:center;">
+                <p>The listing has been added and is now ready for buyers to discover, save, and request.</p>
+                <div style="display:flex;gap:0.65rem;flex-wrap:wrap;justify-content:center;">
                     <a href="/host/host-homelist" class="btn btn-accent">
                         <i class="fa-solid fa-chart-line"></i>
                         <span>Open dashboard</span>

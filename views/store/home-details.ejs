@@ -9,8 +9,8 @@
 <body>
     <%- include('../partials/nav', { activeNav: 'explore' }) %>
 
-    <section class="hero-section detail-shell">
-        <div class="hero-card reveal home-details-container">
+    <section class="home-details-container">
+        <div class="page-card" style="padding:1.5rem;">
             <div class="detail-layout">
                 <div class="detail-media">
                     <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 1280, height: 760 }); %>

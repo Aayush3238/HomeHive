@@ -9,193 +9,155 @@
 <body>
     <%- include('../partials/nav', { activeNav: 'explore' }) %>
 
-    <section class="hero-section">
-        <div class="hero-card reveal">
-            <div class="hero-layout">
-                <div class="hero-copy">
-                    <h1>Find your next home, simply.</h1>
-                    <p class="hero-lead">Browse verified properties across cities. Filter by budget, type, or location. Save what you like and connect directly with owners.</p>
+    <section class="search-section">
+        <div class="search-shell">
+            <div class="search-row">
+                <div class="search-field input-grow">
+                    <label for="propertySearch">Search</label>
+                    <input id="propertySearch" type="text" placeholder="Search by city, state, or address">
+                </div>
+                <div class="search-field">
+                    <label for="budgetPreference">Budget</label>
+                    <select id="budgetPreference">
+                        <option value="any">Any budget</option>
+                        <option value="2500000">Up to Rs 25L</option>
+                        <option value="5000000">Up to Rs 50L</option>
+                        <option value="10000000">Up to Rs 1Cr</option>
+                        <option value="20000000">Up to Rs 2Cr</option>
+                    </select>
+                </div>
+                <div class="search-field">
+                    <label for="typePreference">Property type</label>
+                    <select id="typePreference">
+                        <option value="any">Any type</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="villa">Villa</option>
+                        <option value="house">House</option>
+                        <option value="studio">Studio</option>
+                        <option value="plot">Plot</option>
+                    </select>
+                </div>
+                <div class="search-field" style="align-self:flex-end;">
+                    <button type="button" class="btn btn-accent" id="searchActionBtn" style="padding:0.6rem 1.2rem;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Search
+                    </button>
+                </div>
+            </div>
+            <div class="search-stats">
+                <span class="search-stat"><strong><%= SubmittedDetails.length %></strong> Listings</span>
+                <span class="search-stat"><strong><%= [...new Set(SubmittedDetails.map(home => home.address?.city).filter(Boolean))].length %></strong> Cities</span>
+            </div>
+        </div>
+    </section>
 
-                    <div class="hero-search-shell">
-                        <div class="hero-search">
-                            <input id="propertySearch" type="text" placeholder="Search by city, state, or address">
-                            <button type="button" class="btn btn-accent" id="searchActionBtn">
-                                <i class="fa-solid fa-sliders"></i>
-                                <span>Search</span>
-                            </button>
-                        </div>
-                        <div class="hero-filters">
-                            <label class="filter-chip">
-                                <span>Budget</span>
-                                <select id="budgetPreference">
-                                    <option value="any">Any budget</option>
-                                    <option value="2500000">Up to Rs 25L</option>
-                                    <option value="5000000">Up to Rs 50L</option>
-                                    <option value="10000000">Up to Rs 1Cr</option>
-                                    <option value="20000000">Up to Rs 2Cr</option>
-                                </select>
-                            </label>
-                            <label class="filter-chip">
-                                <span>Property type</span>
-                                <select id="typePreference">
-                                    <option value="any">Any type</option>
-                                    <option value="apartment">Apartment</option>
-                                    <option value="villa">Villa</option>
-                                    <option value="house">House</option>
-                                    <option value="studio">Studio</option>
-                                    <option value="plot">Plot</option>
-                                </select>
-                            </label>
-                        </div>
-                    </div>
+    <div class="listings-toolbar">
+        <div class="section-heading" style="margin-bottom:0;">
+            <span class="eyebrow"><i class="fa-solid fa-building"></i> Listings</span>
+            <h2>Available properties</h2>
+        </div>
+        <div class="toolbar-actions">
+            <div class="field">
+                <label for="sortPreference">Sort by</label>
+                <select id="sortPreference" style="width:auto;">
+                    <option value="smart">Best match</option>
+                    <option value="price-asc">Price: low to high</option>
+                    <option value="price-desc">Price: high to low</option>
+                    <option value="city">City</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="pageSizePreference">Per page</label>
+                <select id="pageSizePreference" style="width:auto;">
+                    <option value="6">6</option>
+                    <option value="9" selected>9</option>
+                    <option value="12">12</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-                    <div class="hero-stats">
-                        <div class="hero-stat">
-                            <strong><%= SubmittedDetails.length %></strong>
-                            <span>Listings</span>
-                        </div>
-                        <div class="hero-stat">
-                            <strong><%= [...new Set(SubmittedDetails.map(home => home.address?.city).filter(Boolean))].length %></strong>
-                            <span>Cities</span>
-                        </div>
-                    </div>
+    <p id="searchSummary" class="helper-text" style="width:min(1200px, calc(100vw - 2rem));margin:0 auto 1rem;"></p>
 
-                    <div class="hero-cta-row">
-                        <a class="btn btn-accent" href="#listing-explorer">
-                            <i class="fa-solid fa-compass"></i>
-                            <span>Browse listings</span>
-                        </a>
-                        <% if (!isLoggedIn) { %>
-                            <a class="btn btn-secondary" href="/signup">
-                                <i class="fa-solid fa-user-plus"></i>
-                                <span>Create account</span>
-                            </a>
-                        <% } else if (user && user.role === 'Owner') { %>
-                            <a class="btn btn-secondary" href="/host/add-home">
-                                <i class="fa-solid fa-square-plus"></i>
-                                <span>Add your property</span>
-                            </a>
-                        <% } else { %>
-                            <a class="btn btn-secondary" href="/store/favourite-list">
-                                <i class="fa-regular fa-heart"></i>
-                                <span>Saved homes</span>
-                            </a>
+    <ul class="homes-list" id="listingGrid">
+        <% SubmittedDetails.forEach(home => { %>
+            <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 450 }); %>
+            <% const imageSrcSet = getHomeImageSrcSet(home.homeImage, [320, 480, 720, 960], { height: 450 }); %>
+            <li
+                class="home-card listing-card"
+                data-search="<%= `${home.address?.formattedAddress || ''} ${home.description || ''}`.toLowerCase() %>"
+                data-price="<%= Number(home.price) || 0 %>"
+                data-type="<%= (home.propertyType || '').toLowerCase() %>"
+                data-city="<%= (home.address?.city || '').toLowerCase() %>"
+            >
+                <div class="home-media">
+                    <img
+                        src="<%= imageUrl %>"
+                        <% if (imageSrcSet) { %>srcset="<%= imageSrcSet %>"<% } %>
+                        sizes="(max-width: 840px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                        alt="Photo of <%= home.address?.formattedAddress || 'property' %>"
+                        class="home-img"
+                        loading="lazy"
+                        decoding="async"
+                        onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
+                    />
+                    <div class="card-badges">
+                        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                            <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified</span>
+                            <span class="match-badge" data-match-score>60% match</span>
+                        </div>
+                        <% if (isLoggedIn) { %>
+                            <form action="/favourites/<%= home.id %>" method="POST" class="inline-form" data-toast-submit="Saved to your shortlist." data-toast-type="success">
+                                <button type="submit" class="save-button btn-secondary" aria-label="Save this property" style="pointer-events:auto;">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                            </form>
                         <% } %>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="page-section reveal" id="listing-explorer">
-        <div class="listings-toolbar">
-            <div class="section-heading" style="margin-bottom:0;">
-                <span class="eyebrow"><i class="fa-solid fa-building"></i> Listings</span>
-                <h2>Available properties</h2>
-            </div>
-            <div class="toolbar-actions">
-                <label class="field">
-                    <span>Sort by</span>
-                    <select id="sortPreference">
-                        <option value="smart">Best match</option>
-                        <option value="price-asc">Price: low to high</option>
-                        <option value="price-desc">Price: high to low</option>
-                        <option value="city">City</option>
-                    </select>
-                </label>
-                <label class="field">
-                    <span>Per page</span>
-                    <select id="pageSizePreference">
-                        <option value="6">6</option>
-                        <option value="9" selected>9</option>
-                        <option value="12">12</option>
-                    </select>
-                </label>
-            </div>
-        </div>
-
-        <p id="searchSummary" class="helper-text" style="margin:0 0 1rem;"></p>
-
-        <ul class="homes-list" id="listingGrid">
-            <% SubmittedDetails.forEach(home => { %>
-                <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 450 }); %>
-                <% const imageSrcSet = getHomeImageSrcSet(home.homeImage, [320, 480, 720, 960], { height: 450 }); %>
-                <li
-                    class="home-card listing-card"
-                    data-search="<%= `${home.address?.formattedAddress || ''} ${home.description || ''}`.toLowerCase() %>"
-                    data-price="<%= Number(home.price) || 0 %>"
-                    data-type="<%= (home.propertyType || '').toLowerCase() %>"
-                    data-city="<%= (home.address?.city || '').toLowerCase() %>"
-                >
-                    <div class="home-media">
-                        <img
-                            src="<%= imageUrl %>"
-                            <% if (imageSrcSet) { %>srcset="<%= imageSrcSet %>"<% } %>
-                            sizes="(max-width: 840px) 100vw, (max-width: 1100px) 50vw, 33vw"
-                            alt="Photo of <%= home.address?.formattedAddress || 'property' %>"
-                            class="home-img"
-                            loading="lazy"
-                            decoding="async"
-                            onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
-                        />
-                        <div class="card-badges">
-                            <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
-                                <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified</span>
-                                <span class="match-badge" data-match-score>60% match</span>
-                            </div>
-                            <% if (isLoggedIn) { %>
-                                <form action="/favourites/<%= home.id %>" method="POST" class="inline-form" data-toast-submit="Saved to your shortlist." data-toast-type="success">
-                                    <button type="submit" class="save-button btn-secondary" aria-label="Save this property">
-                                        <i class="fa-regular fa-heart"></i>
-                                    </button>
-                                </form>
-                            <% } %>
+                <div class="home-card-body">
+                    <div class="price-highlight">
+                        <div>
+                            <div class="price-label">Starting price</div>
+                            <strong>Rs <%= home.price %></strong>
                         </div>
-                    </div>
-                    <div class="home-card-body">
-                        <div class="price-highlight">
-                            <div>
-                                <div class="price-label">Starting price</div>
-                                <strong>Rs <%= home.price %></strong>
-                            </div>
-                            <% if (home.propertyType) { %>
-                                <span class="meta-pill"><i class="fa-solid fa-house"></i><%= home.propertyType.charAt(0).toUpperCase() + home.propertyType.slice(1) %></span>
-                            <% } %>
-                        </div>
-                        <h3><%= home.address?.formattedAddress || 'Property listing' %></h3>
-                        <div class="home-meta">
-                            <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address?.city || home.address?.state || 'Location pending' %></span>
-                            <span class="meta-pill"><i class="fa-solid fa-bolt"></i>Fast response</span>
-                        </div>
-                        <p class="home-description"><%= home.description %></p>
-                    </div>
-                    <div class="card-actions">
-                        <% if (isLoggedIn && user.role === 'Buyer') { %>
-                            <button type="button" class="btn-accent" onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">
-                                <i class="fa-solid fa-paper-plane"></i>
-                                <span>Send request</span>
-                            </button>
+                        <% if (home.propertyType) { %>
+                            <span class="meta-pill"><i class="fa-solid fa-house"></i><%= home.propertyType.charAt(0).toUpperCase() + home.propertyType.slice(1) %></span>
                         <% } %>
-                        <a class="Details" href="/home/<%= home.id %>">
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                            <span>View details</span>
-                        </a>
                     </div>
-                </li>
-            <% }) %>
-        </ul>
+                    <h3><%= home.address?.formattedAddress || 'Property listing' %></h3>
+                    <div class="home-meta">
+                        <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= home.address?.city || home.address?.state || 'Location pending' %></span>
+                        <span class="meta-pill"><i class="fa-solid fa-bolt"></i>Fast response</span>
+                    </div>
+                    <p class="home-description"><%= home.description %></p>
+                </div>
+                <div class="card-actions">
+                    <% if (isLoggedIn && user.role === 'Buyer') { %>
+                        <button type="button" class="btn-accent" onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Send request</span>
+                        </button>
+                    <% } %>
+                    <a class="Details" href="/home/<%= home.id %>">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        <span>View details</span>
+                    </a>
+                </div>
+            </li>
+        <% }) %>
+    </ul>
 
-        <div class="pagination" id="pagination"></div>
+    <div class="pagination" id="pagination"></div>
 
-        <div class="empty-state page-card" id="listingEmptyState" hidden>
-            <span class="empty-state-icon"><i class="fa-solid fa-house"></i></span>
-            <span class="eyebrow">No matching homes</span>
-            <h3>Try adjusting your filters</h3>
-            <p>No properties match the current criteria. Try a different city, budget, or property type.</p>
-        </div>
-    </section>
+    <div class="empty-state" id="listingEmptyState" hidden>
+        <span class="empty-state-icon"><i class="fa-solid fa-house"></i></span>
+        <span class="eyebrow">No matching homes</span>
+        <h3>Try adjusting your filters</h3>
+        <p>No properties match the current criteria. Try a different city, budget, or property type.</p>
+    </div>
 
-    <section class="page-section reveal" id="why-homehive">
+    <section class="page-section" id="why-homehive">
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-solid fa-house"></i> Why HomeHive</span>
             <h2>Built for buyers and owners</h2>
@@ -279,7 +241,7 @@
                     <label for="message">Message to owner</label>
                     <textarea id="message" name="message" rows="4" placeholder="Explain your interest, timeline, or financing status..." required></textarea>
                 </div>
-                <button type="submit" class="btn-accent">
+                <button type="submit" class="btn btn-accent">
                     <i class="fa-solid fa-paper-plane"></i>
                     <span>Send request</span>
                 </button>
