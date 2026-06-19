@@ -271,6 +271,18 @@ h3 {
 }
 .section-heading {
   margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.section-heading h1, .section-heading h2, .section-heading h3 {
+  margin: 0;
+}
+.section-heading p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-slate-500);
+  line-height: 1.5;
 }
 .eyebrow {
   display: inline-flex;

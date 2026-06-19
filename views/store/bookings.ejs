@@ -125,7 +125,7 @@
                         }
                     }
                 } catch (error) {
-                    console.warn('Could not decrypt message:', error);
+                    // decryption failed — show raw
                 }
 
                 row.innerHTML = `
@@ -182,7 +182,6 @@
                 messageInput.value = '';
                 if (window.showToast) window.showToast('Message sent.', 'success');
             } catch (error) {
-                console.error('Error encrypting message:', error);
                 if (window.showToast) window.showToast('Failed to send the message.', 'error');
             }
         }
