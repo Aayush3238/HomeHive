@@ -75,6 +75,10 @@ app.use(hostRouter);
 app.use(authRouter);
 app.use('/api/crypto', cryptoRouter);
 
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // Express error-handling middleware (must have 4 params)
 app.use((err, req, res, next) => {
 
@@ -85,6 +89,9 @@ app.use((err, req, res, next) => {
     error: isDev ? err.message : undefined,
   });
 });
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+})
 
 const errorController = require('./controller/errors');
 app.use(errorController.error);

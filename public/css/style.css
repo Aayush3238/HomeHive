@@ -1210,7 +1210,7 @@ input[type='file'] {
 }
 .detail-highlights {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 0.75rem;
 }
 .detail-highlight {
@@ -1239,14 +1239,8 @@ input[type='file'] {
   .detail-media img {
     height: 260px;
   }
-  .detail-highlights {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 @media (max-width: 640px) {
-  .detail-highlights {
-    grid-template-columns: 1fr;
-  }
   .detail-media img {
     height: 200px;
   }
@@ -1405,6 +1399,11 @@ input[type='file'] {
 .role-options {
   display: flex;
   gap: 0.65rem;
+}
+@media (max-width: 640px) {
+  .role-options {
+    flex-direction: column;
+  }
 }
 .role-option {
   display: flex;
