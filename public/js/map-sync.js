@@ -43,6 +43,7 @@
       || displayParts[displayParts.length - 1]
       || '';
     const houseNo = address.house_number || address.building || address.premise || '';
+    const postcode = address.postcode || '';
 
     return {
       houseNo,
@@ -50,6 +51,7 @@
       district,
       state,
       country,
+      postcode,
       formattedAddress: data.display_name
         || [houseNo, city, district, state, country].filter(Boolean).join(', '),
     };
@@ -74,6 +76,7 @@
       district: document.querySelector('input[name="district"]'),
       state: document.querySelector('input[name="state"]'),
       country: document.querySelector('input[name="country"]'),
+      postcode: document.querySelector('input[name="postcode"]'),
     };
 
     const map = L.map(config.mapId, {
@@ -205,7 +208,6 @@
 
         updateAddressFields(result);
       } catch (error) {
-        console.error('Reverse geocoding failed:', error);
         if (requestId === activeReverseRequest) {
           setStatus('Reverse geocoding failed. Check your connection and try again.', 'is-error');
         }
@@ -263,7 +265,6 @@
           applyLocation(results[0], true);
         }
       } catch (error) {
-        console.error('Geocoding failed:', error);
         showSuggestions([]);
         setStatus('Search failed. Check your connection and try again.', 'is-error');
       }

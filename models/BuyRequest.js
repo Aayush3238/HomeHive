@@ -93,6 +93,7 @@ class BuyRequest {
           district: item.home.district,
           state: item.home.state,
           country: item.home.country,
+          postcode: item.home.postcode,
           formattedAddress: item.home.formattedAddress,
         },
         location: {

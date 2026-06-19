@@ -27,6 +27,13 @@ exports.postLogin = async (req, res, next) => {
       });
     }
 
+    if (!user.password) {
+      return res.status(401).render('auth/login', {
+        errorMessage: 'This account uses Google Sign-In. Please use "Continue with Google".',
+        oldInput: { email },
+      });
+    }
+
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(401).render('auth/login', {
@@ -113,6 +120,84 @@ exports.postSignUp = async (req, res, next) => {
 
     await user.save();
     return res.redirect('/login');
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.googleCallback = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.redirect('/login');
+    }
+
+    if (!req.user.role) {
+      req.session.pendingUserId = req.user.id;
+      return req.session.save(() => {
+        res.redirect('/select-role');
+      });
+    }
+
+    req.session.isLoggedIn = true;
+    req.session.user = {
+      id: req.user.id,
+      email: req.user.email,
+      firstname: req.user.firstname,
+      lastname: req.user.lastname,
+      role: req.user.role,
+    };
+
+    return req.session.save(() => {
+      res.redirect('/');
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.getSelectRole = (req, res) => {
+  if (!req.session.pendingUserId) {
+    return res.redirect('/login');
+  }
+
+  return res.render('auth/select-role', {
+    errorMessage: null,
+  });
+};
+
+exports.postSelectRole = async (req, res, next) => {
+  const { role } = req.body;
+
+  if (!req.session.pendingUserId) {
+    return res.redirect('/login');
+  }
+
+  if (!role || !['Owner', 'Buyer'].includes(role)) {
+    return res.status(422).render('auth/select-role', {
+      errorMessage: 'Please select a valid account type.',
+    });
+  }
+
+  try {
+    const user = await User.updateRole(req.session.pendingUserId, role);
+    if (!user) {
+      return res.redirect('/login');
+    }
+
+    delete req.session.pendingUserId;
+
+    req.session.isLoggedIn = true;
+    req.session.user = {
+      id: user.id,
+      email: user.email,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      role: user.role,
+    };
+
+    return req.session.save(() => {
+      res.redirect('/');
+    });
   } catch (err) {
     return next(err);
   }

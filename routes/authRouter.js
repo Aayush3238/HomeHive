@@ -3,6 +3,7 @@ const path = require('path');
 const authRouter = express.Router();
 const authController = require('../controller/authController');
 const {check } = require('express-validator');
+const passport = require('../config/passport');
 
 authRouter.get('/login', authController.getLogin);
 authRouter.post('/login', authController.postLogin);
@@ -64,6 +65,12 @@ authRouter.post(
     authController.postSignUp
 )
 
- 
+authRouter.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+authRouter.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login', failureMessage: true }),
+  authController.googleCallback
+);
+authRouter.get('/select-role', authController.getSelectRole);
+authRouter.post('/select-role', authController.postSelectRole);
 
 exports.authRouter= authRouter;

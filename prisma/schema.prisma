@@ -29,8 +29,10 @@ model User {
   firstname          String
   lastname           String
   email              String               @unique
-  password           String
-  role               Role
+  password           String?
+  role               Role?
+  googleId           String?              @unique @map("google_id")
+  avatar             String?
   publicKey          String?              @map("public_key")
   createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt          DateTime             @default(now()) @map("updated_at") @db.Timestamptz(6)
@@ -52,6 +54,7 @@ model Home {
   district      String?
   state         String
   country       String
+  postcode      String?
   formattedAddress String      @map("formatted_address")
   latitude      Float          @default(0)
   longitude     Float          @default(0)

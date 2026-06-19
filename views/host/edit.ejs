@@ -51,6 +51,10 @@
                             <input id="country" type="text" name="country" value="<%= home.address?.country || '' %>" required>
                         </div>
                         <div class="field">
+                            <label for="postcode">Pincode / Postcode</label>
+                            <input id="postcode" type="text" name="postcode" value="<%= home.address?.postcode || '' %>">
+                        </div>
+                        <div class="field">
                             <label for="price">Price</label>
                             <input id="price" type="number" name="price" value="<%= home.price %>" min="1" step="0.01" inputmode="decimal" required>
                         </div>

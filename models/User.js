@@ -13,6 +13,8 @@ const mapUserRow = (row) => {
     email: row.email,
     password: row.password,
     role: row.role,
+    googleId: row.google_id,
+    avatar: row.avatar,
     publicKey: row.public_key,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -49,6 +51,8 @@ class User {
     this.email = data.email;
     this.password = data.password;
     this.role = data.role;
+    this.googleId = data.googleId;
+    this.avatar = data.avatar;
     this.publicKey = data.publicKey;
   }
 
@@ -58,9 +62,11 @@ class User {
         firstname: this.firstname,
         lastname: this.lastname,
         email: this.email,
-        password: this.password,
-        role: this.role,
-        publicKey: this.publicKey,
+        password: this.password || null,
+        role: this.role || null,
+        googleId: this.googleId || null,
+        avatar: this.avatar || null,
+        publicKey: this.publicKey || null,
       },
     });
 
@@ -80,9 +86,24 @@ class User {
     return null;
   }
 
+  static async findByGoogleId(googleId) {
+    const user = await prisma.user.findUnique({
+      where: { googleId },
+    });
+    return mapUserRow(user);
+  }
+
   static async findById(id) {
     const user = await prisma.user.findUnique({
       where: { id },
+    });
+    return mapUserRow(user);
+  }
+
+  static async updateRole(userId, role) {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { role },
     });
     return mapUserRow(user);
   }

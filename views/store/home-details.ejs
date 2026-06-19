@@ -39,6 +39,12 @@
                             <span>Location focus</span>
                             <strong><%= home.address?.city || home.address?.state || 'Flexible location' %></strong>
                         </div>
+                        <% if (home.address?.postcode) { %>
+                        <div class="detail-highlight">
+                            <span>Pincode</span>
+                            <strong><%= home.address.postcode %></strong>
+                        </div>
+                        <% } %>
                         <div class="detail-highlight">
                             <span>Budget band</span>
                             <strong>Rs <%= home.price %></strong>

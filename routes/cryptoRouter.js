@@ -22,7 +22,7 @@ cryptoRouter.post('/generate-key-pair', async (req, res) => {
     // For this implementation, we're sending it back so client can store it securely
     res.json({ publicKey, privateKey });
   } catch (err) {
-    console.error('Error generating key pair:', err);
+
     res.status(500).json({ error: 'Failed to generate key pair' });
   }
 });
@@ -39,7 +39,7 @@ cryptoRouter.get('/public-key/:userId', async (req, res) => {
     
     res.json({ publicKey: user.publicKey || null });
   } catch (err) {
-    console.error('Error fetching public key:', err);
+
     res.status(500).json({ error: 'Failed to fetch public key' });
   }
 });

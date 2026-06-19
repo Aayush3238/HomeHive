@@ -68,6 +68,7 @@ exports.postAddHome = [
           district: req.body.district,
           state: req.body.state,
           country: req.body.country,
+          postcode: req.body.postcode,
           formattedAddress,
         },
         location: {
@@ -199,6 +200,7 @@ exports.PostUpdateHome = [
           district: req.body.district,
           state: req.body.state,
           country: req.body.country,
+          postcode: req.body.postcode,
           formattedAddress: `${req.body.houseNo}, ${req.body.city}, ${req.body.district}, ${req.body.state}, ${req.body.country}`,
         },
         price: String(priceValue),

@@ -8,9 +8,14 @@ const loadEnv = require('./config/loadEnv');
 const PostgresSessionStore = require('./db/sessionStore');
 const { initDb } = require('./db');
 const cryptoRouter = require('./routes/cryptoRouter');
+const passport = require('./config/passport');
 
 loadEnv();
 const isProduction = process.env.NODE_ENV === 'production';
+
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
 
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -52,6 +57,9 @@ app.use(session({
   },
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use((req, res, next) => {
   res.locals.isLoggedIn = Boolean(req.session.isLoggedIn);
   res.locals.user = req.session.user || null;
@@ -67,11 +75,23 @@ app.use(hostRouter);
 app.use(authRouter);
 app.use('/api/crypto', cryptoRouter);
 
+// Express error-handling middleware (must have 4 params)
+app.use((err, req, res, next) => {
+
+  const isDev = process.env.NODE_ENV !== 'production';
+  res.status(500).render('Error', {
+    pageTitle: 'HomeHive | Something went wrong',
+    pageDescription: 'An unexpected error occurred.',
+    error: isDev ? err.message : undefined,
+  });
+});
+
 const errorController = require('./controller/errors');
 app.use(errorController.error);
 
 const Message = require('./models/Message');
 const BuyRequest = require('./models/BuyRequest');
+const User = require('./models/User');
 
 io.on('connection', (socket) => {
   socket.on('joinRoom', (requestId) => {
@@ -121,7 +141,7 @@ io.on('connection', (socket) => {
         },
       });
     } catch (err) {
-      console.error('Error sending message:', err);
+
       socket.emit('messageError', { error: 'Unable to send message.' });
     }
   });
@@ -134,6 +154,6 @@ initDb()
     server.listen(port);
   })
   .catch((error) => {
-    console.error('Failed to initialize the database.', error);
+
     process.exit(1);
   });

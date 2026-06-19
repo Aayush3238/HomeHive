@@ -14,6 +14,7 @@ const mapHomeRow = (row) => {
       district: row.district,
       state: row.state,
       country: row.country,
+      postcode: row.postcode,
       formattedAddress: row.formatted_address,
     },
     location: {
@@ -49,6 +50,7 @@ class Home {
         district: this.address.district || null,
         state: this.address.state,
         country: this.address.country,
+        postcode: this.address.postcode || null,
         formattedAddress: this.address.formattedAddress,
         latitude: this.location.coordinates[1] || 0,
         longitude: this.location.coordinates[0] || 0,
@@ -148,6 +150,7 @@ class Home {
         district: updateData.address.district || null,
         state: updateData.address.state,
         country: updateData.address.country,
+        postcode: updateData.address.postcode || null,
         formattedAddress: updateData.address.formattedAddress,
         price: updateData.price,
         description: updateData.description,

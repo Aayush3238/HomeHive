@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('./partials/head', {
-        pageTitle: 'HomeHive | Page Not Found',
-        pageDescription: 'The page you requested is unavailable.'
-    }) %>
+<%- include('./partials/head', {
+    pageTitle: pageTitle || 'HomeHive | Page Not Found',
+    pageDescription: pageDescription || 'The page you requested is unavailable.'
+}) %>
 </head>
 <body>
     <%- include('./partials/nav', { activeNav: 'explore' }) %>
@@ -13,8 +13,11 @@
         <div class="page-card auth-card" style="text-align:center;">
             <div style="display:flex;flex-direction:column;align-items:center;gap:0.75rem;">
                 <span class="eyebrow"><i class="fa-solid fa-triangle-exclamation"></i> Error</span>
-                <h1 style="font-size:clamp(2.4rem,7vw,4.6rem);">Page not found</h1>
-                <p>The page you are looking for does not exist or has been removed.</p>
+                <h1 style="font-size:clamp(2.4rem,7vw,4.6rem);"><%= pageTitle ? 'Something went wrong' : 'Page not found' %></h1>
+                <p><%= pageTitle ? 'An unexpected error occurred. Please try again later.' : 'The page you are looking for does not exist or has been removed.' %></p>
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <pre style="text-align:left;background:#fdd;padding:1rem;border-radius:0.5rem;max-width:100%;overflow:auto;font-size:0.85rem;"><%= error %></pre>
+                <% } %>
                 <div style="display:flex;gap:0.65rem;flex-wrap:wrap;justify-content:center;">
                     <a href="/" class="btn btn-accent">
                         <i class="fa-solid fa-compass"></i>

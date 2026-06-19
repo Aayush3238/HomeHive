@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head', {
+        pageTitle: 'HomeHive | Choose Account Type',
+        pageDescription: 'Select whether you want to list properties as an Owner or browse as a Buyer.'
+    }) %>
+</head>
+<body>
+    <div class="auth-shell">
+        <div class="page-card auth-card reveal" style="width:min(100%,600px);">
+            <div class="section-heading" style="margin-bottom:0;">
+                <span class="eyebrow"><i class="fa-solid fa-user-check"></i> One last step</span>
+                <h1 style="font-size:clamp(2rem,4vw,3.1rem);">Choose your account type</h1>
+                <p>How would you like to use HomeHive? You can always change this later.</p>
+            </div>
+
+            <% if (errorMessage) { %>
+                <div class="alert alert-error"><%= errorMessage %></div>
+            <% } %>
+
+            <form action="/select-role" method="POST">
+                <div class="field">
+                    <div class="role-options">
+                        <label class="btn btn-secondary" style="justify-content:flex-start;padding:1.25rem;">
+                            <input type="radio" name="role" value="Owner" required>
+                            <span><i class="fa-solid fa-house-user"></i> Owner — I want to list my properties</span>
+                        </label>
+                        <label class="btn btn-secondary" style="justify-content:flex-start;padding:1.25rem;">
+                            <input type="radio" name="role" value="Buyer" required>
+                            <span><i class="fa-solid fa-key"></i> Buyer — I want to find and buy properties</span>
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-accent">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>Continue</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <i class="fa-solid fa-house"></i>
+                    <strong>HomeHive</strong>
+                </div>
+                <p class="footer-desc">A simple platform for finding and listing properties.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <a href="/">Home</a>
+                <a href="/login">Login</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <a href="mailto:support@homehive.com">support@homehive.com</a>
+                <p class="footer-contact-item"><i class="fa-solid fa-location-dot"></i> India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HomeHive. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/animations.js"></script>
+</body>
+</html>
