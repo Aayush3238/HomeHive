@@ -36,7 +36,10 @@ exports.getHomeDetails = async (req, res, next) => {
   try {
     const home = await Home.findById(req.params.id);
     if (!home) {
-      return res.status(404).render('Error');
+      return res.status(404).render('Error', {
+        pageTitle: 'HomeHive | Page Not Found',
+        pageDescription: 'The property you are looking for does not exist.',
+      });
     }
 
     return res.render('store/home-details', {

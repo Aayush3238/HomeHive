@@ -52,7 +52,17 @@ exports.postAddHome = [
 
     try {
       const formattedAddress = `${req.body.houseNo}, ${req.body.city}, ${req.body.district}, ${req.body.state}, ${req.body.country}`;
-      const uploadedImage = await uploadPropertyImage(req.file);
+
+      let uploadedImage = null;
+      try {
+        uploadedImage = await uploadPropertyImage(req.file);
+      } catch (uploadErr) {
+        return res.status(500).render('Error', {
+          pageTitle: 'HomeHive | Upload Failed',
+          pageDescription: 'Image upload to cloud storage failed.',
+          error: uploadErr.message || 'Image upload failed.',
+        });
+      }
 
       const priceValue = Number(req.body.price);
       if (!Number.isFinite(priceValue) || priceValue <= 0) {
@@ -167,7 +177,10 @@ exports.getUpdateHome = async (req, res, next) => {
   try {
     const home = await Home.findOne({ _id: req.params.id, owner: req.session.user.id });
     if (!home) {
-      return res.status(404).render('Error');
+      return res.status(404).render('Error', {
+        pageTitle: 'HomeHive | Page Not Found',
+        pageDescription: 'The listing you are looking for does not exist.',
+      });
     }
 
     return res.render('host/edit', {
