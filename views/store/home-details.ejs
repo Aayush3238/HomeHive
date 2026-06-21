@@ -10,9 +10,9 @@
     <%- include('../partials/nav', { activeNav: 'explore' }) %>
 
     <section class="home-details-container">
-        <div class="page-card" style="padding:1.5rem;">
+        <div class="page-card" style="padding:1.75rem;">
             <div class="detail-layout">
-                <div class="detail-media">
+                <div class="detail-media reveal">
                     <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 1280, height: 760 }); %>
                     <% const imageSrcSet = getHomeImageSrcSet(home.homeImage, [640, 960, 1280, 1600], { height: 760 }); %>
                     <img
@@ -25,18 +25,18 @@
                         onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
                     />
                 </div>
-                <div class="detail-content">
+                <div class="detail-content reveal">
                     <span class="eyebrow"><i class="fa-solid fa-house-chimney-window"></i> Property details</span>
-                    <h1 style="font-size:clamp(2rem,4vw,3.4rem);"><%= home.address?.formattedAddress || 'Property listing' %></h1>
-                    <p><%= home.description %></p>
+                    <h1 style="font-size:clamp(1.75rem,3.5vw,2.75rem);"><%= home.address?.formattedAddress || 'Property listing' %></h1>
+                    <p style="font-size:0.925rem;line-height:1.7;"><%= home.description %></p>
 
                     <div class="detail-highlights">
                         <div class="detail-highlight">
-                            <span>Listing type</span>
+                            <span>Property type</span>
                             <strong><%= home.propertyType ? `${home.propertyType.charAt(0).toUpperCase()}${home.propertyType.slice(1)}` : 'Residential' %></strong>
                         </div>
                         <div class="detail-highlight">
-                            <span>Location focus</span>
+                            <span>Location</span>
                             <strong><%= home.address?.city || home.address?.state || 'Flexible location' %></strong>
                         </div>
                         <% if (home.address?.postcode) { %>
@@ -46,23 +46,23 @@
                         </div>
                         <% } %>
                         <div class="detail-highlight">
-                            <span>Budget band</span>
+                            <span>Budget</span>
                             <strong>Rs <%= home.price %></strong>
                         </div>
-                    <div class="detail-highlight">
-                        <span>Status</span>
-                        <strong>Verified</strong>
+                        <div class="detail-highlight">
+                            <span>Status</span>
+                            <strong><i class="fa-solid fa-circle-check" style="color:var(--color-primary-500);font-size:0.75rem;"></i> Verified</strong>
+                        </div>
                     </div>
-                </div>
 
                     <div class="card-actions" style="padding:0;">
-                        <a href="/" class="btn btn-accent">
+                        <a href="/" class="btn btn-secondary">
                             <i class="fa-solid fa-arrow-left"></i>
                             <span>Back to listings</span>
                         </a>
                         <% if (isLoggedIn && user && user.role === 'Buyer') { %>
                             <form action="/favourites/<%= home.id %>" method="POST" class="inline-form" data-toast-submit="Saved to your shortlist." data-toast-type="success">
-                                <button type="submit" class="btn-secondary">
+                                <button type="submit" class="btn btn-accent">
                                     <i class="fa-regular fa-heart"></i>
                                     <span>Save property</span>
                                 </button>
@@ -81,7 +81,7 @@
                     <i class="fa-solid fa-house"></i>
                     <strong>HomeHive</strong>
                 </div>
-                <p class="footer-desc">A simple platform for finding and listing properties.</p>
+                <p class="footer-desc">A modern platform for finding and listing properties.</p>
             </div>
             <div class="footer-col">
                 <h4>Navigation</h4>

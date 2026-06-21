@@ -13,8 +13,8 @@
         <div class="search-shell">
             <div class="search-row">
                 <div class="search-field input-grow">
-                    <label for="propertySearch">Search</label>
-                    <input id="propertySearch" type="text" placeholder="Search by city, state, or address">
+                    <label for="propertySearch">Search properties</label>
+                    <input id="propertySearch" type="text" placeholder="City, state, or address...">
                 </div>
                 <div class="search-field">
                     <label for="budgetPreference">Budget</label>
@@ -27,7 +27,7 @@
                     </select>
                 </div>
                 <div class="search-field">
-                    <label for="typePreference">Property type</label>
+                    <label for="typePreference">Type</label>
                     <select id="typePreference">
                         <option value="any">Any type</option>
                         <option value="apartment">Apartment</option>
@@ -38,22 +38,22 @@
                     </select>
                 </div>
                 <div class="search-field" style="align-self:flex-end;">
-                    <button type="button" class="btn btn-accent" id="searchActionBtn" style="padding:0.6rem 1.2rem;">
+                    <button type="button" class="btn btn-accent" id="searchActionBtn" style="padding:0.65rem 1.35rem;">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         Search
                     </button>
                 </div>
             </div>
             <div class="search-stats">
-                <span class="search-stat"><strong><%= SubmittedDetails.length %></strong> Listings</span>
-                <span class="search-stat"><strong><%= [...new Set(SubmittedDetails.map(home => home.address?.city).filter(Boolean))].length %></strong> Cities</span>
+                <span class="search-stat"><strong><%= SubmittedDetails.length %></strong> properties listed</span>
+                <span class="search-stat">Across <strong><%= [...new Set(SubmittedDetails.map(home => home.address?.city).filter(Boolean))].length %></strong> cities</span>
             </div>
         </div>
     </section>
 
     <div class="listings-toolbar">
         <div class="section-heading" style="margin-bottom:0;">
-            <span class="eyebrow"><i class="fa-solid fa-building"></i> Listings</span>
+            <span class="eyebrow"><i class="fa-solid fa-building"></i> Browse</span>
             <h2>Available properties</h2>
         </div>
         <div class="toolbar-actions">
@@ -102,13 +102,13 @@
                         onerror="this.onerror=null;this.src='<%= imageFallbackUrl %>';"
                     />
                     <div class="card-badges">
-                        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
                             <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified</span>
                             <span class="match-badge" data-match-score>60% match</span>
                         </div>
                         <% if (isLoggedIn) { %>
                             <form action="/favourites/<%= home.id %>" method="POST" class="inline-form" data-toast-submit="Saved to your shortlist." data-toast-type="success">
-                                <button type="submit" class="save-button btn-secondary" aria-label="Save this property" style="pointer-events:auto;">
+                                <button type="submit" class="save-button" aria-label="Save this property">
                                     <i class="fa-regular fa-heart"></i>
                                 </button>
                             </form>
@@ -118,7 +118,7 @@
                 <div class="home-card-body">
                     <div class="price-highlight">
                         <div>
-                            <div class="price-label">Starting price</div>
+                            <div class="price-label">Asking price</div>
                             <strong>Rs <%= home.price %></strong>
                         </div>
                         <% if (home.propertyType) { %>
@@ -134,9 +134,9 @@
                 </div>
                 <div class="card-actions">
                     <% if (isLoggedIn && user.role === 'Buyer') { %>
-                        <button type="button" class="btn-accent" onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">
+                        <button type="button" class="btn btn-accent" onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">
                             <i class="fa-solid fa-paper-plane"></i>
-                            <span>Send request</span>
+                            <span>Send offer</span>
                         </button>
                     <% } %>
                     <a class="Details" href="/home/<%= home.id %>">
@@ -161,27 +161,28 @@
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-solid fa-house"></i> Why HomeHive</span>
             <h2>Built for buyers and owners</h2>
+            <p>A modern platform designed to make property discovery effortless and trustworthy.</p>
         </div>
         <div class="feature-grid">
-            <article class="info-card">
+            <article class="info-card reveal">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <h3>Easy property discovery</h3>
                 <p>Search, filter, and sort listings by location, budget, or type. Smart matching helps you find what fits without endless scrolling.</p>
             </article>
-            <article class="info-card">
+            <article class="info-card reveal">
                 <i class="fa-solid fa-circle-check"></i>
                 <h3>Verified listings</h3>
                 <p>Every property goes through verification. What you see is what is available — no stale or misleading posts.</p>
             </article>
-            <article class="info-card">
+            <article class="info-card reveal">
                 <i class="fa-solid fa-comments"></i>
                 <h3>Direct communication</h3>
                 <p>Send an offer or message the owner directly. No middlemen, no delays. Discuss pricing, schedule visits, and close faster.</p>
             </article>
-            <article class="info-card">
-                <i class="fa-solid fa-gauge"></i>
-                <h3>Simple experience</h3>
-                <p>A clean interface for buyers and a straightforward dashboard for owners. No clutter, no confusion.</p>
+            <article class="info-card reveal">
+                <i class="fa-solid fa-shield-halved"></i>
+                <h3>Trusted experience</h3>
+                <p>A clean interface for buyers and a straightforward dashboard for owners. Built for clarity, not clutter.</p>
             </article>
         </div>
     </section>
@@ -193,7 +194,7 @@
                     <i class="fa-solid fa-house"></i>
                     <strong>HomeHive</strong>
                 </div>
-                <p class="footer-desc">A simple platform for finding and listing properties. No middlemen, no clutter.</p>
+                <p class="footer-desc">A modern platform for finding and listing properties across India. Direct, transparent, and trustworthy.</p>
             </div>
             <div class="footer-col">
                 <h4>Navigation</h4>
@@ -226,24 +227,24 @@
             <button type="button" class="close" onclick="closeBuyRequestModal()">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <div class="section-heading" style="margin-bottom:1rem;">
-                <span class="eyebrow"><i class="fa-solid fa-paper-plane"></i> Offer</span>
-                <h3>Send an offer</h3>
-                <p>Submit your proposed price and a message to the owner.</p>
+            <div class="section-heading" style="margin-bottom:1.25rem;">
+                <span class="eyebrow"><i class="fa-solid fa-paper-plane"></i> Make an offer</span>
+                <h3>Send your offer</h3>
+                <p>Submit your proposed price and a brief message to the owner.</p>
             </div>
             <form id="buyRequestForm" action="/buy-request" method="POST">
                 <input type="hidden" id="homeId" name="homeId">
                 <div class="field">
-                    <label for="offeredPrice">Your offered price</label>
-                    <input type="number" id="offeredPrice" name="offeredPrice" required>
+                    <label for="offeredPrice">Your offered price (Rs)</label>
+                    <input type="number" id="offeredPrice" name="offeredPrice" required placeholder="Enter your offer amount">
                 </div>
                 <div class="field">
                     <label for="message">Message to owner</label>
-                    <textarea id="message" name="message" rows="4" placeholder="Explain your interest, timeline, or financing status..." required></textarea>
+                    <textarea id="message" name="message" rows="4" placeholder="Share your interest, timeline, or financing details..." required></textarea>
                 </div>
                 <button type="submit" class="btn btn-accent">
                     <i class="fa-solid fa-paper-plane"></i>
-                    <span>Send request</span>
+                    <span>Send offer</span>
                 </button>
             </form>
         </div>

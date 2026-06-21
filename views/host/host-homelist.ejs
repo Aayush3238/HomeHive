@@ -17,7 +17,7 @@
                     <div>
                         <span class="eyebrow"><i class="fa-solid fa-circle"></i> Owner workspace</span>
                         <h3 style="margin-top:0.75rem;"><%= user?.firstname || 'Host' %> <%= user?.lastname || '' %></h3>
-                        <p style="margin:0.35rem 0 0;">A cleaner operating view for managing inventory, buyer attention, and next actions.</p>
+                        <p style="margin:0.4rem 0 0;font-size:0.82rem;">Manage inventory, track buyer attention, and take action.</p>
                     </div>
                 </div>
 
@@ -35,7 +35,7 @@
 
                 <div class="detail-panel">
                     <span class="eyebrow"><i class="fa-solid fa-lightbulb"></i> Getting started</span>
-                    <p style="margin:0.8rem 0 0;">Add your first listing to start receiving buyer requests and managing your properties.</p>
+                    <p style="margin:0.85rem 0 0;">Add your first listing to start receiving buyer requests and managing your properties.</p>
                 </div>
             </aside>
 
@@ -43,8 +43,8 @@
                 <div class="dashboard-header">
                     <div class="section-heading" style="margin-bottom:0;">
                         <span class="eyebrow"><i class="fa-solid fa-chart-pie"></i> Portfolio overview</span>
-                        <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Your listings dashboard</h1>
-                        <p>Manage your listings, track requests, and keep your properties up to date.</p>
+                        <h1 style="font-size:clamp(1.75rem,3.5vw,2.75rem);">Your listings dashboard</h1>
+                        <p>Manage listings, track requests, and keep your properties up to date.</p>
                     </div>
                     <a href="/host/add-home" class="btn btn-accent">
                         <i class="fa-solid fa-square-plus"></i>
@@ -56,28 +56,28 @@
                     <article class="stat-card">
                         <span class="stat-label">Total listings</span>
                         <strong><%= SubmittedDetails.length %></strong>
-                        <p>Properties you have listed.</p>
+                        <p>Active properties.</p>
                     </article>
                     <article class="stat-card">
                         <span class="stat-label">Map coverage</span>
                         <strong><%= SubmittedDetails.filter(home => home.location && home.location.coordinates && home.location.coordinates.length === 2).length %></strong>
-                        <p>Listings with map-ready coordinates and stronger discovery quality.</p>
+                        <p>Map-ready listings.</p>
                     </article>
                     <article class="stat-card">
                         <span class="stat-label">Property mix</span>
                         <strong><%= [...new Set(SubmittedDetails.map(home => home.propertyType).filter(Boolean))].length || 0 %></strong>
-                        <p>Distinct property types across your current portfolio.</p>
+                        <p>Distinct property types.</p>
                     </article>
                     <article class="stat-card">
                         <span class="stat-label">Average price</span>
                         <strong>Rs <%= SubmittedDetails.length ? Math.round(SubmittedDetails.reduce((sum, home) => sum + (Number(home.price) || 0), 0) / SubmittedDetails.length).toLocaleString('en-IN') : 0 %></strong>
-                        <p>Mean list price across your active inventory.</p>
+                        <p>Mean list price.</p>
                     </article>
                 </section>
 
-                <section class="dashboard-panels">
-                    <div class="page-card">
-                        <div class="section-heading" style="margin-bottom:1rem;">
+                <section class="dashboard-panels" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div class="page-card" style="padding:1.35rem;">
+                        <div class="section-heading" style="margin-bottom:0.75rem;">
                             <span class="eyebrow"><i class="fa-solid fa-clock-rotate-left"></i> Recent activity</span>
                             <h3>What just changed</h3>
                         </div>
@@ -86,34 +86,34 @@
                                 <% SubmittedDetails.slice(0, 3).forEach(home => { %>
                                     <article class="activity-item">
                                         <strong><%= home.address?.formattedAddress || 'Property listing' %></strong>
-                                        <p style="margin:0.35rem 0 0;">Published with a <%= home.propertyType || 'residential' %> profile at Rs <%= Number(home.price || 0).toLocaleString('en-IN') %>.</p>
+                                        <p style="margin:0.3rem 0 0;">Published as <%= home.propertyType || 'residential' %> at Rs <%= Number(home.price || 0).toLocaleString('en-IN') %>.</p>
                                     </article>
                                 <% }) %>
                             <% } else { %>
                                 <article class="activity-item">
                                     <strong>No activity yet</strong>
-                                    <p style="margin:0.35rem 0 0;">Create your first listing to start seeing portfolio activity, request flow, and meetings here.</p>
+                                    <p style="margin:0.3rem 0 0;">Create your first listing to see portfolio activity here.</p>
                                 </article>
                             <% } %>
                         </div>
                     </div>
-                    <div class="page-card">
-                        <div class="section-heading" style="margin-bottom:1rem;">
+                    <div class="page-card" style="padding:1.35rem;">
+                        <div class="section-heading" style="margin-bottom:0.75rem;">
                             <span class="eyebrow"><i class="fa-solid fa-bullseye"></i> Quick guidance</span>
                             <h3>What improves conversion</h3>
                         </div>
                         <div class="insight-list">
                             <article class="insight-item">
                                 <strong>Keep imagery sharp</strong>
-                                <p style="margin:0.35rem 0 0;">Listings with strong photos carry the premium feel through discovery and detail pages.</p>
+                                <p style="margin:0.3rem 0 0;">Strong photos carry the premium feel through discovery and detail pages.</p>
                             </article>
                             <article class="insight-item">
                                 <strong>Use clear pricing</strong>
-                                <p style="margin:0.35rem 0 0;">Pricing is visually emphasized everywhere, so accuracy directly affects trust.</p>
+                                <p style="margin:0.3rem 0 0;">Accurate pricing builds trust and improves buyer confidence.</p>
                             </article>
                             <article class="insight-item">
                                 <strong>Respond quickly</strong>
-                                <p style="margin:0.35rem 0 0;">The request workflow is built for faster follow-up through chat and scheduling.</p>
+                                <p style="margin:0.3rem 0 0;">Fast responses through chat and scheduling improve close rates.</p>
                             </article>
                         </div>
                     </div>
@@ -124,14 +124,14 @@
                         <div class="listings-toolbar">
                             <div class="section-heading" style="margin-bottom:0;">
                                 <span class="eyebrow"><i class="fa-solid fa-building"></i> Inventory</span>
-                                <h2 style="font-size:clamp(1.5rem,2.6vw,2.3rem);">Your live listings</h2>
+                                <h2 style="font-size:clamp(1.4rem,2.5vw,2rem);">Your live listings</h2>
                             </div>
                         </div>
 
                         <div class="homes-list">
                             <% SubmittedDetails.forEach(home => { %>
                                 <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 450 }); %>
-                                <article class="home-card">
+                                <article class="home-card reveal">
                                     <div class="home-media">
                                         <img
                                             src="<%= imageUrl %>"
@@ -163,10 +163,10 @@
                                     <div class="card-actions">
                                         <a href="/host/edit/<%= home.id %>" class="Details">
                                             <i class="fa-solid fa-pen"></i>
-                                            <span>Edit</span>
+                                            <span>Edit listing</span>
                                         </a>
                                         <form action="/host/home-delete/<%= home.id %>" method="POST" class="inline-form" onsubmit="return confirm('Delete this listing permanently?');">
-                                            <button type="submit" class="btn-danger">
+                                            <button type="submit" class="btn btn-danger">
                                                 <i class="fa-solid fa-trash-can"></i>
                                                 <span>Delete</span>
                                             </button>

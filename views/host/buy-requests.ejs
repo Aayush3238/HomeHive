@@ -17,7 +17,7 @@
                     <div>
                         <span class="eyebrow"><i class="fa-solid fa-comments"></i> Requests</span>
                         <h3 style="margin-top:0.75rem;">Buyer requests</h3>
-                        <p style="margin:0.35rem 0 0;">Review offers, reply to buyers, and schedule meetings.</p>
+                        <p style="margin:0.4rem 0 0;font-size:0.82rem;">Review offers, reply to buyers, and schedule meetings.</p>
                     </div>
                 </div>
                 <nav class="dashboard-menu">
@@ -29,9 +29,9 @@
 
             <main class="dashboard-main reveal">
                 <div class="section-heading" style="margin-bottom:0;">
-                        <span class="eyebrow"><i class="fa-solid fa-comments"></i> Requests</span>
-                        <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Incoming offers</h1>
-                        <p>Review and respond to buyer offers for your properties.</p>
+                    <span class="eyebrow"><i class="fa-solid fa-comments"></i> Requests</span>
+                    <h1 style="font-size:clamp(1.75rem,3.5vw,2.75rem);">Incoming offers</h1>
+                    <p>Review and respond to buyer offers for your properties.</p>
                 </div>
 
                 <% if (buyRequests.length === 0) { %>
@@ -39,12 +39,12 @@
                         <span class="empty-state-icon"><i class="fa-solid fa-inbox"></i></span>
                         <span class="eyebrow">No requests yet</span>
                         <h3>No requests yet</h3>
-                        <p>Buyer offers will appear here once buyers submit them.</p>
+                        <p>Buyer offers will appear here once they are submitted.</p>
                     </div>
                 <% } else { %>
                     <div class="card-list">
                         <% buyRequests.forEach(request => { %>
-                            <article class="request-card card-item" style="padding:1.25rem; display:grid; gap:1rem;">
+                            <article class="request-card card-item" style="padding:1.35rem; display:grid; gap:1.1rem;">
                                 <div class="stack">
                                     <div class="price-highlight">
                                         <div>
@@ -58,7 +58,7 @@
                                         <span class="meta-pill"><i class="fa-solid fa-user"></i><%= request.buyer.firstname %> <%= request.buyer.lastname %></span>
                                         <span class="meta-pill"><i class="fa-solid fa-envelope"></i><%= request.buyer.email %></span>
                                     </div>
-                                    <p><%= request.message %></p>
+                                    <p style="font-size:0.88rem;line-height:1.65;"><%= request.message %></p>
                                     <p class="helper-text">Requested on <%= request.createdAt.toDateString() %></p>
                                 </div>
                                 <div class="card-actions">
@@ -66,11 +66,11 @@
                                         <form action="/host/buy-request/<%= request._id %>/accept" method="POST" class="inline-form">
                                             <button type="submit" class="btn btn-accent">
                                                 <i class="fa-solid fa-check"></i>
-                                                <span>Accept</span>
+                                                <span>Accept offer</span>
                                             </button>
                                         </form>
                                         <form action="/host/buy-request/<%= request._id %>/reject" method="POST" class="inline-form">
-                                            <button type="submit" class="btn-danger">
+                                            <button type="submit" class="btn btn-danger">
                                                 <i class="fa-solid fa-xmark"></i>
                                                 <span>Reject</span>
                                             </button>
@@ -124,9 +124,10 @@
             <button type="button" class="close" onclick="closeMeetingModal()">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <div class="section-heading" style="margin-bottom:1rem;">
+            <div class="section-heading" style="margin-bottom:1.25rem;">
                 <span class="eyebrow"><i class="fa-regular fa-calendar-check"></i> Meeting setup</span>
                 <h3>Schedule meeting</h3>
+                <p>Set a date, location, and any notes for the meeting.</p>
             </div>
             <form id="meetingForm" action="/schedule-meeting" method="POST">
                 <input type="hidden" id="meetingRequestId" name="requestId">
@@ -136,11 +137,11 @@
                 </div>
                 <div class="field">
                     <label for="meetingLocation">Location</label>
-                    <input type="text" id="meetingLocation" name="location" placeholder="Meeting location" required>
+                    <input type="text" id="meetingLocation" name="location" placeholder="Meeting address or venue" required>
                 </div>
                 <div class="field">
                     <label for="meetingNotes">Notes</label>
-                    <textarea id="meetingNotes" name="notes" rows="3" placeholder="Additional notes..."></textarea>
+                    <textarea id="meetingNotes" name="notes" rows="3" placeholder="Any additional details..."></textarea>
                 </div>
                 <button type="submit" class="btn btn-accent">
                     <i class="fa-regular fa-calendar-check"></i>
@@ -201,7 +202,7 @@
                     <div class="message-card">
                         <div class="message-meta">
                             <span>${escapeHtml(senderName)}</span>
-                            <span>•</span>
+                            <span>&middot;</span>
                             <span>${escapeHtml(timeLabel)}</span>
                         </div>
                         <div class="message-text">${escapeHtml(decryptedMessage)}</div>

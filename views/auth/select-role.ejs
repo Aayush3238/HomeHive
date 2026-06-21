@@ -11,7 +11,7 @@
         <div class="page-card auth-card reveal" style="width:min(100%,600px);">
             <div class="section-heading" style="margin-bottom:0;">
                 <span class="eyebrow"><i class="fa-solid fa-user-check"></i> One last step</span>
-                <h1 style="font-size:clamp(2rem,4vw,3.1rem);">Choose your account type</h1>
+                <h1 style="font-size:clamp(1.75rem,3.5vw,2.75rem);">Choose your account type</h1>
                 <p>How would you like to use HomeHive? You can always change this later.</p>
             </div>
 
@@ -22,13 +22,13 @@
             <form action="/select-role" method="POST">
                 <div class="field">
                     <div class="role-options">
-                        <label class="btn btn-secondary" style="justify-content:flex-start;padding:1.25rem;">
+                        <label class="role-option">
                             <input type="radio" name="role" value="Owner" required>
-                            <span><i class="fa-solid fa-house-user"></i> Owner — I want to list my properties</span>
+                            <span><i class="fa-solid fa-house-user"></i> Owner</span>
                         </label>
-                        <label class="btn btn-secondary" style="justify-content:flex-start;padding:1.25rem;">
+                        <label class="role-option">
                             <input type="radio" name="role" value="Buyer" required>
-                            <span><i class="fa-solid fa-key"></i> Buyer — I want to find and buy properties</span>
+                            <span><i class="fa-solid fa-key"></i> Buyer</span>
                         </label>
                     </div>
                 </div>

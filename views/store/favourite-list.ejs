@@ -12,15 +12,15 @@
     <section class="page-section reveal">
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-regular fa-heart"></i> Saved homes</span>
-            <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Your shortlist</h1>
-            <p>Properties you have saved for later.</p>
+            <h1 style="font-size:clamp(1.75rem,3.5vw,2.75rem);">Your shortlist</h1>
+            <p>Properties you have saved for later. Review and compare your favourites.</p>
         </div>
 
         <% if (favourites && favourites.length > 0) { %>
             <div class="homes-list">
                 <% favourites.forEach(home => { %>
                     <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 450 }); %>
-                    <article class="home-card">
+                    <article class="home-card reveal">
                         <div class="home-media">
                             <img
                                 src="<%= imageUrl %>"
@@ -40,6 +40,9 @@
                                     <div class="price-label">Shortlist price</div>
                                     <strong>Rs <%= home.price %></strong>
                                 </div>
+                                <% if (home.propertyType) { %>
+                                    <span class="meta-pill"><i class="fa-solid fa-house"></i><%= home.propertyType.charAt(0).toUpperCase() + home.propertyType.slice(1) %></span>
+                                <% } %>
                             </div>
                             <h3><%= home.address?.formattedAddress || 'Property listing' %></h3>
                             <div class="home-meta">
@@ -61,8 +64,8 @@
             <div class="empty-state page-card">
                 <span class="empty-state-icon"><i class="fa-regular fa-heart"></i></span>
                 <span class="eyebrow">Nothing saved yet</span>
-                <h3>Your shortlist is empty.</h3>
-                <p>Save properties from the listing grid to build a smaller set of homes worth revisiting.</p>
+                <h3>Your shortlist is empty</h3>
+                <p>Save properties from the listing grid to build a shortlist of homes worth revisiting.</p>
                 <a href="/" class="btn btn-accent">
                     <i class="fa-solid fa-compass"></i>
                     <span>Explore listings</span>

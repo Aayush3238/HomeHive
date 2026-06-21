@@ -11,7 +11,7 @@
         <div class="page-card auth-card reveal">
             <div class="section-heading" style="margin-bottom:0;">
                 <span class="eyebrow"><i class="fa-solid fa-arrow-right-to-bracket"></i> Welcome back</span>
-                <h1 style="font-size:clamp(2rem,4vw,3.1rem);">Login</h1>
+                <h1 style="font-size:clamp(1.75rem,3.5vw,2.75rem);">Login</h1>
                 <p>Access your saved homes, conversations, and meetings.</p>
             </div>
 
@@ -21,12 +21,12 @@
 
             <form action="/login" method="post">
                 <div class="field">
-                    <label for="email">Email</label>
-                    <input id="email" type="email" name="email" placeholder="Email" value="<%= oldInput?.email || '' %>" required>
+                    <label for="email">Email address</label>
+                    <input id="email" type="email" name="email" placeholder="you@example.com" value="<%= oldInput?.email || '' %>" required>
                 </div>
                 <div class="field">
                     <label for="password">Password</label>
-                    <input id="password" type="password" name="password" placeholder="Password" required>
+                    <input id="password" type="password" name="password" placeholder="Enter your password" required>
                 </div>
                 <button type="submit" class="btn btn-accent">
                     <i class="fa-solid fa-arrow-right-to-bracket"></i>
@@ -46,7 +46,7 @@
                 <span>Continue with Google</span>
             </a>
 
-            <p class="helper-text" style="text-align:center;margin:0;">Don't have an account? <a href="/signup" style="color:var(--accent);font-weight:700;">Sign up</a></p>
+            <p class="helper-text" style="text-align:center;margin:0;">Don't have an account? <a href="/signup" style="color:var(--color-primary-600);font-weight:700;">Sign up</a></p>
         </div>
     </div>
     <footer class="site-footer">
@@ -56,7 +56,7 @@
                     <i class="fa-solid fa-house"></i>
                     <strong>HomeHive</strong>
                 </div>
-                <p class="footer-desc">A simple platform for finding and listing properties.</p>
+                <p class="footer-desc">A modern platform for finding and listing properties.</p>
             </div>
             <div class="footer-col">
                 <h4>Navigation</h4>

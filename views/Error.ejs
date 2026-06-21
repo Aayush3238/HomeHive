@@ -13,7 +13,7 @@
         <div class="page-card auth-card" style="text-align:center;">
             <div style="display:flex;flex-direction:column;align-items:center;gap:0.75rem;">
                 <span class="eyebrow"><i class="fa-solid fa-triangle-exclamation"></i> Error</span>
-                <h1 style="font-size:clamp(2.4rem,7vw,4.6rem);"><%= pageTitle ? 'Something went wrong' : 'Page not found' %></h1>
+                <h1 style="font-size:clamp(1.75rem,3.5vw,2.75rem);"><%= pageTitle ? 'Something went wrong' : 'Page not found' %></h1>
                 <p><%= pageTitle ? 'An unexpected error occurred. Please try again later.' : 'The page you are looking for does not exist or has been removed.' %></p>
                 <% if (typeof error !== 'undefined' && error) { %>
                     <pre style="text-align:left;background:#fdd;padding:1rem;border-radius:0.5rem;max-width:100%;overflow:auto;font-size:0.85rem;"><%= error %></pre>

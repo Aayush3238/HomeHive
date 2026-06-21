@@ -12,20 +12,20 @@
     <section class="page-section reveal">
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-regular fa-calendar-check"></i> Meetings</span>
-            <h1 style="font-size:clamp(2rem,4vw,3.4rem);">Scheduled conversations</h1>
-            <p>Your scheduled meetings with buyers and owners.</p>
+            <h1 style="font-size:clamp(1.75rem,3.5vw,2.75rem);">Scheduled conversations</h1>
+            <p>Your upcoming and past meetings with buyers and owners.</p>
         </div>
 
         <% if (meetings && meetings.length > 0) { %>
             <div class="card-list">
                 <% meetings.forEach(meeting => { %>
                     <% const otherParticipant = meeting.participants.find(p => p._id.toString() !== user.id); %>
-                    <article class="meeting-card card-item" style="padding:1.25rem; display:grid; gap:1rem;">
+                    <article class="meeting-card card-item" style="padding:1.35rem; display:grid; gap:1.1rem;">
                         <div class="stack">
                             <div class="price-highlight">
                                 <div>
-                                    <div class="price-label">Meeting partner</div>
-                                    <strong style="font-size:1.1rem;">Meeting with <%= otherParticipant.firstname %> <%= otherParticipant.lastname %></strong>
+                                    <div class="price-label">Meeting with</div>
+                                    <strong style="font-size:1.05rem;"><%= otherParticipant.firstname %> <%= otherParticipant.lastname %></strong>
                                 </div>
                                 <span class="status <%= meeting.status %>"><%= meeting.status %></span>
                             </div>
@@ -34,7 +34,7 @@
                                 <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= meeting.location %></span>
                             </div>
                             <% if (meeting.notes) { %>
-                                <p><%= meeting.notes %></p>
+                                <p style="font-size:0.88rem;line-height:1.65;"><%= meeting.notes %></p>
                             <% } %>
                         </div>
                         <div class="card-actions">
@@ -50,8 +50,8 @@
             <div class="empty-state page-card">
                 <span class="empty-state-icon"><i class="fa-regular fa-calendar"></i></span>
                 <span class="eyebrow">No meetings scheduled</span>
-                <h3>There are no confirmed meetings yet.</h3>
-                <p>Accepted requests that turn into meetings will show up here automatically.</p>
+                <h3>No confirmed meetings yet</h3>
+                <p>Accepted requests that turn into meetings will appear here automatically.</p>
             </div>
         <% } %>
     </section>
@@ -133,7 +133,7 @@
                     <div class="message-card">
                         <div class="message-meta">
                             <span>${escapeHtml(senderName)}</span>
-                            <span>•</span>
+                            <span>&middot;</span>
                             <span>${escapeHtml(timeLabel)}</span>
                         </div>
                         <div class="message-text">${escapeHtml(decryptedMessage)}</div>
