@@ -53,6 +53,14 @@ exports.postAddHome = [
     try {
       const formattedAddress = `${req.body.houseNo}, ${req.body.city}, ${req.body.district}, ${req.body.state}, ${req.body.country}`;
 
+      if (!req.file || !req.file.buffer) {
+        return res.status(400).render('Error', {
+          pageTitle: 'HomeHive | Upload Failed',
+          pageDescription: 'No image file was received. Please try again.',
+          error: 'Image file was not uploaded. Make sure you select an image before submitting.',
+        });
+      }
+
       let uploadedImage = null;
       try {
         uploadedImage = await uploadPropertyImage(req.file);

@@ -11,11 +11,11 @@ const mapBuyRequestRow = (row) => {
     home: row.home,
     buyer: row.buyer,
     owner: row.owner,
-    offeredPrice: Number(row.offered_price),
+    offeredPrice: Number(row.offeredPrice),
     message: row.message,
     status: row.status,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
   };
 };
 

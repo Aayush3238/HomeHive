@@ -9,25 +9,25 @@ const mapHomeRow = (row) => {
     _id: row.id,
     id: row.id,
     address: {
-      houseNo: row.house_no,
+      houseNo: row.houseNo,
       city: row.city,
       district: row.district,
       state: row.state,
       country: row.country,
       postcode: row.postcode,
-      formattedAddress: row.formatted_address,
+      formattedAddress: row.formattedAddress,
     },
     location: {
       type: 'Point',
       coordinates: [row.longitude, row.latitude],
     },
     price: row.price,
-    homeImage: row.home_image,
+    homeImage: row.homeImage,
     description: row.description,
     propertyType: row.propertyType,
-    owner: row.owner_id,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    owner: row.ownerId,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
   };
 };
 

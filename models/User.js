@@ -13,11 +13,11 @@ const mapUserRow = (row) => {
     email: row.email,
     password: row.password,
     role: row.role,
-    googleId: row.google_id,
+    googleId: row.googleId,
     avatar: row.avatar,
-    publicKey: row.public_key,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    publicKey: row.publicKey,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
   };
 };
 
@@ -25,23 +25,23 @@ const mapHomeRow = (row) => ({
   _id: row.id,
   id: row.id,
   address: {
-    houseNo: row.house_no,
+    houseNo: row.houseNo,
     city: row.city,
     district: row.district,
     state: row.state,
     country: row.country,
-    formattedAddress: row.formatted_address,
+    formattedAddress: row.formattedAddress,
   },
   location: {
     type: 'Point',
     coordinates: [row.longitude, row.latitude],
   },
   price: row.price,
-  homeImage: row.home_image,
+  homeImage: row.homeImage,
   description: row.description,
-  owner: row.owner_id,
-  createdAt: row.created_at,
-  updatedAt: row.updated_at,
+  owner: row.ownerId,
+  createdAt: row.createdAt,
+  updatedAt: row.updatedAt,
 });
 
 class User {
