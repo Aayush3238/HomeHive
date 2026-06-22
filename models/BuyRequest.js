@@ -116,6 +116,69 @@ class BuyRequest {
     }));
   }
 
+  static async findByBuyerWithRelations(buyerId) {
+    const buyRequests = await prisma.buyRequest.findMany({
+      where: { buyerId },
+      include: {
+        home: true,
+        owner: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return buyRequests.map((item) => ({
+      _id: item.id,
+      id: item.id,
+      offeredPrice: Number(item.offeredPrice),
+      message: item.message,
+      status: item.status,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+      home: {
+        _id: item.home.id,
+        id: item.home.id,
+        address: {
+          houseNo: item.home.houseNo,
+          city: item.home.city,
+          district: item.home.district,
+          state: item.home.state,
+          country: item.home.country,
+          postcode: item.home.postcode,
+          formattedAddress: item.home.formattedAddress,
+        },
+        price: item.home.price,
+        homeImage: item.home.homeImage,
+        description: item.home.description,
+        propertyType: item.home.propertyType,
+      },
+      owner: {
+        _id: item.owner.id,
+        id: item.owner.id,
+        firstname: item.owner.firstname,
+        lastname: item.owner.lastname,
+        email: item.owner.email,
+      },
+    }));
+  }
+
+  static async findExistingRequest(homeId, buyerId) {
+    const existing = await prisma.buyRequest.findFirst({
+      where: {
+        homeId,
+        buyerId,
+        status: { not: 'rejected' },
+      },
+    });
+    return existing ? mapBuyRequestRow({
+      ...existing,
+      home: existing.homeId,
+      buyer: existing.buyerId,
+      owner: existing.ownerId,
+    }) : null;
+  }
+
   static async updateStatus(id, ownerId, status) {
     const buyRequest = await prisma.buyRequest.findFirst({
       where: {

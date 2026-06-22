@@ -93,7 +93,7 @@ h3 { font-size: 1.05rem; font-weight: 700; }
   margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .section-heading h1,
@@ -277,7 +277,7 @@ p, label, small, span { color: var(--color-slate-600); }
 .search-section {
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
-  padding: 1.5rem 0;
+  padding: 1rem 0;
 }
 
 .search-shell {
@@ -287,7 +287,7 @@ p, label, small, span { color: var(--color-slate-600); }
 
 .search-row {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.6rem;
   align-items: flex-end;
   flex-wrap: wrap;
 }
@@ -295,11 +295,11 @@ p, label, small, span { color: var(--color-slate-600); }
 .search-field {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.2rem;
 }
 
 .search-field label {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -308,12 +308,12 @@ p, label, small, span { color: var(--color-slate-600); }
 
 .search-field input,
 .search-field select {
-  padding: 0.65rem 0.9rem;
+  padding: 0.5rem 0.75rem;
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-slate-50);
   color: var(--color-slate-800);
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   min-width: 0;
   transition: all 0.2s ease;
 }
@@ -339,7 +339,7 @@ p, label, small, span { color: var(--color-slate-600); }
 .search-stats {
   display: flex;
   gap: 1rem;
-  margin-top: 0.85rem;
+  margin-top: 1rem;
 }
 
 .search-stat {
@@ -405,7 +405,7 @@ input[type='submit']:hover {
 .btn:active,
 button:active,
 input[type='submit']:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
   box-shadow: none;
 }
 
@@ -524,7 +524,7 @@ input[type='submit']:disabled {
 /* ── Listings Toolbar ── */
 .listings-toolbar {
   width: min(1200px, calc(100vw - 2rem));
-  margin: 1.75rem auto 1rem;
+  margin: 1.5rem auto 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -602,7 +602,7 @@ input[type='submit']:disabled {
 .home-card:hover {
   box-shadow: var(--shadow-card-hover);
   border-color: var(--color-slate-300);
-  transform: translateY(-4px);
+  transform: translateY(-3px);
 }
 
 .home-media {
@@ -673,7 +673,7 @@ input[type='submit']:disabled {
   padding: 1.1rem 1.1rem 0.6rem;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.55rem;
   flex: 1;
 }
 
@@ -743,8 +743,8 @@ input[type='submit']:disabled {
 
 .card-actions {
   display: flex;
-  gap: 0.5rem;
-  padding: 0.6rem 1.1rem 1.1rem;
+  gap: 0.55rem;
+  padding: 0.7rem 1.1rem 1.1rem;
   margin-top: auto;
   flex-direction: column;
 }
@@ -829,7 +829,7 @@ input[type='submit']:disabled {
 /* ── Why HomeHive / Feature Grid ── */
 .page-section {
   width: min(1200px, calc(100vw - 2rem));
-  margin: 2.5rem auto;
+  margin: 2.5rem auto 4rem;
 }
 
 .feature-grid {
@@ -839,7 +839,7 @@ input[type='submit']:disabled {
 }
 
 .info-card {
-  padding: 1.6rem;
+  padding: 1.75rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
@@ -874,7 +874,7 @@ input[type='submit']:disabled {
 
 /* ── Footer ── */
 .site-footer {
-  margin-top: 3.5rem;
+  margin-top: 4rem;
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
   padding: 3rem 1rem 1.5rem;
@@ -885,7 +885,7 @@ input[type='submit']:disabled {
   margin: 0 auto;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
-  gap: 2.5rem;
+  gap: 3rem;
 }
 
 .footer-brand {
@@ -911,13 +911,6 @@ input[type='submit']:disabled {
   font-size: 0.75rem;
 }
 
-.footer-desc {
-  font-size: 0.85rem;
-  color: var(--color-slate-500);
-  line-height: 1.65;
-  max-width: 22rem;
-}
-
 .footer-col h4 {
   font-size: 0.75rem;
   font-weight: 700;
@@ -931,7 +924,7 @@ input[type='submit']:disabled {
   display: block;
   font-size: 0.85rem;
   color: var(--color-slate-600);
-  padding: 0.3rem 0;
+  padding: 0.35rem 0;
   transition: color 0.2s ease, padding-left 0.2s ease;
 }
 
@@ -956,7 +949,7 @@ input[type='submit']:disabled {
 
 .footer-bottom {
   width: min(1200px, calc(100vw - 2rem));
-  margin: 2rem auto 0;
+  margin: 2.5rem auto 0;
   padding-top: 1.25rem;
   border-top: 1px solid var(--color-border);
 }
@@ -1005,7 +998,7 @@ input[type='submit']:disabled {
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-2xl);
-  padding: 1.75rem;
+  padding: 2rem;
   transform: scale(0.96) translateY(8px);
   transition: transform 0.25s cubic-bezier(0.25,0.1,0.25,1);
 }
@@ -1115,7 +1108,7 @@ input[type='file'] {
 
 .auth-card {
   width: min(100%, 440px);
-  padding: 2.25rem;
+  padding: 2.5rem;
 }
 
 /* ── Alert ── */
@@ -1181,9 +1174,10 @@ input[type='file'] {
   width: min(1200px, calc(100vw - 2rem));
   margin: 1.75rem auto;
   display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 220px 1fr;
+  gap: 1.25rem;
   align-items: start;
+  overflow: hidden;
 }
 
 .dashboard-sidebar {
@@ -1210,17 +1204,25 @@ input[type='file'] {
 
 .dashboard-metrics {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .dashboard-metrics { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .dashboard-metrics { grid-template-columns: 1fr; }
 }
 
 .stat-card {
-  padding: 1.35rem;
+  padding: 1.15rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
   transition: all 0.25s ease;
+  overflow: hidden;
 }
 
 .stat-card:hover {
@@ -1235,7 +1237,7 @@ input[type='file'] {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-slate-400);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.5rem;
 }
 
 .stat-card strong {
@@ -1243,7 +1245,7 @@ input[type='file'] {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1.65rem;
   color: var(--color-slate-900);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
   letter-spacing: -0.02em;
 }
 
@@ -1255,10 +1257,13 @@ input[type='file'] {
 }
 
 .detail-panel {
-  padding: 1.1rem;
+  padding: 1.25rem;
   border-radius: var(--radius-md);
   background: var(--color-slate-50);
   border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 .dashboard-menu {
@@ -1273,7 +1278,7 @@ input[type='file'] {
 
 .dashboard-profile {
   display: flex;
-  gap: 0.85rem;
+  gap: 1rem;
   align-items: flex-start;
 }
 
@@ -1288,6 +1293,13 @@ input[type='file'] {
   font-size: 1.1rem;
   flex-shrink: 0;
 }
+.dashboard-sidebar h3 {
+  margin-top: 0.75rem;
+}
+.dashboard-sidebar p {
+  margin-top: 0.4rem;
+  line-height: 1.6;
+}
 
 @media (max-width: 768px) {
   .dashboard-layout {
@@ -1298,10 +1310,39 @@ input[type='file'] {
   }
 }
 
+/* ── Dashboard Page Wrapper ── */
+.dashboard-page {
+  width: 100%;
+  min-height: calc(100vh - 5rem);
+}
+
+.dashboard-page-spaced {
+  padding: 1rem 0 3rem;
+}
+
+/* ── Dashboard Panels ── */
+.dashboard-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .dashboard-panels {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Listing Card ── */
+.listing-card {
+  display: flex;
+  flex-direction: column;
+}
+
 /* ── Detail Page ── */
 .home-details-container {
   width: min(1200px, calc(100vw - 2rem));
-  margin: 2rem auto;
+  margin: 2rem auto 3rem;
 }
 
 .detail-layout {
@@ -1325,7 +1366,7 @@ input[type='file'] {
 .detail-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.15rem;
 }
 
 .detail-highlights {
@@ -1374,7 +1415,7 @@ input[type='file'] {
 /* ── Add Home Form ── */
 .form-page {
   width: min(1200px, calc(100vw - 2rem));
-  margin: 1.75rem auto;
+  margin: 1.75rem auto 3rem;
 }
 
 .form-layout {
@@ -1386,7 +1427,7 @@ input[type='file'] {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  padding: 2.25rem;
+  padding: 2.5rem;
   box-shadow: var(--shadow-card);
 }
 
@@ -1458,6 +1499,7 @@ input[type='file'] {
 .chat-notice {
   font-size: 0.75rem;
   color: var(--color-slate-400);
+  margin-top: 0.15rem;
 }
 
 .chat-avatar {
@@ -1518,7 +1560,7 @@ input[type='file'] {
   font-size: 0.68rem;
   font-weight: 600;
   color: var(--color-slate-400);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.4rem;
 }
 
 .message-text {
@@ -1621,7 +1663,7 @@ input[type='file'] {
   margin-top: 2rem;
 }
 .edit-card {
-  padding: 2.25rem;
+  padding: 2.5rem;
 }
 
 /* ── Card Item (generic) ── */
@@ -1679,7 +1721,7 @@ input[type='file'] {
   display: block;
   font-size: 0.88rem;
   color: var(--color-slate-800);
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
 }
 
 .activity-item p,
@@ -1687,6 +1729,7 @@ input[type='file'] {
   font-size: 0.82rem;
   color: var(--color-slate-500);
   line-height: 1.55;
+  margin-top: 0.2rem;
 }
 
 /* ── Toast ── */
@@ -1754,21 +1797,35 @@ input[type='file'] {
 
 /* ── Page entrance ── */
 html:not(.js-ready) body { opacity: 0; }
-html.js-ready body { animation: pageEnter 0.4s ease forwards; }
+html.js-ready body { animation: pageEnter 0.35s ease forwards; }
 
 @keyframes pageEnter {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Reveal ── */
 .reveal {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s cubic-bezier(0.25,0.1,0.25,1), transform 0.5s cubic-bezier(0.25,0.1,0.25,1);
+  transform: translateY(12px);
+  transition: opacity 0.45s cubic-bezier(0.25,0.1,0.25,1), transform 0.45s cubic-bezier(0.25,0.1,0.25,1);
 }
 
 .reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Staggered reveal for cards ── */
+.homes-list .home-card,
+.card-list .card-item {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.homes-list .home-card.revealed,
+.card-list .card-item.revealed {
   opacity: 1;
   transform: translateY(0);
 }

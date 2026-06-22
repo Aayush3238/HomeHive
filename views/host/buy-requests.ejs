@@ -16,8 +16,7 @@
                     <div class="dashboard-avatar"><i class="fa-solid fa-comments-dollar"></i></div>
                     <div>
                         <span class="eyebrow"><i class="fa-solid fa-comments"></i> Requests</span>
-                        <h3 style="margin-top:0.75rem;">Buyer requests</h3>
-                        <p style="margin:0.4rem 0 0;font-size:0.82rem;">Review offers, reply to buyers, and schedule meetings.</p>
+                        <h3>Buyer requests</h3>
                     </div>
                 </div>
                 <nav class="dashboard-menu">
@@ -31,7 +30,6 @@
                 <div class="section-heading" style="margin-bottom:0;">
                     <span class="eyebrow"><i class="fa-solid fa-comments"></i> Requests</span>
                     <h1 style="font-size:clamp(1.75rem,3.5vw,2.75rem);">Incoming offers</h1>
-                    <p>Review and respond to buyer offers for your properties.</p>
                 </div>
 
                 <% if (buyRequests.length === 0) { %>
@@ -44,7 +42,7 @@
                 <% } else { %>
                     <div class="card-list">
                         <% buyRequests.forEach(request => { %>
-                            <article class="request-card card-item" style="padding:1.35rem; display:grid; gap:1.1rem;">
+                            <article class="request-card card-item" style="padding:1.35rem; display:grid; gap:1.25rem;">
                                 <div class="stack">
                                     <div class="price-highlight">
                                         <div>
@@ -129,7 +127,7 @@
                 <h3>Schedule meeting</h3>
                 <p>Set a date, location, and any notes for the meeting.</p>
             </div>
-            <form id="meetingForm" action="/schedule-meeting" method="POST">
+            <form id="meetingForm" action="/host/schedule-meeting" method="POST">
                 <input type="hidden" id="meetingRequestId" name="requestId">
                 <div class="field">
                     <label for="meetingDate">Date and time</label>

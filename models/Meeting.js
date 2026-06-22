@@ -47,6 +47,67 @@ class Meeting {
     };
   }
 
+  static async findById(id) {
+    const meeting = await prisma.meeting.findUnique({
+      where: { id },
+      include: {
+        participants: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstname: true,
+                lastname: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!meeting) return null;
+
+    return {
+      _id: meeting.id,
+      id: meeting.id,
+      buyRequest: { _id: meeting.buyRequestId, id: meeting.buyRequestId },
+      participants: meeting.participants.map((p) => ({
+        _id: p.user.id,
+        id: p.user.id,
+        firstname: p.user.firstname,
+        lastname: p.user.lastname,
+      })),
+      scheduledDate: meeting.scheduledDate,
+      location: meeting.location,
+      notes: meeting.notes,
+      status: meeting.status,
+      createdAt: meeting.createdAt,
+      updatedAt: meeting.updatedAt,
+    };
+  }
+
+  static async updateStatus(id, userId, status) {
+    const meeting = await prisma.meeting.findFirst({
+      where: {
+        id,
+        participants: { some: { userId } },
+      },
+    });
+
+    if (!meeting) return null;
+
+    const updated = await prisma.meeting.update({
+      where: { id: meeting.id },
+      data: { status, updatedAt: new Date() },
+    });
+
+    return {
+      _id: updated.id,
+      id: updated.id,
+      status: updated.status,
+    };
+  }
+
   static async findByParticipantWithRelations(userId) {
     const meetings = await prisma.meeting.findMany({
       where: {

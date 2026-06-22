@@ -2,71 +2,60 @@
 <html lang="en">
 <head>
     <%- include('../partials/head', {
-        pageTitle: 'HomeHive | Meetings',
-        pageDescription: 'Track scheduled meetings and continue buyer-owner conversations.'
+        pageTitle: 'HomeHive | My Requests',
+        pageDescription: 'Track the status of your property offers and manage conversations with owners.'
     }) %>
 </head>
 <body>
-    <%- include('../partials/nav', { activeNav: 'bookings' }) %>
+    <%- include('../partials/nav', { activeNav: 'my-requests' }) %>
 
     <section class="page-section reveal">
         <div class="section-heading">
-            <span class="eyebrow"><i class="fa-regular fa-calendar-check"></i> Meetings</span>
-            <h1 style="font-size:clamp(1.75rem,3.5vw,2.75rem);">Scheduled conversations</h1>
+            <span class="eyebrow"><i class="fa-solid fa-paper-plane"></i> My Requests</span>
+            <h1 style="font-size:clamp(1.75rem,3.5vw,2.75rem);">Your offers</h1>
         </div>
 
-        <% if (meetings && meetings.length > 0) { %>
+        <% if (buyRequests && buyRequests.length > 0) { %>
             <div class="card-list">
-                <% meetings.forEach(meeting => { %>
-                    <% const otherParticipant = meeting.participants.find(p => p._id.toString() !== user.id); %>
-                    <article class="meeting-card card-item" style="padding:1.35rem; display:grid; gap:1.25rem;">
+                <% buyRequests.forEach(request => { %>
+                    <article class="request-card card-item" style="padding:1.35rem; display:grid; gap:1.25rem;">
                         <div class="stack">
                             <div class="price-highlight">
                                 <div>
-                                    <div class="price-label">Meeting with</div>
-                                    <strong style="font-size:1.05rem;"><%= otherParticipant.firstname %> <%= otherParticipant.lastname %></strong>
+                                    <div class="price-label">Your offer</div>
+                                    <strong>Rs <%= request.offeredPrice %></strong>
                                 </div>
-                                <span class="status <%= meeting.status %>"><%= meeting.status %></span>
+                                <span class="status <%= request.status %>"><%= request.status %></span>
                             </div>
+                            <h3><%= request.home.address.formattedAddress %></h3>
                             <div class="home-meta">
-                                <span class="meta-pill"><i class="fa-regular fa-calendar"></i><%= new Date(meeting.scheduledDate).toLocaleString() %></span>
-                                <span class="meta-pill"><i class="fa-solid fa-location-dot"></i><%= meeting.location %></span>
+                                <span class="meta-pill"><i class="fa-solid fa-user"></i><%= request.owner.firstname %> <%= request.owner.lastname %></span>
+                                <span class="meta-pill"><i class="fa-solid fa-envelope"></i><%= request.owner.email %></span>
+                                <span class="meta-pill"><i class="fa-solid fa-tag"></i>Rs <%= request.home.price %> (asking)</span>
                             </div>
-                            <% if (meeting.notes) { %>
-                                <p style="font-size:0.88rem;line-height:1.65;"><%= meeting.notes %></p>
-                            <% } %>
+                            <p style="font-size:0.88rem;line-height:1.65;"><%= request.message %></p>
+                            <p class="helper-text">Sent on <%= request.createdAt.toDateString() %></p>
                         </div>
                         <div class="card-actions">
-                            <button type="button" class="btn btn-accent" onclick="openChat('<%= meeting.buyRequest._id %>', <%- JSON.stringify(`${otherParticipant.firstname} ${otherParticipant.lastname}`) %>)">
+                            <button type="button" class="btn btn-secondary" onclick="openChat('<%= request._id %>', <%- JSON.stringify(`${request.owner.firstname} ${request.owner.lastname}`) %>)">
                                 <i class="fa-solid fa-comments"></i>
                                 <span>Open chat</span>
                             </button>
-                            <% if (meeting.status === 'scheduled') { %>
-                                <form action="/meeting/<%= meeting._id %>/status" method="POST" class="inline-form" onsubmit="return confirm('Mark this meeting as completed?')">
-                                    <input type="hidden" name="status" value="completed">
-                                    <button type="submit" class="btn btn-accent">
-                                        <i class="fa-solid fa-check"></i>
-                                        <span>Complete</span>
-                                    </button>
-                                </form>
-                                <form action="/meeting/<%= meeting._id %>/status" method="POST" class="inline-form" onsubmit="return confirm('Cancel this meeting?')">
-                                    <input type="hidden" name="status" value="cancelled">
-                                    <button type="submit" class="btn btn-danger">
-                                        <i class="fa-solid fa-xmark"></i>
-                                        <span>Cancel</span>
-                                    </button>
-                                </form>
-                            <% } %>
+                            <a class="btn btn-secondary" href="/home/<%= request.home._id %>">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                <span>View property</span>
+                            </a>
                         </div>
                     </article>
                 <% }) %>
             </div>
         <% } else { %>
             <div class="empty-state page-card">
-                <span class="empty-state-icon"><i class="fa-regular fa-calendar"></i></span>
-                <span class="eyebrow">No meetings scheduled</span>
-                <h3>No confirmed meetings yet</h3>
-                <p>Accepted requests that turn into meetings will appear here automatically.</p>
+                <span class="empty-state-icon"><i class="fa-solid fa-paper-plane"></i></span>
+                <span class="eyebrow">No offers yet</span>
+                <h3>No offers sent</h3>
+                <p>Browse properties and send an offer to get started.</p>
+                <a href="/" class="btn btn-accent"><i class="fa-solid fa-compass"></i><span>Browse properties</span></a>
             </div>
         <% } %>
     </section>
@@ -106,6 +95,16 @@
         const chatTitle = document.getElementById('chatTitle');
         let currentRequestId = null;
 
+        socket.emit('joinBuyerRoom', currentUserId);
+
+        socket.on('requestStatusChanged', (data) => {
+            if (window.showToast) {
+                const statusText = data.status === 'accepted' ? 'accepted' : 'rejected';
+                window.showToast(`Your offer was ${statusText} by ${data.ownerName}.`, data.status === 'accepted' ? 'success' : 'info');
+            }
+            setTimeout(() => location.reload(), 1500);
+        });
+
         function escapeHtml(value) {
             return String(value ?? '')
                 .replace(/&/g, '&amp;')
@@ -117,7 +116,6 @@
 
         async function renderMessages(messages) {
             chatMessages.innerHTML = '';
-
             if (!messages.length) {
                 chatMessages.innerHTML = '<div class="chat-empty">No messages yet. Start the conversation.</div>';
                 return;

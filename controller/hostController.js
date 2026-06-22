@@ -144,7 +144,17 @@ exports.acceptBuyRequest = async (req, res, next) => {
   }
 
   try {
-    await BuyRequest.updateStatus(req.params.id, req.session.user.id, 'accepted');
+    const updated = await BuyRequest.updateStatus(req.params.id, req.session.user.id, 'accepted');
+    if (updated) {
+      const io = req.app.get('io');
+      if (io) {
+        io.to(`buyer-${updated.buyer}`).emit('requestStatusChanged', {
+          requestId: updated.id,
+          status: 'accepted',
+          ownerName: `${req.session.user.firstname} ${req.session.user.lastname}`,
+        });
+      }
+    }
     res.redirect('/host/buy-requests');
   } catch (err) {
     next(err);
@@ -157,7 +167,17 @@ exports.rejectBuyRequest = async (req, res, next) => {
   }
 
   try {
-    await BuyRequest.updateStatus(req.params.id, req.session.user.id, 'rejected');
+    const updated = await BuyRequest.updateStatus(req.params.id, req.session.user.id, 'rejected');
+    if (updated) {
+      const io = req.app.get('io');
+      if (io) {
+        io.to(`buyer-${updated.buyer}`).emit('requestStatusChanged', {
+          requestId: updated.id,
+          status: 'rejected',
+          ownerName: `${req.session.user.firstname} ${req.session.user.lastname}`,
+        });
+      }
+    }
     res.redirect('/host/buy-requests');
   } catch (err) {
     next(err);

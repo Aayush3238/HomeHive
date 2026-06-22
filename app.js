@@ -19,6 +19,7 @@ if (isProduction) {
 
 const server = http.createServer(app);
 const io = socketIo(server);
+app.set('io', io);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -103,6 +104,10 @@ const User = require('./models/User');
 io.on('connection', (socket) => {
   socket.on('joinRoom', (requestId) => {
     socket.join(requestId);
+  });
+
+  socket.on('joinBuyerRoom', (userId) => {
+    socket.join(`buyer-${userId}`);
   });
 
   socket.on('sendMessage', async (data) => {

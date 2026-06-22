@@ -44,16 +44,12 @@
                     </button>
                 </div>
             </div>
-            <div class="search-stats">
-                <span class="search-stat"><strong><%= SubmittedDetails.length %></strong> properties listed</span>
-                <span class="search-stat">Across <strong><%= [...new Set(SubmittedDetails.map(home => home.address?.city).filter(Boolean))].length %></strong> cities</span>
-            </div>
+
         </div>
     </section>
 
     <div class="listings-toolbar">
         <div class="section-heading" style="margin-bottom:0;">
-            <span class="eyebrow"><i class="fa-solid fa-building"></i> Browse</span>
             <h2>Available properties</h2>
         </div>
         <div class="toolbar-actions">
@@ -76,8 +72,6 @@
             </div>
         </div>
     </div>
-
-    <p id="searchSummary" class="helper-text" style="width:min(1200px, calc(100vw - 2rem));margin:0 auto 1rem;"></p>
 
     <ul class="homes-list" id="listingGrid">
         <% SubmittedDetails.forEach(home => { %>
@@ -161,28 +155,27 @@
         <div class="section-heading">
             <span class="eyebrow"><i class="fa-solid fa-house"></i> Why HomeHive</span>
             <h2>Built for buyers and owners</h2>
-            <p>A modern platform designed to make property discovery effortless and trustworthy.</p>
         </div>
         <div class="feature-grid">
             <article class="info-card reveal">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <h3>Easy property discovery</h3>
-                <p>Search, filter, and sort listings by location, budget, or type. Smart matching helps you find what fits without endless scrolling.</p>
+                <h3>Easy discovery</h3>
+                <p>Search, filter, and sort by location, budget, or type.</p>
             </article>
             <article class="info-card reveal">
                 <i class="fa-solid fa-circle-check"></i>
                 <h3>Verified listings</h3>
-                <p>Every property goes through verification. What you see is what is available — no stale or misleading posts.</p>
+                <p>Every property goes through verification.</p>
             </article>
             <article class="info-card reveal">
                 <i class="fa-solid fa-comments"></i>
                 <h3>Direct communication</h3>
-                <p>Send an offer or message the owner directly. No middlemen, no delays. Discuss pricing, schedule visits, and close faster.</p>
+                <p>Message owners directly. No middlemen.</p>
             </article>
             <article class="info-card reveal">
                 <i class="fa-solid fa-shield-halved"></i>
                 <h3>Trusted experience</h3>
-                <p>A clean interface for buyers and a straightforward dashboard for owners. Built for clarity, not clutter.</p>
+                <p>Clean interface for buyers and owners alike.</p>
             </article>
         </div>
     </section>
@@ -194,12 +187,10 @@
                     <i class="fa-solid fa-house"></i>
                     <strong>HomeHive</strong>
                 </div>
-                <p class="footer-desc">A modern platform for finding and listing properties across India. Direct, transparent, and trustworthy.</p>
             </div>
             <div class="footer-col">
                 <h4>Navigation</h4>
                 <a href="/">Explore listings</a>
-                <a href="#why-homehive">Why HomeHive</a>
                 <% if (!isLoggedIn) { %>
                     <a href="/login">Login</a>
                     <a href="/signup">Sign up</a>
@@ -208,6 +199,7 @@
                     <a href="/host/add-home">Add listing</a>
                 <% } else { %>
                     <a href="/store/favourite-list">Saved homes</a>
+                    <a href="/store/my-requests">My requests</a>
                     <a href="/store/bookings">Meetings</a>
                 <% } %>
             </div>

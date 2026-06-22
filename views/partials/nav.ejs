@@ -19,6 +19,7 @@
             <% if (isLoggedIn) { %>
                 <% if (user && user.role === 'Buyer') { %>
                     <a class="<%= activeNav === 'saved' ? 'is-active' : '' %>" href="/store/favourite-list"><i class="fa-regular fa-heart"></i> Saved</a>
+                    <a class="<%= activeNav === 'my-requests' ? 'is-active' : '' %>" href="/store/my-requests"><i class="fa-solid fa-paper-plane"></i> My Requests</a>
                 <% } %>
                 <% if (user && user.role === 'Owner') { %>
                     <a class="<%= activeNav === 'add-home' ? 'is-active' : '' %>" href="/host/add-home"><i class="fa-solid fa-square-plus"></i> Add Listing</a>

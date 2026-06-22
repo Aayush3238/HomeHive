@@ -106,6 +106,11 @@ exports.createBuyRequest = async (req, res, next) => {
       return res.status(400).send('Invalid offered price');
     }
 
+    const existing = await BuyRequest.findExistingRequest(homeId, req.session.user.id);
+    if (existing) {
+      return res.status(409).send('You have already sent an offer for this property.');
+    }
+
     const buyRequest = new BuyRequest({
       home: homeId,
       buyer: req.session.user.id,
@@ -116,6 +121,22 @@ exports.createBuyRequest = async (req, res, next) => {
 
     await buyRequest.save();
     return res.redirect('/');
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.getMyRequests = async (req, res, next) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const buyRequests = await BuyRequest.findByBuyerWithRelations(req.session.user.id);
+    return res.render('store/my-requests', {
+      buyRequests,
+      user: req.session.user,
+    });
   } catch (err) {
     return next(err);
   }
@@ -200,6 +221,10 @@ exports.scheduleMeeting = async (req, res, next) => {
       return res.status(403).send('Only the owner can schedule meetings for this request');
     }
 
+    if (buyRequest.status !== 'accepted') {
+      return res.status(400).send('Meetings can only be scheduled for accepted requests');
+    }
+
     const meeting = new Meeting({
       buyRequest: requestId,
       participants: [buyRequest.buyer, buyRequest.owner],
@@ -209,6 +234,30 @@ exports.scheduleMeeting = async (req, res, next) => {
     });
 
     await meeting.save();
+    return res.redirect('/store/bookings');
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.updateMeetingStatus = async (req, res, next) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  const { meetingId } = req.params;
+  const { status } = req.body;
+
+  const allowedStatuses = ['completed', 'cancelled'];
+  if (!allowedStatuses.includes(status)) {
+    return res.status(400).send('Invalid meeting status');
+  }
+
+  try {
+    const meeting = await Meeting.updateStatus(meetingId, req.session.user.id, status);
+    if (!meeting) {
+      return res.status(404).send('Meeting not found or you are not a participant');
+    }
     return res.redirect('/store/bookings');
   } catch (err) {
     return next(err);
