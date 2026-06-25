@@ -9,6 +9,7 @@
 <body>
     <%- include('../partials/nav', { activeNav: 'explore' }) %>
 
+    <main id="main-content">
     <section class="search-section">
         <div class="search-shell">
             <div class="search-row">
@@ -127,7 +128,7 @@
                     <p class="home-description"><%= home.description %></p>
                 </div>
                 <div class="card-actions">
-                    <% if (isLoggedIn && user.role === 'Buyer') { %>
+                    <% if (isLoggedIn) { %>
                         <button type="button" class="btn btn-accent" onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">
                             <i class="fa-solid fa-paper-plane"></i>
                             <span>Send offer</span>
@@ -179,6 +180,7 @@
             </article>
         </div>
     </section>
+    </main>
 
     <footer class="site-footer">
         <div class="footer-inner">
@@ -214,14 +216,14 @@
         </div>
     </footer>
 
-    <div id="buyRequestModal" class="modal">
+    <div id="buyRequestModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="buyRequestModalTitle">
         <div class="modal-content">
             <button type="button" class="close" onclick="closeBuyRequestModal()">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div class="section-heading" style="margin-bottom:1.25rem;">
                 <span class="eyebrow"><i class="fa-solid fa-paper-plane"></i> Make an offer</span>
-                <h3>Send your offer</h3>
+                <h3 id="buyRequestModalTitle">Send your offer</h3>
                 <p>Submit your proposed price and a brief message to the owner.</p>
             </div>
             <form id="buyRequestForm" action="/buy-request" method="POST">
@@ -413,6 +415,10 @@
 
         buyRequestModal.addEventListener('click', (event) => {
             if (event.target === buyRequestModal) closeBuyRequestModal();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && buyRequestModal.classList.contains('show')) closeBuyRequestModal();
         });
 
         filterListings(true);

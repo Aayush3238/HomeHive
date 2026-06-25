@@ -19,10 +19,13 @@
             <div class="homes-list">
                 <% favourites.forEach(home => { %>
                     <% const imageUrl = getHomeImageUrl(home.homeImage, { width: 720, height: 450 }); %>
+                    <% const imageSrcSet = getHomeImageSrcSet(home.homeImage, [320, 480, 720], { height: 450 }); %>
                     <article class="home-card reveal">
                         <div class="home-media">
                             <img
                                 src="<%= imageUrl %>"
+                                <% if (imageSrcSet) { %>srcset="<%= imageSrcSet %>"<% } %>
+                                sizes="(max-width: 840px) 100vw, (max-width: 1100px) 50vw, 33vw"
                                 alt="Photo of <%= home.address?.formattedAddress || 'property' %>"
                                 class="home-img"
                                 loading="lazy"
@@ -51,6 +54,12 @@
                             <p class="home-description"><%= home.description %></p>
                         </div>
                         <div class="card-actions">
+                            <% if (isLoggedIn && user) { %>
+                                <button type="button" class="btn btn-accent" onclick="openBuyRequestModal('<%= home.id %>', '<%= home.price %>')">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span>Send offer</span>
+                                </button>
+                            <% } %>
                             <a class="Details" href="/home/<%= home.id %>">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 <span>View details</span>
@@ -72,6 +81,82 @@
             </div>
         <% } %>
     </section>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <i class="fa-solid fa-house"></i>
+                    <strong>HomeHive</strong>
+                </div>
+                <p class="footer-desc">A simple platform for finding and listing properties.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <a href="/">Explore listings</a>
+                <a href="/store/my-requests">My requests</a>
+                <a href="/store/bookings">Meetings</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <a href="mailto:support@homehive.com">support@homehive.com</a>
+                <p class="footer-contact-item"><i class="fa-solid fa-location-dot"></i> India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HomeHive. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="buyRequestModal" class="modal">
+        <div class="modal-content">
+            <button type="button" class="close" onclick="closeBuyRequestModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="section-heading" style="margin-bottom:1.25rem;">
+                <span class="eyebrow"><i class="fa-solid fa-paper-plane"></i> Make an offer</span>
+                <h3>Send your offer</h3>
+                <p>Submit your proposed price and a brief message to the owner.</p>
+            </div>
+            <form id="buyRequestForm" action="/buy-request" method="POST">
+                <input type="hidden" id="homeId" name="homeId">
+                <div class="field">
+                    <label for="offeredPrice">Your offered price (Rs)</label>
+                    <input type="number" id="offeredPrice" name="offeredPrice" required placeholder="Enter your offer amount">
+                </div>
+                <div class="field">
+                    <label for="message">Message to owner</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Share your interest, timeline, or financing details..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-accent">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Send offer</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const buyRequestModal = document.getElementById('buyRequestModal');
+
+        function openBuyRequestModal(homeId, price) {
+            document.getElementById('homeId').value = homeId;
+            document.getElementById('offeredPrice').value = price;
+            buyRequestModal.classList.add('show');
+        }
+
+        function closeBuyRequestModal() {
+            buyRequestModal.classList.remove('show');
+        }
+
+        buyRequestModal.addEventListener('click', (event) => {
+            if (event.target === buyRequestModal) closeBuyRequestModal();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && buyRequestModal.classList.contains('show')) closeBuyRequestModal();
+        });
+    </script>
 
     <script src="/js/animations.js"></script>
 </body>

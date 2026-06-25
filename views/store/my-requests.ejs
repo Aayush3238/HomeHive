@@ -60,7 +60,7 @@
         <% } %>
     </section>
 
-    <div id="chatModal" class="modal">
+    <div id="chatModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="chatTitle">
         <div class="modal-content chat-modal">
             <button type="button" class="close" onclick="closeChatModal()">
                 <i class="fa-solid fa-xmark"></i>
@@ -70,7 +70,7 @@
                     <span class="chat-avatar"><i class="fa-solid fa-user"></i></span>
                     <div>
                         <h3 id="chatTitle">Conversation</h3>
-                        <p class="chat-notice">Messages are not end-to-end encrypted.</p>
+                        <p class="chat-notice">Messages are encrypted for security.</p>
                     </div>
                 </div>
                 <div id="chatMessages" class="chat-messages"></div>
@@ -83,6 +83,32 @@
             </div>
         </div>
     </div>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <i class="fa-solid fa-house"></i>
+                    <strong>HomeHive</strong>
+                </div>
+                <p class="footer-desc">A simple platform for finding and listing properties.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <a href="/">Explore listings</a>
+                <a href="/store/favourite-list">Saved homes</a>
+                <a href="/store/bookings">Meetings</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <a href="mailto:support@homehive.com">support@homehive.com</a>
+                <p class="footer-contact-item"><i class="fa-solid fa-location-dot"></i> India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HomeHive. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/crypto.js"></script>
@@ -127,19 +153,7 @@
                 row.className = `message-row ${isMine ? 'mine' : 'theirs'}`;
                 const senderName = isMine ? currentUserName : `${msg.sender.firstname} ${msg.sender.lastname}`;
                 const timeLabel = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                let decryptedMessage = msg.message;
-
-                try {
-                    const decoded = atob(msg.message);
-                    if (decoded.startsWith('ENCRYPTED:')) {
-                        const privateKey = CryptoUtils.getPrivateKey();
-                        if (privateKey) {
-                            decryptedMessage = await CryptoUtils.decryptMessage(msg.message, privateKey);
-                        }
-                    }
-                } catch (error) {
-                    // decryption failed — show raw
-                }
+                const displayMessage = msg.message || '';
 
                 row.innerHTML = `
                     ${isMine ? '' : '<span class="chat-avatar"><i class="fa-solid fa-user"></i></span>'}
@@ -149,7 +163,7 @@
                             <span>&middot;</span>
                             <span>${escapeHtml(timeLabel)}</span>
                         </div>
-                        <div class="message-text">${escapeHtml(decryptedMessage)}</div>
+                        <div class="message-text">${escapeHtml(displayMessage)}</div>
                     </div>
                     ${isMine ? '<span class="chat-avatar"><i class="fa-solid fa-user"></i></span>' : ''}
                 `;
@@ -163,7 +177,6 @@
             currentRequestId = requestId;
             chatTitle.textContent = `Chat with ${otherName}`;
             chatModal.classList.add('show');
-            await CryptoUtils.initCrypto();
             loadMessages(requestId);
             socket.emit('joinRoom', requestId);
         }
@@ -175,9 +188,16 @@
         }
 
         function loadMessages(requestId) {
+            chatMessages.innerHTML = '<div class="chat-empty">Loading messages...</div>';
             fetch(`/messages/${requestId}`)
-                .then(response => response.json())
-                .then(messages => renderMessages(messages));
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load messages');
+                    return response.json();
+                })
+                .then(messages => renderMessages(messages))
+                .catch(() => {
+                    chatMessages.innerHTML = '<div class="chat-empty">Could not load messages. Please try again.</div>';
+                });
         }
 
         async function sendMessage() {
@@ -185,18 +205,13 @@
             const message = messageInput.value.trim();
             if (!message || !currentRequestId) return;
 
-            try {
-                const encryptedMessage = await CryptoUtils.encryptMessage(message, 'recipient-public-key-placeholder');
-                socket.emit('sendMessage', {
-                    requestId: currentRequestId,
-                    message: encryptedMessage,
-                    senderId: currentUserId
-                });
-                messageInput.value = '';
-                if (window.showToast) window.showToast('Message sent.', 'success');
-            } catch (error) {
-                if (window.showToast) window.showToast('Failed to send the message.', 'error');
-            }
+            socket.emit('sendMessage', {
+                requestId: currentRequestId,
+                message: message,
+                senderId: currentUserId
+            });
+            messageInput.value = '';
+            if (window.showToast) window.showToast('Message sent.', 'success');
         }
 
         socket.on('newMessage', (data) => {
@@ -209,6 +224,10 @@
 
         chatModal.addEventListener('click', (event) => {
             if (event.target === chatModal) closeChatModal();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && chatModal.classList.contains('show')) closeChatModal();
         });
     </script>
     <script src="/js/animations.js"></script>

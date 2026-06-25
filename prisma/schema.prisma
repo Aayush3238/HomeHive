@@ -69,6 +69,10 @@ model Home {
   favourites    UserFavourite[]
   buyRequests   BuyRequest[]
 
+  @@index([ownerId])
+  @@index([city])
+  @@index([propertyType])
+  @@index([createdAt(sort: Desc)])
   @@map("homes")
 }
 
@@ -99,6 +103,10 @@ model BuyRequest {
   messages     Message[]
   meetings     Meeting[]
 
+  @@index([buyerId])
+  @@index([ownerId])
+  @@index([status])
+  @@index([homeId])
   @@map("buy_requests")
 }
 
@@ -116,6 +124,9 @@ model Message {
   sender         User      @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
   receiver       User      @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
 
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([receiverId])
   @@map("messages")
 }
 
@@ -131,6 +142,9 @@ model Meeting {
   buyRequest    BuyRequest           @relation(fields: [buyRequestId], references: [id], onDelete: Cascade)
   participants  MeetingParticipant[]
 
+  @@index([buyRequestId])
+  @@index([status])
+  @@index([scheduledDate])
   @@map("meetings")
 }
 

@@ -1,7 +1,5 @@
 const multer = require('multer');
-const path = require('path');
 
-const rootDir = require('../utils/pathUtils');
 const Home = require('../models/home');
 const BuyRequest = require('../models/BuyRequest');
 const { uploadPropertyImage } = require('../utils/cloudinary');
@@ -40,7 +38,11 @@ exports.getAddHome = (req, res) => {
     return;
   }
 
-  res.render(path.join(rootDir, 'views', 'host/addHome.ejs'));
+  res.render('host/addHome', {
+    pageTitle: 'HomeHive | Add Listing',
+    pageDescription: 'Publish a new property with map support and cleaner form UX.',
+    activeNav: 'add-home',
+  });
 };
 
 exports.postAddHome = [
@@ -51,7 +53,23 @@ exports.postAddHome = [
     }
 
     try {
-      const formattedAddress = `${req.body.houseNo}, ${req.body.city}, ${req.body.district}, ${req.body.state}, ${req.body.country}`;
+      if (!req.body.houseNo || !req.body.city || !req.body.state || !req.body.country) {
+        return res.status(400).render('Error', {
+          pageTitle: 'HomeHive | Missing Fields',
+          pageDescription: 'Please fill in all required address fields.',
+          error: 'House number, city, state, and country are required.',
+        });
+      }
+
+      if (!req.body.description || req.body.description.trim().length < 10) {
+        return res.status(400).render('Error', {
+          pageTitle: 'HomeHive | Description Required',
+          pageDescription: 'Please provide a description for your property.',
+          error: 'Property description must be at least 10 characters long.',
+        });
+      }
+
+      const formattedAddress = `${req.body.houseNo}, ${req.body.city}, ${req.body.district || ''}, ${req.body.state}, ${req.body.country}`;
 
       if (!req.file || !req.file.buffer) {
         return res.status(400).render('Error', {
@@ -101,7 +119,11 @@ exports.postAddHome = [
       });
 
       await home.save();
-      res.render(path.join(rootDir, 'views', 'host/submitDetails.ejs'));
+      res.render('host/submitDetails', {
+        pageTitle: 'HomeHive | Listing Published',
+        pageDescription: 'Your new property listing is now live on HomeHive.',
+        activeNav: 'dashboard',
+      });
     } catch (err) {
       next(err);
     }
@@ -118,6 +140,9 @@ exports.getHostHomeList = async (req, res, next) => {
     res.render('host/host-homelist', {
       SubmittedDetails: submittedDetails,
       user: req.session.user,
+      pageTitle: 'HomeHive | Owner Dashboard',
+      pageDescription: 'Manage listings, track activity, and respond to buyer demand.',
+      activeNav: 'dashboard',
     });
   } catch (err) {
     next(err);
@@ -132,7 +157,13 @@ exports.getBuyRequests = async (req, res, next) => {
   try {
     const buyRequests = await BuyRequest.findByOwnerWithRelations(req.session.user.id);
 
-    res.render('host/buy-requests', { buyRequests, user: req.session.user });
+    res.render('host/buy-requests', {
+      buyRequests,
+      user: req.session.user,
+      pageTitle: 'HomeHive | Buyer Requests',
+      pageDescription: 'Review incoming offers, continue conversations, and schedule meetings.',
+      activeNav: 'requests',
+    });
   } catch (err) {
     next(err);
   }
@@ -214,6 +245,9 @@ exports.getUpdateHome = async (req, res, next) => {
     return res.render('host/edit', {
       home,
       user: req.session.user,
+      pageTitle: 'HomeHive | Edit Listing',
+      pageDescription: 'Update listing details while keeping the same premium browsing experience.',
+      activeNav: 'dashboard',
     });
   } catch (err) {
     return next(err);
@@ -227,13 +261,24 @@ exports.PostUpdateHome = [
       return;
     }
 
+    if (!req.body.houseNo || !req.body.city || !req.body.state || !req.body.country) {
+      return res.status(400).render('Error', {
+        pageTitle: 'HomeHive | Missing Fields',
+        pageDescription: 'Please fill in all required address fields.',
+        error: 'House number, city, state, and country are required.',
+      });
+    }
+
     const priceValue = Number(req.body.price);
     if (!Number.isFinite(priceValue) || priceValue <= 0) {
       return res.status(400).send('Invalid price. Enter a numeric amount greater than zero.');
     }
 
     try {
-      const uploadedImage = await uploadPropertyImage(req.file);
+      let uploadedImage = null;
+      if (req.file && req.file.buffer) {
+        uploadedImage = await uploadPropertyImage(req.file);
+      }
       const updateData = {
         address: {
           houseNo: req.body.houseNo,

@@ -35,7 +35,6 @@ const {
 } = require('./utils/homeImage');
 
 app.use(express.static(path.join(rootDir, 'public')));
-app.use(express.static('public'));
 
 if (!process.env.SESSION_SECRET) {
   throw new Error('SESSION_SECRET is not configured.');
@@ -80,9 +79,11 @@ app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
+const errorController = require('./controller/errors');
+app.use(errorController.error);
+
 // Express error-handling middleware (must have 4 params)
 app.use((err, req, res, next) => {
-
   const isDev = process.env.NODE_ENV !== 'production';
   res.status(500).render('Error', {
     pageTitle: 'HomeHive | Something went wrong',
@@ -90,12 +91,6 @@ app.use((err, req, res, next) => {
     error: isDev ? err.message : undefined,
   });
 });
-app.get("/health", (req, res) => {
-  res.status(200).send("OK");
-})
-
-const errorController = require('./controller/errors');
-app.use(errorController.error);
 
 const Message = require('./models/Message');
 const BuyRequest = require('./models/BuyRequest');
